@@ -23,6 +23,7 @@ func _ready() -> void:
 
 
 func reset_level() -> void:
+	_is_completed = false
 	_switch_a.deactivate()
 	_player_anchor.global_position = _checkpoint_position
 
@@ -31,10 +32,12 @@ func complete_level() -> void:
 	if _is_completed or not _exit_device.is_open():
 		return
 
-	_is_completed = true
 	var global_signal_bus: Node = get_node_or_null("/root/GlobalSignalBus")
-	if global_signal_bus != null:
-		global_signal_bus.emit_signal(&"level_completed", level_id)
+	if global_signal_bus == null or not global_signal_bus.has_signal(&"level_completed"):
+		return
+
+	_is_completed = true
+	global_signal_bus.emit_signal(&"level_completed", level_id)
 
 
 func get_checkpoint_position() -> Vector2:
