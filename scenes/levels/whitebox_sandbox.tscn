@@ -87,7 +87,7 @@ color = Color(0.25, 0.75, 0.45, 1)
 
 [node name="FallHazard" parent="Hazards" instance=ExtResource("5_hazard")]
 unique_name_in_owner = true
-position = Vector2(1248, 704)
+position = Vector2(960, 576)
 
 [node name="Checkpoints" type="Node2D" parent="."]
 
@@ -96,6 +96,7 @@ unique_name_in_owner = true
 position = Vector2(96, 576)
 
 [node name="MidCheckpoint" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+unique_name_in_owner = true
 position = Vector2(640, 576)
 
 [node name="CameraRig" type="Node2D" parent="."]
@@ -130,9 +131,9 @@ position = Vector2(1092, 520)
 text = "EXIT"
 
 [node name="HazardLabel" type="Label" parent="Presentation"]
-position = Vector2(1176, 672)
+position = Vector2(928, 528)
 text = "FALL"
 
 [node name="HazardVisual" type="Polygon2D" parent="Presentation"]
-polygon = PackedVector2Array(1216, 688, 1280, 688, 1280, 720, 1216, 720)
+polygon = PackedVector2Array(928, 560, 992, 560, 992, 592, 928, 592)
 color = Color(0.7, 0.2, 0.24, 1)

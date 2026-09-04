@@ -52,7 +52,12 @@ func _run() -> void:
 	assert(mid_checkpoint.position == Vector2(640, 576), "MidCheckpoint must have a fixed whitebox position.")
 	assert(switch_marker.position == Vector2(832, 560), "SwitchA must have a fixed whitebox position.")
 	assert(exit_marker.position == Vector2(1120, 560), "ExitDevice must have a fixed whitebox position.")
-	assert(fall_hazard.position == Vector2(1248, 704), "FallHazard must have a fixed whitebox position.")
+	assert(fall_hazard.position == Vector2(960, 576), "FallHazard must be positioned on the whitebox route.")
+
+	var checkpoint_actor := Node2D.new()
+	assert(mid_checkpoint.activate(checkpoint_actor), "MidCheckpoint must accept a valid actor once.")
+	assert(sandbox.get_checkpoint_position() == Vector2(640, 576), "MidCheckpoint activation must update the sandbox checkpoint.")
+	checkpoint_actor.free()
 
 	var checkpoint_position: Vector2 = sandbox.get_checkpoint_position()
 	switch_a.activate()

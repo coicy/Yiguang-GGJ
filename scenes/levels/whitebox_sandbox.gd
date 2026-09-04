@@ -10,12 +10,14 @@ var _is_completed: bool = false
 @onready var _switch_a: WhiteboxSwitch = %SwitchA
 @onready var _exit_device: ExitDevice = %ExitDevice
 @onready var _start_checkpoint: Checkpoint = %StartCheckpoint
+@onready var _mid_checkpoint: Checkpoint = %MidCheckpoint
 @onready var _fall_hazard: Hazard = %FallHazard
 
 
 func _ready() -> void:
 	_checkpoint_position = _start_checkpoint.get_checkpoint_position()
 	_start_checkpoint.checkpoint_reached.connect(_on_checkpoint_reached)
+	_mid_checkpoint.checkpoint_reached.connect(_on_checkpoint_reached)
 	_fall_hazard.actor_killed.connect(_on_actor_killed)
 	_exit_device.set_required_switches(1)
 	_exit_device.register_switch(_switch_a)

@@ -43,7 +43,7 @@ WhiteboxSandbox
 
 ## 白模布局
 
-`PlayerAnchor` 和 `StartCheckpoint` 位于 `(96, 576)`；`MidCheckpoint` 位于 `(640, 576)`；`NutritionTank`、`ToxinZone`、`SwitchA`、`ExitDevice` 分别位于 `(352, 560)`、`(560, 560)`、`(832, 560)`、`(1120, 560)`；`FallHazard` 位于 `(1248, 704)`。`SwitchA` 与 `ExitDevice` 保持逻辑 `Node` 根，并通过各自的 `PositionMarker` 和 `Polygon2D` 子节点表达白模位置和可视标识。场景使用无素材的 `Polygon2D` 与 `StaticBody2D` 表示可见、可碰撞的地面和平台；它不实例化临时 `Player`。
+`PlayerAnchor` 和 `StartCheckpoint` 位于 `(96, 576)`；`MidCheckpoint` 位于 `(640, 576)`；`NutritionTank`、`ToxinZone`、`SwitchA`、`ExitDevice` 分别位于 `(352, 560)`、`(560, 560)`、`(832, 560)`、`(1120, 560)`；`FallHazard` 位于路线上的 `(960, 576)`。`SwitchA` 与 `ExitDevice` 保持逻辑 `Node` 根，并通过各自的 `PositionMarker` 和 `Polygon2D` 子节点表达白模位置和可视标识。场景使用无素材的 `Polygon2D` 与 `StaticBody2D` 表示可见、可碰撞的地面和平台；它不实例化临时 `Player`。
 
 ## 变更记录
 
