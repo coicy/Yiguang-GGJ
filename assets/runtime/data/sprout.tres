@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FormDefinition" format=3]
+
+[ext_resource type="Script" path="res://features/forms/form_definition.gd" id="1_m5m4l"]
+
+[resource]
+script = ExtResource("1_m5m4l")
+id = &"sprout"
+display_name = "幼芽期"
+move_speed = 220.0
+jump_force = -320.0
+max_fall_speed = 700.0
