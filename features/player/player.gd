@@ -60,6 +60,7 @@ func _on_state_changed(previous: StringName, current: StringName) -> void:
 
 func _on_ability_state_changed(_label: StringName) -> void:
 	visuals.set_ability_state(abilities.is_rooted(), abilities.is_leg_extended(), abilities.is_vine_attached())
+	visuals.set_vine_anchor(abilities.get_vine_anchor())
 
 
 func current_state() -> StringName:

@@ -17,6 +17,7 @@ var _current_state: StringName = STATE_IDLE
 var _rooted: bool = false
 var _legs_extended: bool = false
 var _vine_attached: bool = false
+var _vine_anchor: Node2D
 
 
 func _ready() -> void:
@@ -41,6 +42,11 @@ func set_ability_state(rooted: bool, legs_extended: bool, vine_attached: bool) -
 	_rooted = rooted
 	_legs_extended = legs_extended
 	_vine_attached = vine_attached
+	queue_redraw()
+
+
+func set_vine_anchor(anchor: Node2D) -> void:
+	_vine_anchor = anchor
 	queue_redraw()
 
 
@@ -78,6 +84,13 @@ func _draw() -> void:
 		draw_rect(Rect2(-5.0, -body_size.y - 72.0, 10.0, 72.0), Color("#ffe083"))
 	if _vine_attached:
 		draw_circle(Vector2(0.0, -body_size.y * 0.5), 4.0, Color.WHITE)
+		if is_instance_valid(_vine_anchor):
+			draw_line(
+				Vector2(0.0, -body_size.y * 0.5),
+				to_local(_vine_anchor.global_position),
+				Color("#8de06f"),
+				3.0
+			)
 
 	match _current_state:
 		STATE_RUN:

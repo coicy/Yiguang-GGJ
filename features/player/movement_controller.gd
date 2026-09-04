@@ -13,6 +13,9 @@ extends Node
 @export var jump_buffer: float = 0.15
 @export var jump_cut_multiplier: float = 0.5
 
+@export_group("Vine")
+@export var vine_tangent_acceleration: float = 900.0
+
 var body: CharacterBody2D
 var form: FormDefinition
 var resources: ResourceController
@@ -21,6 +24,8 @@ var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
 var _rooted: bool = false
 var _movement_locked: bool = false
+var _vine_anchor: Node2D
+var _vine_length: float = 0.0
 
 
 func setup(
@@ -77,8 +82,10 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 		body.velocity.x = move_toward(body.velocity.x, move_dir * form.move_speed * speed_scale, acceleration * delta)
 	else:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, friction * delta)
+	_apply_vine_motion(move_dir, delta)
 
 	body.move_and_slide()
+	_enforce_vine_length()
 
 	if body.is_on_ceiling() and body.velocity.y < 0.0:
 		body.velocity.y = 0.0
@@ -110,6 +117,47 @@ func apply_wind(force: float, delta: float) -> void:
 	if body == null or _rooted:
 		return
 	body.velocity.x += force * delta
+
+
+func attach_vine(anchor: Node2D, length: float) -> void:
+	_vine_anchor = anchor
+	_vine_length = maxf(1.0, length)
+
+
+func detach_vine() -> void:
+	_vine_anchor = null
+	_vine_length = 0.0
+
+
+func is_vine_attached() -> bool:
+	return _vine_anchor != null and is_instance_valid(_vine_anchor)
+
+
+func _apply_vine_motion(move_dir: float, delta: float) -> void:
+	if not is_vine_attached():
+		return
+	var radial := body.global_position - _vine_anchor.global_position
+	if radial.is_zero_approx():
+		return
+	var radial_normal := radial.normalized()
+	var outward_speed := body.velocity.dot(radial_normal)
+	if outward_speed > 0.0:
+		body.velocity -= radial_normal * outward_speed
+	var tangent := Vector2(-radial_normal.y, radial_normal.x)
+	body.velocity += tangent * move_dir * vine_tangent_acceleration * delta
+
+
+func _enforce_vine_length() -> void:
+	if not is_vine_attached():
+		return
+	var radial := body.global_position - _vine_anchor.global_position
+	if radial.length() <= _vine_length or radial.is_zero_approx():
+		return
+	var radial_normal := radial.normalized()
+	body.global_position = _vine_anchor.global_position + radial_normal * _vine_length
+	var outward_speed := body.velocity.dot(radial_normal)
+	if outward_speed > 0.0:
+		body.velocity -= radial_normal * outward_speed
 
 
 func is_on_floor() -> bool:

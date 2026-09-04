@@ -33,7 +33,20 @@ func _run() -> void:
 	player.movement.tick(0.1, 0.0, true)
 	assert(player.velocity.y <= player.form_controller.get_current().glide_fall_speed)
 
+	var anchor := preload("res://features/abilities/vine_anchor.tscn").instantiate() as VineAnchor
+	root.add_child(anchor)
+	anchor.global_position = player.global_position + Vector2(120.0, -160.0)
+	assert(player.abilities.try_attach_vine())
+	assert(player.abilities.is_vine_attached())
+	var length_before := player.global_position.distance_to(anchor.global_position)
+	player.velocity = Vector2(500.0, 500.0)
+	player.movement.tick(0.1, 1.0, false)
+	assert(player.global_position.distance_to(anchor.global_position) <= length_before + 1.0)
+	player.abilities.stop_primary()
+	assert(not player.abilities.is_vine_attached())
+
 	player.free()
+	anchor.free()
 	ground.free()
 	quit()
 

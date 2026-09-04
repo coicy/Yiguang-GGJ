@@ -13,6 +13,7 @@ var _rooted: bool = false
 var _leg_extended: bool = false
 var _primary_pressed: bool = false
 var _secondary_pressed: bool = false
+var _vine_anchor: Node2D
 
 
 func setup(
@@ -35,7 +36,11 @@ func tick() -> void:
 
 func set_primary_pressed(pressed: bool) -> void:
 	if pressed and not _primary_pressed:
-		try_root()
+		var form := _forms.get_current() if _forms != null else null
+		if form != null and form.can_use_vine:
+			try_attach_vine()
+		else:
+			try_root()
 	elif not pressed and _primary_pressed:
 		stop_primary()
 	_primary_pressed = pressed
@@ -76,12 +81,34 @@ func try_extend_legs() -> bool:
 	return true
 
 
+func try_attach_vine() -> bool:
+	if _forms == null or _movement == null or _player == null:
+		return false
+	var form := _forms.get_current()
+	if form == null or not form.can_use_vine or _rooted or _leg_extended:
+		return false
+	var nearest := _nearest_visible_anchor(300.0)
+	if nearest == null:
+		feedback_requested.emit("附近没有可连接的藤蔓锚点")
+		return false
+	_vine_anchor = nearest
+	_movement.attach_vine(nearest, _player.global_position.distance_to(nearest.global_position))
+	ability_state_changed.emit(&"vine")
+	return true
+
+
 func stop_primary() -> void:
-	if not _rooted:
-		return
-	_rooted = false
-	_movement.set_rooted(false)
-	ability_state_changed.emit(&"none")
+	var changed := false
+	if _rooted:
+		_rooted = false
+		_movement.set_rooted(false)
+		changed = true
+	if _vine_anchor != null:
+		_vine_anchor = null
+		_movement.detach_vine()
+		changed = true
+	if changed:
+		ability_state_changed.emit(&"none")
 
 
 func stop_secondary() -> void:
@@ -109,4 +136,36 @@ func is_leg_extended() -> bool:
 
 
 func is_vine_attached() -> bool:
-	return false
+	return _vine_anchor != null and is_instance_valid(_vine_anchor)
+
+
+func get_vine_anchor() -> Node2D:
+	return _vine_anchor if is_vine_attached() else null
+
+
+func _nearest_visible_anchor(max_range: float) -> Node2D:
+	var nearest: Node2D
+	var nearest_distance := max_range
+	for candidate_node: Node in _player.get_tree().get_nodes_in_group("vine_anchor"):
+		var candidate := candidate_node as Node2D
+		if candidate == null:
+			continue
+		var distance := _player.global_position.distance_to(candidate.global_position)
+		if distance > nearest_distance or not _has_clear_path(candidate):
+			continue
+		nearest = candidate
+		nearest_distance = distance
+	return nearest
+
+
+func _has_clear_path(candidate: Node2D) -> bool:
+	var query := PhysicsRayQueryParameters2D.create(
+		_player.global_position,
+		candidate.global_position,
+		1
+	)
+	query.exclude = [_player.get_rid()]
+	var hit := _player.get_world_2d().direct_space_state.intersect_ray(query)
+	if hit.is_empty():
+		return true
+	return candidate is CollisionObject2D and hit.get("collider") == candidate
