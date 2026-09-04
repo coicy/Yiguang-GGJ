@@ -8,6 +8,10 @@ var _requested_ability: StringName = &""
 
 
 func _init() -> void:
+	assert(_action_has_mouse_button(&"ability_primary"))
+	assert(_action_has_physical_key(&"move_up", KEY_W))
+	assert(_action_has_physical_key(&"move_down", KEY_S))
+
 	var controller := AbilityControllerScript.new()
 	controller.setup(HUMANOID_FORM)
 	assert(not controller.is_rooted())
@@ -32,3 +36,18 @@ func _init() -> void:
 
 func _on_primary_ability_requested(ability_id: StringName) -> void:
 	_requested_ability = ability_id
+
+
+func _action_has_physical_key(action: StringName, physical_keycode: Key) -> bool:
+	for event: InputEvent in InputMap.action_get_events(action):
+		var key_event := event as InputEventKey
+		if key_event != null and key_event.physical_keycode == physical_keycode:
+			return true
+	return false
+
+
+func _action_has_mouse_button(action: StringName) -> bool:
+	for event: InputEvent in InputMap.action_get_events(action):
+		if event is InputEventMouseButton:
+			return true
+	return false

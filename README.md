@@ -26,8 +26,8 @@ The current main scene is a playable whitebox vertical slice covering all three 
 
 - `A` / `D`: move.
 - `Space`: jump; hold while falling in mature form to glide.
-- `Left Mouse`: toggle root in humanoid form, or attach/detach from the nearest visible vine anchor in mature form.
-- `W` / `A` / `S` / `D`: while rooted in humanoid form, aim the leg extension and reach directional switches.
+- Left Mouse: toggle root in humanoid form, or attach/detach from the nearest visible vine anchor in mature form.
+- `W/A/S/D`: while rooted in humanoid form, aim the leg extension direction; horizontal movement remains locked while rooted.
 - `R`: restart the complete course from the beginning.
 - `F3`: toggle the existing debug overlay.
 

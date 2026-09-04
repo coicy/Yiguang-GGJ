@@ -8,6 +8,7 @@ const STATE_RUN := &"run"
 const STATE_JUMP := &"jump"
 const STATE_FALL := &"fall"
 const STATE_GLIDE := &"glide"
+const LEG_EXTENSION_HEIGHT := 72.0
 
 @onready var animated_sprite: AnimatedSprite2D = %AnimatedSprite2D
 
@@ -25,6 +26,13 @@ func _ready() -> void:
 	_default_frames = animated_sprite.sprite_frames
 	_apply_frames()
 	queue_redraw()
+
+
+func _process(_delta: float) -> void:
+	# The anchor is in world space while this canvas item follows the player.
+	# Rebuild the local endpoint every frame so the line stays pinned at both ends.
+	if _vine_attached:
+		queue_redraw()
 
 
 func set_form(form: FormDefinition) -> void:
@@ -77,27 +85,25 @@ func _apply_animation() -> void:
 
 
 func _draw() -> void:
+	var body_size := _current_form.collision_size if _current_form != null else Vector2(28.0, 40.0)
+	var body_offset_y := -LEG_EXTENSION_HEIGHT if _legs_extended else 0.0
 	if animated_sprite.sprite_frames != null:
+		_draw_vine(Vector2(0.0, -body_size.y * 0.5 + body_offset_y))
 		return
 
 	var body_color := _current_form.body_color if _current_form != null else Color("#66c2a5")
-	var body_size := _current_form.collision_size if _current_form != null else Vector2(28.0, 40.0)
-	draw_rect(Rect2(-body_size.x * 0.5, -body_size.y, body_size.x, body_size.y), body_color)
-	draw_circle(Vector2(0.0, -body_size.y + 5.0), minf(6.0, body_size.x * 0.25), Color.WHITE)
+	_draw_vine(Vector2(0.0, -body_size.y * 0.5 + body_offset_y))
+	draw_rect(Rect2(-body_size.x * 0.5, -body_size.y + body_offset_y, body_size.x, body_size.y), body_color)
+	draw_circle(Vector2(0.0, -body_size.y + 5.0 + body_offset_y), minf(6.0, body_size.x * 0.25), Color.WHITE)
 	if _rooted:
 		draw_line(Vector2.ZERO, Vector2(-16.0, 10.0), Color("#b58a52"), 4.0)
 		draw_line(Vector2.ZERO, Vector2(16.0, 10.0), Color("#b58a52"), 4.0)
 	if _legs_extended:
-		draw_line(Vector2.ZERO, _leg_direction * 72.0, Color("#ffe083"), 10.0)
-	if _vine_attached:
-		draw_circle(Vector2(0.0, -body_size.y * 0.5), 4.0, Color.WHITE)
-		if is_instance_valid(_vine_anchor):
-			draw_line(
-				Vector2(0.0, -body_size.y * 0.5),
-				to_local(_vine_anchor.global_position),
-				Color("#8de06f"),
-				3.0
-			)
+		var hip_offset := body_size.x * 0.22
+		draw_line(Vector2(-hip_offset, body_offset_y), Vector2(-hip_offset, 0.0), Color("#ffe083"), 8.0)
+		draw_line(Vector2(hip_offset, body_offset_y), Vector2(hip_offset, 0.0), Color("#ffe083"), 8.0)
+	if _legs_extended:
+		return
 
 	match _current_state:
 		STATE_RUN:
@@ -112,3 +118,16 @@ func _draw() -> void:
 		STATE_GLIDE:
 			draw_arc(Vector2(-12.0, -10.0), 13.0, PI, TAU, 12, Color.WHITE, 2.0)
 			draw_arc(Vector2(12.0, -10.0), 13.0, PI, TAU, 12, Color.WHITE, 2.0)
+
+
+func _draw_vine(attachment_point: Vector2) -> void:
+	if not _vine_attached or not is_instance_valid(_vine_anchor):
+		return
+	draw_line(
+		attachment_point,
+		to_local(_vine_anchor.global_position),
+		Color("#8de06f"),
+		3.0,
+		true
+	)
+	draw_circle(attachment_point, 4.0, Color.WHITE)

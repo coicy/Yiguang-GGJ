@@ -32,20 +32,29 @@ func _run() -> void:
 	player.velocity.x = 0.0
 	wind_zone.apply_to_actor(player, 0.5)
 	assert(player.velocity.x > 0.0)
+	for _step in 20:
+		player.movement.tick(1.0 / 60.0, -1.0, false)
+		wind_zone.apply_to_actor(player, 1.0 / 60.0)
+	assert(player.velocity.x > 0.0)
 	assert(player.form_controller.restore_form(&"humanoid"))
 	await physics_frame
-	assert(player.abilities.try_root())
-	var speed_before := player.velocity.x
+	player.velocity.x = 300.0
+	assert(player.abilities.toggle_primary())
+	assert(player.abilities.is_rooted())
+	assert(player.velocity == Vector2.ZERO)
 	wind_zone.apply_to_actor(player, 0.5)
-	assert(player.velocity.x == speed_before)
+	assert(player.velocity == Vector2.ZERO)
+	assert(player.abilities.toggle_primary())
+	assert(not player.abilities.is_rooted())
 
 	var high_switch := preload("res://features/level/ability_switch.tscn").instantiate() as AbilitySwitch
+	high_switch.position = Vector2(0.0, -200.0)
 	root.add_child(high_switch)
 	var gate := preload("res://features/level/whitebox_gate.tscn").instantiate() as WhiteboxGate
+	gate.position = Vector2(300.0, 0.0)
 	root.add_child(gate)
 	gate.bind_switch(high_switch)
-	player.abilities.stop_primary()
-	assert(player.abilities.try_root())
+	assert(player.abilities.toggle_primary())
 	player.abilities.set_leg_extension_direction(Vector2.UP)
 	await physics_frame
 	assert(not high_switch.is_active())

@@ -2,6 +2,8 @@ class_name AbilityController
 extends Node
 ## Owns mutually-exclusive held ability state. Vine behavior is added separately.
 
+const LEG_EXTENSION_OFFSET := 36.0
+
 signal ability_state_changed(label: StringName)
 signal feedback_requested(message: String)
 signal primary_ability_requested(ability_id: StringName)
@@ -39,6 +41,21 @@ func tick() -> void:
 		cancel_all()
 
 
+func start_primary() -> bool:
+	var form := _current_form()
+	if form == null:
+		return false
+	if _standalone_form != null:
+		if form.can_use_vine:
+			primary_ability_requested.emit(&"vine_pull")
+			return true
+		_rooted = form.can_root
+		return _rooted
+	if form.can_use_vine:
+		return true if is_vine_attached() else try_attach_vine()
+	return true if _rooted else try_root()
+
+
 func toggle_primary() -> bool:
 	var form := _current_form()
 	if _standalone_form != null:
@@ -72,24 +89,28 @@ func set_leg_extension_direction(direction: Vector2) -> void:
 		return
 	var next_direction := direction.normalized() if not direction.is_zero_approx() else Vector2.ZERO
 	if next_direction.is_zero_approx():
-		_leg_direction = Vector2.ZERO
-		_leg_area.set_deferred("monitoring", false)
 		if _leg_extended:
-			_leg_extended = false
-			ability_state_changed.emit(&"rooted")
+			stop_secondary()
+		_leg_direction = Vector2.ZERO
 		return
-	_leg_direction = next_direction
-	_leg_area.position = next_direction * 36.0
-	_leg_area.rotation = next_direction.angle() + PI * 0.5
-	_leg_area.set_deferred("monitoring", true)
 	if not _leg_extended:
+		if _leg_area == null or _player == null or not _player.set_leg_extension_active(true):
+			feedback_requested.emit("上方空间不足，无法伸腿")
+			return
 		_leg_extended = true
+		_leg_area.set_deferred("monitoring", true)
+		_movement.set_leg_extended(true)
 		ability_state_changed.emit(&"legs")
+	_leg_direction = next_direction
+	_leg_area.position = next_direction * LEG_EXTENSION_OFFSET
+	_leg_area.rotation = next_direction.angle() + PI * 0.5
 
 
 func try_root() -> bool:
 	if _forms == null or _movement == null or _player == null:
 		return false
+	if _rooted:
+		return true
 	var form := _forms.get_current()
 	if form == null or not form.can_root or not _player.is_on_floor() or _leg_extended:
 		feedback_requested.emit("人形体在地面上才能扎根")
@@ -101,15 +122,23 @@ func try_root() -> bool:
 
 
 func try_extend_legs() -> bool:
-	if _forms == null or _movement == null or _player == null:
+	if _forms == null or _movement == null or _player == null or _leg_area == null:
 		return false
+	if _leg_extended:
+		return true
 	var form := _forms.get_current()
 	if form == null or not form.can_extend_legs or not _player.is_on_floor() or _rooted:
 		feedback_requested.emit("人形体在地面上才能伸腿")
 		return false
+	if not _player.set_leg_extension_active(true):
+		feedback_requested.emit("上方空间不足，无法伸腿")
+		return false
 	_leg_extended = true
+	_leg_direction = Vector2.UP
+	_leg_area.position = _leg_direction * LEG_EXTENSION_OFFSET
+	_leg_area.rotation = 0.0
 	_leg_area.set_deferred("monitoring", true)
-	_movement.set_movement_locked(true)
+	_movement.set_leg_extended(true)
 	ability_state_changed.emit(&"legs")
 	return true
 
@@ -132,31 +161,35 @@ func try_attach_vine() -> bool:
 
 func stop_primary() -> void:
 	var changed := false
+	if _leg_extended:
+		stop_secondary()
 	if _rooted:
 		_rooted = false
-		_movement.set_rooted(false)
+		if _movement != null:
+			_movement.set_rooted(false)
 		changed = true
 	if _vine_anchor != null:
 		_vine_anchor = null
-		_movement.detach_vine()
+		if _movement != null:
+			_movement.detach_vine()
 		changed = true
-	if _leg_extended:
-		_leg_extended = false
-		_leg_area.set_deferred("monitoring", false)
-		changed = true
-	_leg_direction = Vector2.ZERO
 	if changed:
 		ability_state_changed.emit(&"none")
-	_leg_area.position = Vector2(0.0, -36.0)
-	_leg_area.rotation = 0.0
 
 
 func stop_secondary() -> void:
 	if not _leg_extended:
 		return
 	_leg_extended = false
-	_leg_area.set_deferred("monitoring", false)
-	_movement.set_movement_locked(false)
+	if _leg_area != null:
+		_leg_area.set_deferred("monitoring", false)
+		_leg_area.position = Vector2(0.0, -LEG_EXTENSION_OFFSET)
+		_leg_area.rotation = 0.0
+	if _movement != null:
+		_movement.set_leg_extended(false)
+	if _player != null:
+		_player.set_leg_extension_active(false)
+	_leg_direction = Vector2.UP
 	ability_state_changed.emit(&"none")
 
 
