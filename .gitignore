@@ -1,6 +1,20 @@
 # Godot 4+ generated/imported state
 .godot/
+.nomedia
+
+# Godot-specific generated files
+.import/
+export.cfg
+export_credentials.cfg
 *.tmp
+
+# Imported translations
+*.translation
+
+# Mono-specific files
+.mono/
+data_*/
+mono_crash.*.json
 
 # Local build output
 /builds/

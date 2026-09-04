@@ -1,4 +1,6 @@
-# GGJ ShapeShift Platformer
+# Yiguang-GGJ
+
+## GGJ ShapeShift Platformer
 
 Godot 4.7.2 2D platformer scaffold for a 48-hour Game Jam project.
 
