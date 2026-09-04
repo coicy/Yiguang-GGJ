@@ -12,10 +12,12 @@ func _init() -> void:
 
 func _run() -> void:
 	var global_signal_bus: Node = root.get_node_or_null("GlobalSignalBus")
+	var created_global_signal_bus: bool = false
 	if global_signal_bus == null:
 		global_signal_bus = GLOBAL_SIGNAL_BUS_SCRIPT.new()
 		global_signal_bus.name = "GlobalSignalBus"
 		root.add_child(global_signal_bus)
+		created_global_signal_bus = true
 	global_signal_bus.connect(&"level_completed", _on_level_completed)
 
 	var sandbox: Variant = SANDBOX.instantiate()
@@ -37,8 +39,13 @@ func _run() -> void:
 	switch_a.activate()
 	sandbox.complete_level()
 	assert(_completed_level_count == 1, "An open exit must complete the level once.")
+	sandbox.complete_level()
+	assert(_completed_level_count == 1, "Completing an already completed level must be idempotent.")
 
 	global_signal_bus.disconnect(&"level_completed", _on_level_completed)
+	sandbox.free()
+	if created_global_signal_bus:
+		global_signal_bus.free()
 	quit()
 
 

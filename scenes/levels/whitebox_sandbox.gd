@@ -4,6 +4,7 @@ extends Node2D
 @export var level_id: StringName = &"whitebox_sandbox"
 
 var _checkpoint_position: Vector2
+var _is_completed: bool = false
 
 @onready var _player_anchor: Marker2D = %PlayerAnchor
 @onready var _switch_a: WhiteboxSwitch = %SwitchA
@@ -27,10 +28,13 @@ func reset_level() -> void:
 
 
 func complete_level() -> void:
-	if _exit_device.is_open():
-		var global_signal_bus: Node = get_node_or_null("/root/GlobalSignalBus")
-		if global_signal_bus != null:
-			global_signal_bus.emit_signal(&"level_completed", level_id)
+	if _is_completed or not _exit_device.is_open():
+		return
+
+	_is_completed = true
+	var global_signal_bus: Node = get_node_or_null("/root/GlobalSignalBus")
+	if global_signal_bus != null:
+		global_signal_bus.emit_signal(&"level_completed", level_id)
 
 
 func get_checkpoint_position() -> Vector2:
