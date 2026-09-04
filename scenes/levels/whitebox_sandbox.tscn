@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/levels/whitebox_sandbox.gd" id="1_sandbox"]
+[ext_resource type="Script" path="res://features/level/whitebox_switch.gd" id="2_switch"]
+[ext_resource type="Script" path="res://features/level/exit_device.gd" id="3_exit"]
+[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" path="res://features/level/hazard.tscn" id="5_hazard"]
+
+[node name="WhiteboxSandbox" type="Node2D"]
+script = ExtResource("1_sandbox")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Ground" type="TileMapLayer" parent="Geometry"]
+
+[node name="Actors" type="Node2D" parent="."]
+
+[node name="PlayerAnchor" type="Marker2D" parent="Actors"]
+unique_name_in_owner = true
+position = Vector2(96, 576)
+
+[node name="Interactions" type="Node2D" parent="."]
+
+[node name="SwitchA" type="Node" parent="Interactions"]
+unique_name_in_owner = true
+script = ExtResource("2_switch")
+
+[node name="ExitDevice" type="Node" parent="Interactions"]
+unique_name_in_owner = true
+script = ExtResource("3_exit")
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="FallHazard" parent="Hazards" instance=ExtResource("5_hazard")]
+unique_name_in_owner = true
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="StartCheckpoint" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+unique_name_in_owner = true
+position = Vector2(96, 576)
+
+[node name="CameraRig" type="Node2D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="CameraRig"]
+
+[node name="Presentation" type="Node2D" parent="."]
