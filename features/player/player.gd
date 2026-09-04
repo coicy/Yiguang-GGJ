@@ -5,13 +5,17 @@ extends CharacterBody2D
 @onready var state_machine: StateMachine = %StateMachine
 @onready var movement: MovementController = %Movement
 @onready var form_controller: FormController = %FormController
+@onready var visuals: PlayerVisuals = %Visuals
 
 
 func _ready() -> void:
 	movement.setup(self, form_controller.get_current())
 	state_machine.setup(self, movement, form_controller)
+	visuals.set_form(form_controller.get_current())
+	visuals.set_state(state_machine.current_state)
 	form_controller.form_changed.connect(_on_form_changed)
-	form_controller.form_changed.connect(movement.set_form)
+	state_machine.state_changed.connect(_on_state_changed)
+	add_to_group("player")
 
 
 func _physics_process(delta: float) -> void:
@@ -32,7 +36,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_form_changed(form_id: StringName) -> void:
+	movement.set_form(form_controller.get_current())
+	visuals.set_form(form_controller.get_current())
+	visuals.set_state(state_machine.current_state)
 	GlobalSignalBus.player_form_changed.emit(form_id)
+
+
+func _on_state_changed(previous: StringName, current: StringName) -> void:
+	visuals.set_state(current)
 
 
 func current_state() -> StringName:

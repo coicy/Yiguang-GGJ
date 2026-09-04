@@ -7,7 +7,11 @@ script = ExtResource("1_overlay")
 
 [node name="DebugLabel" type="Label" parent="."]
 unique_name_in_owner = true
-offset_left = 16.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -496.0
 offset_top = 16.0
-offset_right = 480.0
+offset_right = -16.0
 offset_bottom = 200.0
+grow_horizontal = 0

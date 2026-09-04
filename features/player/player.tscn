@@ -4,10 +4,10 @@
 [ext_resource type="Script" path="res://features/player/movement_controller.gd" id="2_movement"]
 [ext_resource type="Script" path="res://features/player/state_machine.gd" id="3_state"]
 [ext_resource type="Script" path="res://features/forms/form_controller.gd" id="4_form"]
-[ext_resource type="Texture2D" path="res://icon.svg" id="5_icon"]
 [ext_resource type="Resource" path="res://features/forms/sprout.tres" id="6_sprout"]
 [ext_resource type="Resource" path="res://features/forms/humanoid.tres" id="7_humanoid"]
 [ext_resource type="Resource" path="res://features/forms/mature.tres" id="8_mature"]
+[ext_resource type="Script" path="res://features/player/player_visuals.gd" id="10_visuals"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
 radius = 16.0
@@ -22,9 +22,11 @@ script = ExtResource("1_player")
 shape = SubResource("CapsuleShape2D_player")
 
 [node name="Visuals" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("10_visuals")
 
-[node name="Sprite2D" type="Sprite2D" parent="Visuals"]
-texture = ExtResource("5_icon")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
+unique_name_in_owner = true
 
 [node name="StateMachine" type="Node" parent="."]
 unique_name_in_owner = true

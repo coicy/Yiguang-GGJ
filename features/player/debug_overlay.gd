@@ -10,9 +10,13 @@ extends CanvasLayer
 
 func _ready() -> void:
 	visible = OS.is_debug_build()
+	if target == null:
+		target = get_tree().get_first_node_in_group("player") as Player
 
 
 func _process(_delta: float) -> void:
+	if target == null:
+		target = get_tree().get_first_node_in_group("player") as Player
 	if target == null:
 		label.text = "No target"
 		return
