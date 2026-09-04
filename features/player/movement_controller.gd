@@ -15,14 +15,22 @@ extends Node
 
 var body: CharacterBody2D
 var form: FormDefinition
+var resources: ResourceController
 
 var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
+var _rooted: bool = false
+var _movement_locked: bool = false
 
 
-func setup(p_body: CharacterBody2D, p_form: FormDefinition) -> void:
+func setup(
+	p_body: CharacterBody2D,
+	p_form: FormDefinition,
+	p_resources: ResourceController = null
+) -> void:
 	body = p_body
 	form = p_form
+	resources = p_resources
 
 
 func set_form(p_form: FormDefinition) -> void:
@@ -30,6 +38,8 @@ func set_form(p_form: FormDefinition) -> void:
 
 
 func request_jump() -> void:
+	if _rooted or _movement_locked:
+		return
 	_jump_buffer_timer = jump_buffer
 
 
@@ -54,14 +64,17 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 		body.velocity.y += gravity * form.gravity_scale * delta
 		body.velocity.y = minf(body.velocity.y, form.max_fall_speed)
 
-	if jump_held and form.glide_enabled and body.velocity.y > 0.0:
+	if jump_held and form.can_glide and body.velocity.y > 0.0:
 		body.velocity.y = minf(body.velocity.y, form.glide_fall_speed)
 
-	if _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
+	if not _rooted and not _movement_locked and _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
 		_perform_jump()
 
-	if move_dir != 0.0:
-		body.velocity.x = move_toward(body.velocity.x, move_dir * form.move_speed, acceleration * delta)
+	var speed_scale := resources.speed_multiplier() if resources != null else 1.0
+	if _rooted:
+		body.velocity.x = 0.0
+	elif not _movement_locked and move_dir != 0.0:
+		body.velocity.x = move_toward(body.velocity.x, move_dir * form.move_speed * speed_scale, acceleration * delta)
 	else:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, friction * delta)
 
@@ -78,6 +91,25 @@ func _perform_jump() -> void:
 	body.velocity.y = form.jump_force
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
+
+
+func set_rooted(rooted: bool) -> void:
+	_rooted = rooted
+	if rooted:
+		body.velocity.x = 0.0
+		_jump_buffer_timer = 0.0
+
+
+func set_movement_locked(locked: bool) -> void:
+	_movement_locked = locked
+	if locked:
+		_jump_buffer_timer = 0.0
+
+
+func apply_wind(force: float, delta: float) -> void:
+	if body == null or _rooted:
+		return
+	body.velocity.x += force * delta
 
 
 func is_on_floor() -> bool:

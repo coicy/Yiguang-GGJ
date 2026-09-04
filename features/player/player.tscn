@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://features/player/movement_controller.gd" id="2_movement"]
@@ -8,10 +8,15 @@
 [ext_resource type="Resource" path="res://features/forms/humanoid.tres" id="7_humanoid"]
 [ext_resource type="Resource" path="res://features/forms/mature.tres" id="8_mature"]
 [ext_resource type="Script" path="res://features/player/player_visuals.gd" id="10_visuals"]
+[ext_resource type="Script" path="res://features/resources/resource_controller.gd" id="11_resources"]
+[ext_resource type="Script" path="res://features/abilities/ability_controller.gd" id="12_abilities"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_player"]
-radius = 16.0
-height = 40.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+resource_local_to_scene = true
+size = Vector2(20, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_legs"]
+size = Vector2(24, 72)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
@@ -19,7 +24,27 @@ collision_mask = 1
 script = ExtResource("1_player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CapsuleShape2D_player")
+unique_name_in_owner = true
+position = Vector2(0, -12)
+shape = SubResource("RectangleShape2D_player")
+
+[node name="GrowthCast" type="ShapeCast2D" parent="."]
+unique_name_in_owner = true
+enabled = false
+collision_mask = 1
+target_position = Vector2(0, 0)
+margin = 0.01
+
+[node name="LegExtension" type="Area2D" parent="." groups=["leg_extension"]]
+unique_name_in_owner = true
+position = Vector2(0, -36)
+collision_layer = 8
+collision_mask = 64
+monitoring = false
+monitorable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LegExtension"]
+shape = SubResource("RectangleShape2D_legs")
 
 [node name="Visuals" type="Node2D" parent="."]
 unique_name_in_owner = true
@@ -36,8 +61,16 @@ script = ExtResource("3_state")
 unique_name_in_owner = true
 script = ExtResource("2_movement")
 
+[node name="Resources" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("11_resources")
+
+[node name="Abilities" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("12_abilities")
+
 [node name="FormController" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("4_form")
 forms = [ExtResource("6_sprout"), ExtResource("7_humanoid"), ExtResource("8_mature")]
-default_form_id = &"humanoid"
+default_form_id = &"sprout"
