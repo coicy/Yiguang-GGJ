@@ -1,0 +1,16 @@
+# Godot 4+ generated/imported state
+.godot/
+*.tmp
+
+# Local build output
+/builds/
+/exports/
+
+# Bundled/local engine binaries are not source files
+/android/
+Godot_v4.7.2-stable_win64_console.exe
+Godot_v4.7.2-stable_win64.exe
+
+# Local Codex/agent workspace metadata
+.agents/
+skills-lock.json
