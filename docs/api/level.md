@@ -25,12 +25,15 @@ WhiteboxSandbox
   Actors
     PlayerAnchor (Marker2D)
   Interactions
+    NutritionTank (NutritionTank)
+    ToxinZone (ToxinZone)
     SwitchA (WhiteboxSwitch)
     ExitDevice (ExitDevice)
   Hazards
     FallHazard (Hazard)
   Checkpoints
     StartCheckpoint (Checkpoint)
+    MidCheckpoint (Checkpoint)
   CameraRig
     Camera2D
   Presentation
@@ -38,8 +41,13 @@ WhiteboxSandbox
 
 `Main` 只负责启动壳和生命周期容器。白模关卡通过本地引用连接场景内系统，跨场景生命周期事件才使用 `GlobalSignalBus`。
 
+## 白模布局
+
+`PlayerAnchor` 和 `StartCheckpoint` 位于 `(96, 576)`；`MidCheckpoint` 位于 `(640, 576)`；`NutritionTank`、`ToxinZone`、`SwitchA`、`ExitDevice` 分别位于 `(352, 560)`、`(560, 560)`、`(832, 560)`、`(1120, 560)`；`FallHazard` 位于 `(1248, 704)`。`SwitchA` 与 `ExitDevice` 保持逻辑 `Node` 根，并通过各自的 `PositionMarker` 和 `Polygon2D` 子节点表达白模位置和可视标识。场景使用无素材的 `Polygon2D` 与 `StaticBody2D` 表示可见、可碰撞的地面和平台；它不实例化临时 `Player`。
+
 ## 变更记录
 
 | 日期 | 版本 | 说明 |
 | --- | --- | --- |
+| 2026-09-04 | 0.3 | 补充资源、毒区、中点检查点及可见白模布局。 |
 | 2026-09-04 | 0.2 | 明确玩家无关的沙盒外壳、锚点重置和出口完成条件。 |
