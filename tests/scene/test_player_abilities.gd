@@ -19,14 +19,11 @@ func _run() -> void:
 	assert(player.form_controller.restore_form(&"humanoid"))
 	await physics_frame
 	player.velocity.x = 240.0
-	Input.action_press(&"ability_primary")
+	_press_primary(player)
 	await _physics_steps(2)
 	assert(player.abilities.is_rooted())
 	assert(is_zero_approx(player.velocity.x))
-	Input.action_release(&"ability_primary")
-	await _physics_steps(2)
-	assert(not player.abilities.is_rooted())
-	Input.action_press(&"ability_secondary")
+	Input.action_press(&"move_up")
 	await _physics_steps(2)
 	assert(player.abilities.is_leg_extended())
 	assert(player.abilities.get_leg_extension_direction() == Vector2.UP)
@@ -35,15 +32,31 @@ func _run() -> void:
 	assert(extended_shape.size.y == player.form_controller.get_current().collision_size.y + Player.LEG_EXTENSION_HEIGHT)
 	var step_platform := _make_step_platform()
 	root.add_child(step_platform)
+	Input.action_release(&"move_up")
+	await _physics_steps(2)
+	Input.action_press(&"move_down")
+	await _physics_steps(2)
+	Input.action_release(&"move_down")
+	assert(player.abilities.get_leg_extension_direction() == Vector2.DOWN)
+	await _physics_steps(2)
+	Input.action_press(&"move_left")
+	await _physics_steps(2)
+	Input.action_release(&"move_left")
+	assert(player.abilities.get_leg_extension_direction() == Vector2.LEFT)
+	await _physics_steps(2)
 	Input.action_press(&"move_right")
-	await _physics_steps(20)
+	await _physics_steps(2)
 	Input.action_release(&"move_right")
-	assert(player.global_position.x > 45.0)
-	assert(player.global_position.y < -40.0)
-	Input.action_release(&"ability_secondary")
+	assert(player.abilities.get_leg_extension_direction() == Vector2.RIGHT)
+	assert(is_zero_approx(player.velocity.x))
 	await _physics_steps(2)
 	assert(not player.abilities.is_leg_extended())
 	assert(extended_shape.size == player.form_controller.get_current().collision_size)
+	_release_primary(player)
+	await _physics_steps(2)
+	assert(player.abilities.is_rooted())
+	_press_primary(player)
+	assert(not player.abilities.is_rooted())
 	player.cancel_actions()
 	assert(not player.abilities.is_leg_extended())
 
@@ -56,7 +69,7 @@ func _run() -> void:
 	var anchor := preload("res://features/abilities/vine_anchor.tscn").instantiate() as VineAnchor
 	root.add_child(anchor)
 	anchor.global_position = player.global_position + Vector2(120.0, -160.0)
-	Input.action_press(&"ability_primary")
+	_press_primary(player)
 	await _physics_steps(2)
 	assert(player.abilities.is_vine_attached())
 	var length_before := player.global_position.distance_to(anchor.global_position)
@@ -94,8 +107,9 @@ func _run() -> void:
 	player.movement.tick(0.01, -1.0, false)
 	var left_radial := player.global_position - anchor.global_position
 	assert(atan2(left_radial.x, left_radial.y) >= -max_swing_angle - 0.01)
-	Input.action_release(&"ability_primary")
-	await _physics_steps(2)
+	_release_primary(player)
+	assert(player.abilities.is_vine_attached())
+	_press_primary(player)
 	assert(not player.abilities.is_vine_attached())
 
 	player.free()
@@ -130,3 +144,17 @@ func _make_step_platform() -> StaticBody2D:
 func _physics_steps(count: int) -> void:
 	for _step in count:
 		await physics_frame
+
+
+func _press_primary(player: Player) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = true
+	player._unhandled_input(event)
+
+
+func _release_primary(player: Player) -> void:
+	var event := InputEventMouseButton.new()
+	event.button_index = MOUSE_BUTTON_LEFT
+	event.pressed = false
+	player._unhandled_input(event)

@@ -85,11 +85,22 @@ func set_leg_extension_direction(direction: Vector2) -> void:
 	if _standalone_form != null:
 		_leg_direction = direction.normalized() if not direction.is_zero_approx() else Vector2.ZERO
 		return
-	if not _leg_extended:
+	if not _rooted:
 		return
 	var next_direction := direction.normalized() if not direction.is_zero_approx() else Vector2.ZERO
 	if next_direction.is_zero_approx():
+		if _leg_extended:
+			stop_secondary()
+		_leg_direction = Vector2.ZERO
 		return
+	if not _leg_extended:
+		if _leg_area == null or _player == null or not _player.set_leg_extension_active(true):
+			feedback_requested.emit("上方空间不足，无法伸腿")
+			return
+		_leg_extended = true
+		_leg_area.set_deferred("monitoring", true)
+		_movement.set_leg_extended(true)
+		ability_state_changed.emit(&"legs")
 	_leg_direction = next_direction
 	_leg_area.position = next_direction * LEG_EXTENSION_OFFSET
 	_leg_area.rotation = next_direction.angle() + PI * 0.5
@@ -150,6 +161,8 @@ func try_attach_vine() -> bool:
 
 func stop_primary() -> void:
 	var changed := false
+	if _leg_extended:
+		stop_secondary()
 	if _rooted:
 		_rooted = false
 		if _movement != null:
@@ -183,7 +196,7 @@ func stop_secondary() -> void:
 func cancel_all() -> void:
 	stop_primary()
 	stop_secondary()
-	_leg_direction = Vector2.UP
+	_leg_direction = Vector2.ZERO
 
 
 func is_rooted() -> bool:
