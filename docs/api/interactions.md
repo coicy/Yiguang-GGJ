@@ -26,13 +26,21 @@ func absorb(actor: Node, amount: float) -> bool
 
 吸收必须是连续过程；资源点不能直接修改玩家内部字段，应调用玩家暴露的资源入口。
 
+### `NutritionTank : Area2D`
+
+```gdscript
+func absorb(actor: Node, amount: float) -> bool
+```
+
+营养液罐仅调用 `actor.absorb_nutrition(amount)`；当数值不为正或目标未实现该公开入口时返回 `false`。
+
 ### `ToxinZone : Area2D`
 
 ```gdscript
-signal actor_entered(actor: Node)
-signal actor_exited(actor: Node)
+signal actor_entered(actor: Node2D)
+signal actor_exited(actor: Node2D)
 
-func is_actor_inside(actor: Node) -> bool
+func is_actor_inside(actor: Node2D) -> bool
 ```
 
 毒素区只负责检测范围与报告事实；毒素消耗、速度修正和稳定度规则由玩家/形态状态系统处理。
@@ -60,23 +68,27 @@ func is_open() -> bool
 
 出口只根据注册机关状态判断是否开启，不搜索场景树寻找玩家或机关。`set_required_switches()` 会将需求数量限制为不小于 0 的整数；注册同一个机关多次不会重复连接。机关状态满足需求时，出口从关闭变为开启并只发出一次 `opened`；若机关随后关闭，出口会回到关闭状态，下一次重新满足需求时可再次发出 `opened`。
 
-### `Checkpoint : Node2D`
+### `Checkpoint : Area2D`
 
 ```gdscript
 signal checkpoint_reached(position: Vector2)
 
-func activate(actor: Node) -> bool
+func activate(actor: Node2D) -> bool
 func get_checkpoint_position() -> Vector2
 ```
+
+检查点只在首次由有效角色激活时发出 `checkpoint_reached(global_position)` 并返回 `true`；重复激活返回 `false`。它不保存或修改角色状态。
 
 ### `Hazard : Area2D`
 
 ```gdscript
-signal actor_hurt(actor: Node)
-signal actor_killed(actor: Node)
+signal actor_hurt(actor: Node2D)
+signal actor_killed(actor: Node2D)
+
+func kill(actor: Node2D) -> void
 ```
 
-陷阱负责报告碰撞结果；重置由关卡拥有者执行。
+陷阱负责报告碰撞结果；角色进入范围时先报告 `actor_hurt`，再通过 `kill()` 报告 `actor_killed`。重置由关卡拥有者执行。
 
 ## 变更记录
 
