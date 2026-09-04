@@ -143,6 +143,10 @@ func get_vine_anchor() -> Node2D:
 	return _vine_anchor if is_vine_attached() else null
 
 
+func leg_area() -> Area2D:
+	return _leg_area
+
+
 func _nearest_visible_anchor(max_range: float) -> Node2D:
 	var nearest: Node2D
 	var nearest_distance := max_range
