@@ -27,7 +27,8 @@ func _on_body_entered(actor: Node2D) -> void:
 
 
 func _on_body_exited(actor: Node2D) -> void:
-	if not _actors_inside.erase(actor):
+	if not _actors_inside.has(actor):
 		return
 
+	_actors_inside.erase(actor)
 	actor_exited.emit(actor)
