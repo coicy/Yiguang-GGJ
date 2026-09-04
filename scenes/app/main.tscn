@@ -8,7 +8,4 @@
 
 [node name="WhiteboxSandbox" parent="LevelHost" instance=ExtResource("1_sandbox")]
 
-[node name="Interface" type="CanvasLayer" parent="."]
-layer = 10
-
 [node name="Debug" type="Node" parent="."]
