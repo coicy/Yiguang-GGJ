@@ -2,14 +2,14 @@
 
 ## GGJ ShapeShift Platformer
 
-Godot 4.7.2 2D platformer scaffold for a 48-hour Game Jam project.
+Godot 4.7.2 2D platformer whitebox for a 48-hour Game Jam project.
 
-This repository currently contains architecture, project configuration, and team conventions only. Gameplay implementation belongs in the feature folders described in [`docs/development_guidelines.md`](docs/development_guidelines.md).
+The current main scene is a playable whitebox vertical slice covering all three character forms and their core traversal abilities.
 
 ## Start
 
 1. Open `project.godot` with Godot 4.7.2 or a compatible 4.7 build.
-2. Run the project once to verify the empty boot scene opens.
+2. Press F6/F5 to run the player scene or the complete whitebox course.
 3. Read [`docs/architecture.md`](docs/architecture.md) before creating gameplay scenes.
 4. Read [`docs/toolkit.md`](docs/toolkit.md) before adding an external addon.
 
@@ -17,5 +17,18 @@ This repository currently contains architecture, project configuration, and team
 
 - Single-player 2D platforming.
 - A shared player controller with data-driven forms and abilities.
+- Nutrition-driven growth from sprout to humanoid to mature form.
+- Toxin stability, staged withering, checkpoints, gates, hazards, and a timed exit.
 - Combat is an optional feature module, not a dependency of movement.
 - Desktop keyboard baseline, with gamepad bindings added when hardware is available.
+
+## Controls
+
+- `A` / `D`: move.
+- `Space`: jump; hold while falling in mature form to glide.
+- `Q`: hold to root in humanoid form, or attach to the nearest visible vine anchor in mature form.
+- `F`: hold to extend legs in humanoid form and reach high switches.
+- `R`: restart the complete course from the beginning.
+- `F3`: toggle the existing debug overlay.
+
+Forms are earned through gameplay. The old `E` form-cycle shortcut is intentionally disabled during normal play.
