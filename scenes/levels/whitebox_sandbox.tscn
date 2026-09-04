@@ -1,0 +1,139 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scenes/levels/whitebox_sandbox.gd" id="1_sandbox"]
+[ext_resource type="Script" path="res://features/level/whitebox_switch.gd" id="2_switch"]
+[ext_resource type="Script" path="res://features/level/exit_device.gd" id="3_exit"]
+[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="4_checkpoint"]
+[ext_resource type="PackedScene" path="res://features/level/hazard.tscn" id="5_hazard"]
+[ext_resource type="PackedScene" path="res://features/level/nutrition_tank.tscn" id="6_nutrition"]
+[ext_resource type="PackedScene" path="res://features/level/toxin_zone.tscn" id="7_toxin"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1280, 96)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(224, 32)
+
+[node name="WhiteboxSandbox" type="Node2D"]
+script = ExtResource("1_sandbox")
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Ground" type="TileMapLayer" parent="Geometry"]
+
+[node name="FloorVisual" type="Polygon2D" parent="Geometry"]
+polygon = PackedVector2Array(0, 624, 1280, 624, 1280, 720, 0, 720)
+color = Color(0.145, 0.22, 0.17, 1)
+
+[node name="FloorBody" type="StaticBody2D" parent="Geometry"]
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/FloorBody"]
+position = Vector2(640, 672)
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="PlatformVisual" type="Polygon2D" parent="Geometry"]
+polygon = PackedVector2Array(528, 496, 752, 496, 752, 528, 528, 528)
+color = Color(0.29, 0.42, 0.29, 1)
+
+[node name="PlatformBody" type="StaticBody2D" parent="Geometry"]
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/PlatformBody"]
+position = Vector2(640, 512)
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Actors" type="Node2D" parent="."]
+
+[node name="PlayerAnchor" type="Marker2D" parent="Actors"]
+unique_name_in_owner = true
+position = Vector2(96, 576)
+
+[node name="Interactions" type="Node2D" parent="."]
+
+[node name="NutritionTank" parent="Interactions" instance=ExtResource("6_nutrition")]
+position = Vector2(352, 560)
+
+[node name="ToxinZone" parent="Interactions" instance=ExtResource("7_toxin")]
+position = Vector2(560, 560)
+
+[node name="SwitchA" type="Node" parent="Interactions"]
+unique_name_in_owner = true
+script = ExtResource("2_switch")
+
+[node name="PositionMarker" type="Marker2D" parent="Interactions/SwitchA"]
+position = Vector2(832, 560)
+
+[node name="WhiteboxVisual" type="Polygon2D" parent="Interactions/SwitchA"]
+polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
+position = Vector2(832, 560)
+color = Color(0.94, 0.76, 0.2, 1)
+
+[node name="ExitDevice" type="Node" parent="Interactions"]
+unique_name_in_owner = true
+script = ExtResource("3_exit")
+
+[node name="PositionMarker" type="Marker2D" parent="Interactions/ExitDevice"]
+position = Vector2(1120, 560)
+
+[node name="WhiteboxVisual" type="Polygon2D" parent="Interactions/ExitDevice"]
+polygon = PackedVector2Array(-24, -32, 24, -32, 24, 32, -24, 32)
+position = Vector2(1120, 560)
+color = Color(0.25, 0.75, 0.45, 1)
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="FallHazard" parent="Hazards" instance=ExtResource("5_hazard")]
+unique_name_in_owner = true
+position = Vector2(960, 576)
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="StartCheckpoint" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+unique_name_in_owner = true
+position = Vector2(96, 576)
+
+[node name="MidCheckpoint" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
+unique_name_in_owner = true
+position = Vector2(640, 576)
+
+[node name="CameraRig" type="Node2D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="CameraRig"]
+position = Vector2(640, 360)
+
+[node name="Presentation" type="Node2D" parent="."]
+
+[node name="StartLabel" type="Label" parent="Presentation"]
+position = Vector2(56, 520)
+text = "START"
+
+[node name="NutritionLabel" type="Label" parent="Presentation"]
+position = Vector2(304, 520)
+text = "NUTRITION"
+
+[node name="ToxinLabel" type="Label" parent="Presentation"]
+position = Vector2(512, 520)
+text = "TOXIN"
+
+[node name="MidCheckpointLabel" type="Label" parent="Presentation"]
+position = Vector2(592, 544)
+text = "CHECKPOINT"
+
+[node name="SwitchLabel" type="Label" parent="Presentation"]
+position = Vector2(792, 520)
+text = "SWITCH"
+
+[node name="ExitLabel" type="Label" parent="Presentation"]
+position = Vector2(1092, 520)
+text = "EXIT"
+
+[node name="HazardLabel" type="Label" parent="Presentation"]
+position = Vector2(928, 528)
+text = "FALL"
+
+[node name="HazardVisual" type="Polygon2D" parent="Presentation"]
+polygon = PackedVector2Array(928, 560, 992, 560, 992, 592, 928, 592)
+color = Color(0.7, 0.2, 0.24, 1)
