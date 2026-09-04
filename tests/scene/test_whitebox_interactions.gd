@@ -17,9 +17,14 @@ func _run() -> void:
 	nutrition_tank.position = Vector2(1000.0, 0.0)
 	root.add_child(nutrition_tank)
 	assert(nutrition_tank.nutrition_per_second == 40.0)
+	nutrition_tank.accepted_form_id = &"sprout"
 	nutrition_tank.body_entered.emit(player)
 	nutrition_tank._physics_process(1.0)
 	assert(is_equal_approx(player.resources.growth_progress, 40.0))
+	nutrition_tank._physics_process(2.0)
+	assert(player.current_form_id() == &"humanoid")
+	nutrition_tank._physics_process(5.0)
+	assert(player.current_form_id() == &"humanoid")
 
 	var wind_zone := preload("res://features/level/wind_zone.tscn").instantiate() as WindZone
 	root.add_child(wind_zone)

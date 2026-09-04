@@ -2,6 +2,7 @@ class_name NutritionTank
 extends Area2D
 
 @export var nutrition_per_second: float = 40.0
+@export var accepted_form_id: StringName = &""
 
 var _actors: Array[Node] = []
 
@@ -23,6 +24,9 @@ func _physics_process(delta: float) -> void:
 func absorb(actor: Node, amount: float) -> bool:
 	if amount <= 0.0 or not actor.has_method(&"absorb_nutrition"):
 		return false
+	if not accepted_form_id.is_empty():
+		if not actor.has_method(&"current_form_id") or actor.call(&"current_form_id") != accepted_form_id:
+			return false
 
 	return actor.call(&"absorb_nutrition", amount) == true
 

@@ -111,6 +111,7 @@ text = "幼芽通道"
 
 [node name="FirstNutrition" parent="Course" instance=ExtResource("6_nutrition")]
 position = Vector2(550, 584)
+accepted_form_id = &"sprout"
 
 [node name="WindSection" type="Node2D" parent="Course"]
 
@@ -151,6 +152,7 @@ position = Vector2(1225, 624)
 
 [node name="SecondNutrition" parent="Course" instance=ExtResource("6_nutrition")]
 position = Vector2(1340, 584)
+accepted_form_id = &"humanoid"
 
 [node name="SecondNutritionLabel" type="Label" parent="Course"]
 position = Vector2(1260, 520)
