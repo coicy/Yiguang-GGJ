@@ -90,8 +90,20 @@ func kill(actor: Node2D) -> void
 
 陷阱负责报告碰撞结果；角色进入范围时先报告 `actor_hurt`，再通过 `kill()` 报告 `actor_killed`。重置由关卡拥有者执行。
 
+### `WhiteboxMovingCube : AnimatableBody2D`
+
+```gdscript
+func bind_switch(source_switch: Node) -> void
+func activate() -> void
+func set_active(active: bool, snap: bool = false) -> void
+func is_active() -> bool
+```
+
+移动块通过 `sync_to_physics` 与物理帧同步。关卡组合根负责绑定按钮；移动块只保存自身初始位置、目标偏移和激活状态，不搜索其他机关。
+
 ## 变更记录
 
 | 日期 | 版本 | 说明 |
 | --- | --- | --- |
+| 2026-09-05 | 0.2 | 增加白膜移动块接口及按钮绑定契约。 |
 | 2026-09-04 | 0.1 | 建立白模交互公共接口。 |

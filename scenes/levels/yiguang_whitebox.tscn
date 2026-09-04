@@ -1,0 +1,308 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://scenes/levels/yiguang_whitebox.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://features/level/nutrition_tank.tscn" id="3_nutrition"]
+[ext_resource type="PackedScene" path="res://features/level/toxin_zone.tscn" id="4_toxin"]
+[ext_resource type="PackedScene" path="res://features/level/hazard.tscn" id="5_hazard"]
+[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="6_checkpoint"]
+[ext_resource type="PackedScene" path="res://features/level/wind_zone.tscn" id="7_wind"]
+[ext_resource type="PackedScene" path="res://features/abilities/vine_anchor.tscn" id="8_anchor"]
+[ext_resource type="PackedScene" path="res://features/level/ability_switch.tscn" id="9_switch"]
+[ext_resource type="PackedScene" path="res://features/level/whitebox_moving_cube.tscn" id="10_cube"]
+[ext_resource type="PackedScene" path="res://features/level/exit_goal.tscn" id="11_exit"]
+[ext_resource type="PackedScene" path="res://features/ui/game_hud.tscn" id="12_hud"]
+[ext_resource type="PackedScene" path="res://features/ui/completion_overlay.tscn" id="13_overlay"]
+
+[sub_resource type="RectangleShape2D" id="Shape_frog_left"]
+size = Vector2(128, 64)
+
+[sub_resource type="RectangleShape2D" id="Shape_frog_right"]
+size = Vector2(160, 128)
+
+[sub_resource type="RectangleShape2D" id="Shape_machine"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="Shape_toxin_tall"]
+size = Vector2(32, 64)
+
+[sub_resource type="RectangleShape2D" id="Shape_toxin_small"]
+size = Vector2(32, 32)
+
+[sub_resource type="RectangleShape2D" id="Shape_death_plane"]
+size = Vector2(1600, 48)
+
+[node name="YiguangWhitebox" type="Node2D"]
+script = ExtResource("1_level")
+grid_hazard_scene = ExtResource("5_hazard")
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -20
+offset_right = 1440.0
+offset_bottom = 960.0
+mouse_filter = 2
+color = Color(0.247, 0.259, 0.306, 1)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="Terrain" type="TileMapLayer" parent="Geometry"]
+unique_name_in_owner = true
+z_index = -2
+
+[node name="MovingPlatforms" type="Node2D" parent="Geometry"]
+
+[node name="TopLiftA" parent="Geometry/MovingPlatforms" instance=ExtResource("10_cube")]
+unique_name_in_owner = true
+position = Vector2(128, 128)
+size = Vector2(64, 256)
+active_offset = Vector2(0, 128)
+
+[node name="TopLiftB" parent="Geometry/MovingPlatforms" instance=ExtResource("10_cube")]
+unique_name_in_owner = true
+position = Vector2(352, 80)
+size = Vector2(64, 160)
+active_offset = Vector2(0, 128)
+
+[node name="MiddlePlatform" parent="Geometry/MovingPlatforms" instance=ExtResource("10_cube")]
+unique_name_in_owner = true
+position = Vector2(384, 592)
+size = Vector2(64, 32)
+active_offset = Vector2(128, 0)
+
+[node name="BridgePlatform" parent="Geometry/MovingPlatforms" instance=ExtResource("10_cube")]
+unique_name_in_owner = true
+position = Vector2(1152, 496)
+size = Vector2(64, 32)
+active_offset = Vector2(-96, 0)
+
+[node name="LinkedLift" parent="Geometry/MovingPlatforms" instance=ExtResource("10_cube")]
+unique_name_in_owner = true
+position = Vector2(1200, 496)
+size = Vector2(32, 288)
+active_offset = Vector2(0, -224)
+
+[node name="Actors" type="Node2D" parent="."]
+
+[node name="PlayerAnchor" type="Marker2D" parent="Actors"]
+unique_name_in_owner = true
+position = Vector2(16, 928)
+
+[node name="Player" parent="Actors" instance=ExtResource("2_player")]
+unique_name_in_owner = true
+position = Vector2(16, 928)
+
+[node name="Interactions" type="Node2D" parent="."]
+
+[node name="GrowDrugA" parent="Interactions" instance=ExtResource("3_nutrition")]
+position = Vector2(272, 896)
+accepted_form_id = &"sprout"
+visual_size = Vector2(32, 64)
+visual_color = Color(0.318, 0.353, 1, 0.85)
+visual_label = "G"
+
+[node name="GrowDrugB" parent="Interactions" instance=ExtResource("3_nutrition")]
+position = Vector2(752, 912)
+accepted_form_id = &"humanoid"
+visual_size = Vector2(32, 32)
+visual_color = Color(0.318, 0.353, 1, 0.85)
+visual_label = "G"
+
+[node name="GrowDrugC" parent="Interactions" instance=ExtResource("3_nutrition")]
+position = Vector2(1072, 784)
+visual_size = Vector2(32, 32)
+visual_color = Color(0.318, 0.353, 1, 0.85)
+visual_label = "G"
+
+[node name="UnGrowDrugA" parent="Interactions" groups=["yiguang_toxin"] instance=ExtResource("4_toxin")]
+position = Vector2(400, 896)
+zone_size = Vector2(32, 64)
+show_whitebox_visual = true
+
+[node name="CollisionShape2D" parent="Interactions/UnGrowDrugA" index="0"]
+shape = SubResource("Shape_toxin_tall")
+
+[node name="UnGrowDrugB" parent="Interactions" groups=["yiguang_toxin"] instance=ExtResource("4_toxin")]
+position = Vector2(1136, 912)
+zone_size = Vector2(32, 32)
+show_whitebox_visual = true
+
+[node name="CollisionShape2D" parent="Interactions/UnGrowDrugB" index="0"]
+shape = SubResource("Shape_toxin_small")
+
+[node name="LowerSwitch" parent="Interactions" instance=ExtResource("9_switch")]
+unique_name_in_owner = true
+position = Vector2(304, 624)
+mode = 1
+visual_size = Vector2(32, 32)
+
+[node name="MiddleSwitch" parent="Interactions" instance=ExtResource("9_switch")]
+unique_name_in_owner = true
+position = Vector2(912, 624)
+mode = 1
+visual_size = Vector2(32, 32)
+
+[node name="UpperSwitch" parent="Interactions" instance=ExtResource("9_switch")]
+unique_name_in_owner = true
+position = Vector2(1360, 304)
+visual_size = Vector2(32, 32)
+
+[node name="ExitGoal" parent="Interactions" instance=ExtResource("11_exit")]
+unique_name_in_owner = true
+position = Vector2(1280, 928)
+
+[node name="WindZones" type="Node2D" parent="."]
+
+[node name="MainWind" parent="WindZones" instance=ExtResource("7_wind")]
+position = Vector2(464, 496)
+wind_force = 680.0
+zone_size = Vector2(1952, 288)
+
+[node name="RightWind" parent="WindZones" instance=ExtResource("7_wind")]
+position = Vector2(1312, 144)
+wind_force = 720.0
+direction = -1.0
+zone_size = Vector2(256, 288)
+
+[node name="VineAnchors" type="Node2D" parent="."]
+
+[node name="RingTopA" parent="VineAnchors" instance=ExtResource("8_anchor")]
+position = Vector2(336, 144)
+
+[node name="RingTopACompanion" parent="VineAnchors" instance=ExtResource("8_anchor")]
+position = Vector2(368, 144)
+
+[node name="RingTopB" parent="VineAnchors" instance=ExtResource("8_anchor")]
+position = Vector2(112, 240)
+
+[node name="RingTopBCompanion" parent="VineAnchors" instance=ExtResource("8_anchor")]
+position = Vector2(144, 240)
+
+[node name="RingWindA" parent="VineAnchors" instance=ExtResource("8_anchor")]
+position = Vector2(528, 400)
+
+[node name="RingWindB" parent="VineAnchors" instance=ExtResource("8_anchor")]
+position = Vector2(688, 464)
+
+[node name="RingBridge" parent="VineAnchors" instance=ExtResource("8_anchor")]
+position = Vector2(1072, 624)
+
+[node name="Hazards" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="FrogLeft" parent="Hazards" groups=["yiguang_hazard"] instance=ExtResource("5_hazard")]
+position = Vector2(128, 576)
+visual_size = Vector2(128, 64)
+visual_color = Color(0.702, 0.263, 0.843, 0.72)
+visual_label = "FROG"
+show_whitebox_visual = true
+
+[node name="CollisionShape2D" parent="Hazards/FrogLeft" index="0"]
+shape = SubResource("Shape_frog_left")
+
+[node name="FrogRight" parent="Hazards" groups=["yiguang_hazard"] instance=ExtResource("5_hazard")]
+position = Vector2(1104, 416)
+visual_size = Vector2(160, 128)
+visual_color = Color(0.702, 0.263, 0.843, 0.72)
+visual_label = "FROG"
+show_whitebox_visual = true
+
+[node name="CollisionShape2D" parent="Hazards/FrogRight" index="0"]
+shape = SubResource("Shape_frog_right")
+
+[node name="DamageMachineA" parent="Hazards" groups=["yiguang_hazard"] instance=ExtResource("5_hazard")]
+position = Vector2(752, 368)
+visual_size = Vector2(32, 32)
+visual_label = "!"
+show_whitebox_visual = true
+
+[node name="CollisionShape2D" parent="Hazards/DamageMachineA" index="0"]
+shape = SubResource("Shape_machine")
+
+[node name="DamageMachineB" parent="Hazards" groups=["yiguang_hazard"] instance=ExtResource("5_hazard")]
+position = Vector2(848, 368)
+visual_size = Vector2(32, 32)
+visual_label = "!"
+show_whitebox_visual = true
+
+[node name="CollisionShape2D" parent="Hazards/DamageMachineB" index="0"]
+shape = SubResource("Shape_machine")
+
+[node name="DeathPlane" parent="Hazards" groups=["yiguang_hazard"] instance=ExtResource("5_hazard")]
+position = Vector2(720, 1010)
+visual_size = Vector2(1600, 48)
+visual_label = ""
+show_whitebox_visual = true
+
+[node name="CollisionShape2D" parent="Hazards/DeathPlane" index="0"]
+shape = SubResource("Shape_death_plane")
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="StartCheckpoint" parent="Checkpoints" instance=ExtResource("6_checkpoint")]
+unique_name_in_owner = true
+position = Vector2(16, 928)
+
+[node name="LowerCheckpoint" parent="Checkpoints" instance=ExtResource("6_checkpoint")]
+unique_name_in_owner = true
+position = Vector2(688, 928)
+
+[node name="UpperCheckpoint" parent="Checkpoints" instance=ExtResource("6_checkpoint")]
+unique_name_in_owner = true
+position = Vector2(848, 608)
+
+[node name="Presentation" type="Node2D" parent="."]
+
+[node name="Labels" type="Node2D" parent="Presentation"]
+
+[node name="Title" type="Label" parent="Presentation/Labels"]
+position = Vector2(24, 24)
+theme_override_font_sizes/font_size = 24
+text = "形光 · 白膜关卡"
+
+[node name="Start" type="Label" parent="Presentation/Labels"]
+position = Vector2(4, 884)
+text = "Start"
+
+[node name="LowerRoute" type="Label" parent="Presentation/Labels"]
+position = Vector2(232, 822)
+text = "GrowDrug     UnGrowDrug     Button"
+
+[node name="Wind" type="Label" parent="Presentation/Labels"]
+position = Vector2(430, 336)
+text = "Wind / Vine route"
+
+[node name="Damage" type="Label" parent="Presentation/Labels"]
+position = Vector2(710, 330)
+theme_override_colors/font_color = Color(1, 0.45, 0.45, 1)
+text = "DamageMachine"
+
+[node name="Frog" type="Label" parent="Presentation/Labels"]
+position = Vector2(1040, 330)
+theme_override_colors/font_color = Color(1, 0.55, 0.95, 1)
+text = "Frog"
+
+[node name="Door" type="Label" parent="Presentation/Labels"]
+position = Vector2(1248, 832)
+text = "Door"
+
+[node name="Interface" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="GameHud" parent="Interface" instance=ExtResource("12_hud")]
+unique_name_in_owner = true
+
+[node name="CompletionOverlay" parent="Interface" instance=ExtResource("13_overlay")]
+unique_name_in_owner = true
+
+[node name="CameraRig" type="Node2D" parent="."]
+
+[node name="Camera2D" type="Camera2D" parent="CameraRig"]
+unique_name_in_owner = true
+position = Vector2(720, 480)
+zoom = Vector2(0.75, 0.75)
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+limit_left = 0
+limit_top = 0
+limit_right = 1440
+limit_bottom = 960

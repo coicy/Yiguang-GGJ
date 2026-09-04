@@ -12,18 +12,18 @@ extends Control
 @onready var message_label: Label = %MessageLabel
 
 var _player: Player
-var _level: WhiteboxSandbox
+var _level: Node
 
 
-func bind_player(player: Player, level: WhiteboxSandbox) -> void:
+func bind_player(player: Player, level: Node) -> void:
 	_player = player
 	_level = level
 	player.resources.values_changed.connect(_on_values_changed)
 	player.form_controller.form_changed.connect(_on_form_changed)
 	player.abilities.ability_state_changed.connect(_on_ability_state_changed)
 	player.abilities.feedback_requested.connect(show_message)
-	level.checkpoint_changed.connect(_on_checkpoint_changed)
-	level.completion_changed.connect(_on_completion_changed)
+	level.connect(&"checkpoint_changed", _on_checkpoint_changed)
+	level.connect(&"completion_changed", _on_completion_changed)
 	_refresh_all()
 
 

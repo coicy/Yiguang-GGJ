@@ -3,6 +3,9 @@ extends Area2D
 
 @export var nutrition_per_second: float = 40.0
 @export var accepted_form_id: StringName = &""
+@export var visual_size: Vector2 = Vector2(48.0, 48.0)
+@export var visual_color: Color = Color("#65d46e")
+@export var visual_label: String = "NUT"
 
 var _actors: Array[Node] = []
 
@@ -41,5 +44,13 @@ func _on_body_exited(actor: Node) -> void:
 
 
 func _draw() -> void:
-	draw_rect(Rect2(-24.0, -24.0, 48.0, 48.0), Color("#65d46e"))
-	draw_string(ThemeDB.fallback_font, Vector2(-18.0, 5.0), "NUT", HORIZONTAL_ALIGNMENT_LEFT, -1.0, 14, Color("#17351b"))
+	draw_rect(Rect2(-visual_size * 0.5, visual_size), visual_color)
+	draw_string(
+		ThemeDB.fallback_font,
+		Vector2(-visual_size.x * 0.5 + 3.0, 5.0),
+		visual_label,
+		HORIZONTAL_ALIGNMENT_LEFT,
+		-1.0,
+		12,
+		Color.WHITE
+	)

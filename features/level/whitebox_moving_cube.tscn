@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/level/whitebox_moving_cube.gd" id="1_cube"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cube"]
+resource_local_to_scene = true
+size = Vector2(64, 64)
+
+[node name="WhiteboxMovingCube" type="AnimatableBody2D"]
+collision_layer = 1
+collision_mask = 2
+sync_to_physics = true
+script = ExtResource("1_cube")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_cube")

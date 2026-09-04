@@ -10,6 +10,7 @@ enum Mode {
 signal activated
 
 @export var mode: Mode = Mode.LEG_EXTENSION
+@export var visual_size: Vector2 = Vector2(44.0, 24.0)
 
 var _active: bool = false
 
@@ -59,6 +60,6 @@ func _activate() -> void:
 
 func _draw() -> void:
 	var color := Color("#5aff73") if _active else Color("#ffca3a")
-	draw_rect(Rect2(-22.0, -12.0, 44.0, 24.0), color)
+	draw_rect(Rect2(-visual_size * 0.5, visual_size), color)
 	var label := "F" if mode == Mode.LEG_EXTENSION else "S"
 	draw_string(ThemeDB.fallback_font, Vector2(-5.0, 6.0), label, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 16, Color("#232323"))

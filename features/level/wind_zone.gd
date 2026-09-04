@@ -6,12 +6,20 @@ extends Area2D
 @export var blow_duration: float = 1.5
 @export var wind_force: float = 900.0
 @export_range(-1.0, 1.0, 2.0) var direction: float = 1.0
+@export var zone_size: Vector2 = Vector2(360.0, 140.0)
+
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
 var _blowing: bool = false
 var _phase_remaining: float = 1.0
 
 
 func _ready() -> void:
+	var rectangle := collision_shape.shape as RectangleShape2D
+	if rectangle != null:
+		rectangle = rectangle.duplicate() as RectangleShape2D
+		collision_shape.shape = rectangle
+		rectangle.size = zone_size
 	_phase_remaining = warning_duration
 	queue_redraw()
 
@@ -44,9 +52,11 @@ func is_blowing() -> bool:
 
 func _draw() -> void:
 	var color := Color(0.32, 0.72, 1.0, 0.32) if _blowing else Color(1.0, 0.82, 0.25, 0.22)
-	draw_rect(Rect2(-180.0, -70.0, 360.0, 140.0), color)
+	draw_rect(Rect2(-zone_size * 0.5, zone_size), color)
 	var arrow_direction := signf(direction)
-	for y: float in [-36.0, 0.0, 36.0]:
-		draw_line(Vector2(-140.0 * arrow_direction, y), Vector2(140.0 * arrow_direction, y), Color.WHITE, 3.0)
-		draw_line(Vector2(140.0 * arrow_direction, y), Vector2(115.0 * arrow_direction, y - 12.0), Color.WHITE, 3.0)
-		draw_line(Vector2(140.0 * arrow_direction, y), Vector2(115.0 * arrow_direction, y + 12.0), Color.WHITE, 3.0)
+	var arrow_half_width := maxf(24.0, zone_size.x * 0.38)
+	for y_ratio: float in [-0.25, 0.0, 0.25]:
+		var y := zone_size.y * y_ratio
+		draw_line(Vector2(-arrow_half_width * arrow_direction, y), Vector2(arrow_half_width * arrow_direction, y), Color.WHITE, 3.0)
+		draw_line(Vector2(arrow_half_width * arrow_direction, y), Vector2((arrow_half_width - 25.0) * arrow_direction, y - 12.0), Color.WHITE, 3.0)
+		draw_line(Vector2(arrow_half_width * arrow_direction, y), Vector2((arrow_half_width - 25.0) * arrow_direction, y + 12.0), Color.WHITE, 3.0)
