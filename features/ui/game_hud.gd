@@ -65,7 +65,7 @@ func _on_form_changed(form_id: StringName) -> void:
 	match form_id:
 		&"humanoid":
 			display = "人形体"
-			controls += " · 按住 Q 扎根 · 按住 F 伸腿"
+			controls += " · 按住 Q 扎根 · 按住 F 长腿行走"
 		&"mature":
 			display = "成熟体"
 			controls += " · 按住 Q 藤蔓 · 下落按住空格滑翔"

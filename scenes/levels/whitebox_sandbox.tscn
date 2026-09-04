@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/whitebox_sandbox.gd" id="1_sandbox"]
 [ext_resource type="Script" path="res://features/level/whitebox_switch.gd" id="2_legacy_switch"]
@@ -36,6 +36,9 @@ size = Vector2(1000, 120)
 
 [sub_resource type="RectangleShape2D" id="Shape_wind_hazard"]
 size = Vector2(72, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_leg_step"]
+size = Vector2(112, 72)
 
 [sub_resource type="RectangleShape2D" id="Shape_death_plane"]
 size = Vector2(4200, 48)
@@ -118,11 +121,6 @@ accepted_form_id = &"sprout"
 [node name="WindZone" parent="Course/WindSection" instance=ExtResource("9_wind")]
 position = Vector2(820, 550)
 
-[node name="Label" type="Label" parent="Course/WindSection"]
-position = Vector2(708, 448)
-theme_override_font_sizes/font_size = 18
-text = "人形体：按住 Q 扎根抗风"
-
 [node name="WindHazard" parent="Course/WindSection" instance=ExtResource("5_hazard")]
 unique_name_in_owner = true
 position = Vector2(950, 612)
@@ -134,28 +132,40 @@ shape = SubResource("Shape_wind_hazard")
 polygon = PackedVector2Array(914, 600, 986, 600, 986, 624, 914, 624)
 color = Color(0.82, 0.18, 0.24, 1)
 
+[node name="LegStep" type="StaticBody2D" parent="Course"]
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Course/LegStep"]
+position = Vector2(1136, 588)
+shape = SubResource("Shape_leg_step")
+
+[node name="Visual" type="Polygon2D" parent="Course/LegStep"]
+polygon = PackedVector2Array(1080, 552, 1192, 552, 1192, 624, 1080, 624)
+color = Color(0.24, 0.42, 0.32, 1)
+
 [node name="HighSwitch" parent="Course" instance=ExtResource("10_switch")]
 unique_name_in_owner = true
-position = Vector2(1040, 558)
+position = Vector2(1136, 540)
 
 [node name="HighSwitchLabel" type="Label" parent="Course"]
-position = Vector2(988, 496)
-text = "按住 F 伸腿"
+position = Vector2(1040, 488)
+text = "按住 F 向右走上高台"
 
 [node name="HighGate" parent="Course" instance=ExtResource("11_gate")]
 unique_name_in_owner = true
-position = Vector2(1130, 624)
+position = Vector2(1260, 624)
 
 [node name="CourseCheckpoint" parent="Course" instance=ExtResource("4_checkpoint")]
 unique_name_in_owner = true
-position = Vector2(1225, 624)
+position = Vector2(1310, 624)
 
 [node name="SecondNutrition" parent="Course" instance=ExtResource("6_nutrition")]
-position = Vector2(1340, 584)
+position = Vector2(1380, 584)
 accepted_form_id = &"humanoid"
 
 [node name="SecondNutritionLabel" type="Label" parent="Course"]
-position = Vector2(1260, 520)
+position = Vector2(1300, 520)
 text = "成长为成熟体"
 
 [node name="VineSection" type="Node2D" parent="Course"]
