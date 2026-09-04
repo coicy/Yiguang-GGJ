@@ -39,8 +39,12 @@ func _run() -> void:
 	assert(player.abilities.try_attach_vine())
 	assert(player.abilities.is_vine_attached())
 	var length_before := player.global_position.distance_to(anchor.global_position)
-	player.velocity = Vector2(500.0, 500.0)
+	player.velocity = Vector2.ZERO
+	var normal_acceleration := player.movement.acceleration
+	player.movement.acceleration = 0.0
 	player.movement.tick(0.1, 1.0, false)
+	player.movement.acceleration = normal_acceleration
+	assert(player.velocity.x > 0.0)
 	assert(player.global_position.distance_to(anchor.global_position) <= length_before + 1.0)
 	player.abilities.stop_primary()
 	assert(not player.abilities.is_vine_attached())

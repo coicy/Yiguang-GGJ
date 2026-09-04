@@ -144,6 +144,8 @@ func _apply_vine_motion(move_dir: float, delta: float) -> void:
 	if outward_speed > 0.0:
 		body.velocity -= radial_normal * outward_speed
 	var tangent := Vector2(-radial_normal.y, radial_normal.x)
+	if tangent.x < 0.0:
+		tangent = -tangent
 	body.velocity += tangent * move_dir * vine_tangent_acceleration * delta
 
 
