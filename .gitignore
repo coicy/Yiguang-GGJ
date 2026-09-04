@@ -28,3 +28,6 @@ Godot_v4.7.2-stable_win64.exe
 # Local Codex/agent workspace metadata
 .agents/
 skills-lock.json
+
+# Local feature worktrees
+.worktrees/

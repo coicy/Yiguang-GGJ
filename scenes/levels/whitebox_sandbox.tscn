@@ -1,49 +1,85 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://scenes/levels/whitebox_sandbox.gd" id="1_sandbox"]
-[ext_resource type="Script" path="res://features/level/whitebox_switch.gd" id="2_switch"]
-[ext_resource type="Script" path="res://features/level/exit_device.gd" id="3_exit"]
+[ext_resource type="Script" path="res://features/level/whitebox_switch.gd" id="2_legacy_switch"]
+[ext_resource type="Script" path="res://features/level/exit_device.gd" id="3_legacy_exit"]
 [ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="4_checkpoint"]
 [ext_resource type="PackedScene" path="res://features/level/hazard.tscn" id="5_hazard"]
 [ext_resource type="PackedScene" path="res://features/level/nutrition_tank.tscn" id="6_nutrition"]
 [ext_resource type="PackedScene" path="res://features/level/toxin_zone.tscn" id="7_toxin"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="8_player"]
+[ext_resource type="PackedScene" path="res://features/level/wind_zone.tscn" id="9_wind"]
+[ext_resource type="PackedScene" path="res://features/level/ability_switch.tscn" id="10_switch"]
+[ext_resource type="PackedScene" path="res://features/level/whitebox_gate.tscn" id="11_gate"]
+[ext_resource type="PackedScene" path="res://features/abilities/vine_anchor.tscn" id="12_anchor"]
+[ext_resource type="PackedScene" path="res://features/level/exit_goal.tscn" id="13_goal"]
+[ext_resource type="PackedScene" path="res://features/ui/game_hud.tscn" id="14_hud"]
+[ext_resource type="PackedScene" path="res://features/ui/completion_overlay.tscn" id="15_overlay"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
-size = Vector2(1280, 96)
+[sub_resource type="RectangleShape2D" id="Shape_floor_start"]
+size = Vector2(1420, 96)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
-size = Vector2(224, 32)
+[sub_resource type="RectangleShape2D" id="Shape_vine_platform"]
+size = Vector2(330, 32)
+
+[sub_resource type="RectangleShape2D" id="Shape_floor_final"]
+size = Vector2(1600, 80)
+
+[sub_resource type="RectangleShape2D" id="Shape_tunnel_early"]
+size = Vector2(280, 32)
+
+[sub_resource type="RectangleShape2D" id="Shape_tunnel_final"]
+size = Vector2(300, 32)
+
+[sub_resource type="RectangleShape2D" id="Shape_course_toxin"]
+size = Vector2(1000, 120)
+
+[sub_resource type="RectangleShape2D" id="Shape_wind_hazard"]
+size = Vector2(72, 24)
+
+[sub_resource type="RectangleShape2D" id="Shape_death_plane"]
+size = Vector2(4200, 48)
 
 [node name="WhiteboxSandbox" type="Node2D"]
 script = ExtResource("1_sandbox")
 
 [node name="Geometry" type="Node2D" parent="."]
 
-[node name="Ground" type="TileMapLayer" parent="Geometry"]
+[node name="StartFloorVisual" type="Polygon2D" parent="Geometry"]
+polygon = PackedVector2Array(0, 624, 1420, 624, 1420, 720, 0, 720)
+color = Color(0.12, 0.22, 0.18, 1)
 
-[node name="FloorVisual" type="Polygon2D" parent="Geometry"]
-polygon = PackedVector2Array(0, 624, 1280, 624, 1280, 720, 0, 720)
-color = Color(0.145, 0.22, 0.17, 1)
-
-[node name="FloorBody" type="StaticBody2D" parent="Geometry"]
+[node name="StartFloor" type="StaticBody2D" parent="Geometry"]
 collision_layer = 1
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/FloorBody"]
-position = Vector2(640, 672)
-shape = SubResource("RectangleShape2D_floor")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/StartFloor"]
+position = Vector2(710, 672)
+shape = SubResource("Shape_floor_start")
 
-[node name="PlatformVisual" type="Polygon2D" parent="Geometry"]
-polygon = PackedVector2Array(528, 496, 752, 496, 752, 528, 528, 528)
-color = Color(0.29, 0.42, 0.29, 1)
+[node name="VineLandingVisual" type="Polygon2D" parent="Geometry"]
+polygon = PackedVector2Array(1740, 560, 2070, 560, 2070, 592, 1740, 592)
+color = Color(0.2, 0.35, 0.27, 1)
 
-[node name="PlatformBody" type="StaticBody2D" parent="Geometry"]
+[node name="VineLanding" type="StaticBody2D" parent="Geometry"]
 collision_layer = 1
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/PlatformBody"]
-position = Vector2(640, 512)
-shape = SubResource("RectangleShape2D_platform")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/VineLanding"]
+position = Vector2(1905, 576)
+shape = SubResource("Shape_vine_platform")
+
+[node name="FinalFloorVisual" type="Polygon2D" parent="Geometry"]
+polygon = PackedVector2Array(2400, 680, 4000, 680, 4000, 760, 2400, 760)
+color = Color(0.11, 0.2, 0.17, 1)
+
+[node name="FinalFloor" type="StaticBody2D" parent="Geometry"]
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/FinalFloor"]
+position = Vector2(3200, 720)
+shape = SubResource("Shape_floor_final")
 
 [node name="Actors" type="Node2D" parent="."]
 
@@ -51,43 +87,181 @@ shape = SubResource("RectangleShape2D_platform")
 unique_name_in_owner = true
 position = Vector2(96, 576)
 
+[node name="Player" parent="Actors" instance=ExtResource("8_player")]
+unique_name_in_owner = true
+position = Vector2(96, 576)
+
+[node name="Course" type="Node2D" parent="."]
+
+[node name="LowTunnel" type="StaticBody2D" parent="Course"]
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Course/LowTunnel"]
+position = Vector2(340, 574)
+shape = SubResource("Shape_tunnel_early")
+
+[node name="Visual" type="Polygon2D" parent="Course/LowTunnel"]
+polygon = PackedVector2Array(200, 558, 480, 558, 480, 590, 200, 590)
+color = Color(0.32, 0.42, 0.35, 1)
+
+[node name="LowTunnelLabel" type="Label" parent="Course/LowTunnel"]
+position = Vector2(238, 522)
+text = "幼芽通道"
+
+[node name="FirstNutrition" parent="Course" instance=ExtResource("6_nutrition")]
+position = Vector2(550, 584)
+accepted_form_id = &"sprout"
+
+[node name="WindSection" type="Node2D" parent="Course"]
+
+[node name="WindZone" parent="Course/WindSection" instance=ExtResource("9_wind")]
+position = Vector2(820, 550)
+
+[node name="Label" type="Label" parent="Course/WindSection"]
+position = Vector2(708, 448)
+theme_override_font_sizes/font_size = 18
+text = "人形体：按住 Q 扎根抗风"
+
+[node name="WindHazard" parent="Course/WindSection" instance=ExtResource("5_hazard")]
+unique_name_in_owner = true
+position = Vector2(950, 612)
+
+[node name="CollisionShape2D" parent="Course/WindSection/WindHazard" index="0"]
+shape = SubResource("Shape_wind_hazard")
+
+[node name="WindHazardVisual" type="Polygon2D" parent="Course/WindSection"]
+polygon = PackedVector2Array(914, 600, 986, 600, 986, 624, 914, 624)
+color = Color(0.82, 0.18, 0.24, 1)
+
+[node name="HighSwitch" parent="Course" instance=ExtResource("10_switch")]
+unique_name_in_owner = true
+position = Vector2(1040, 558)
+
+[node name="HighSwitchLabel" type="Label" parent="Course"]
+position = Vector2(988, 496)
+text = "按住 F 伸腿"
+
+[node name="HighGate" parent="Course" instance=ExtResource("11_gate")]
+unique_name_in_owner = true
+position = Vector2(1130, 624)
+
+[node name="CourseCheckpoint" parent="Course" instance=ExtResource("4_checkpoint")]
+unique_name_in_owner = true
+position = Vector2(1225, 624)
+
+[node name="SecondNutrition" parent="Course" instance=ExtResource("6_nutrition")]
+position = Vector2(1340, 584)
+accepted_form_id = &"humanoid"
+
+[node name="SecondNutritionLabel" type="Label" parent="Course"]
+position = Vector2(1260, 520)
+text = "成长为成熟体"
+
+[node name="VineSection" type="Node2D" parent="Course"]
+
+[node name="VineAnchor" parent="Course/VineSection" instance=ExtResource("12_anchor")]
+position = Vector2(1530, 390)
+
+[node name="Label" type="Label" parent="Course/VineSection"]
+position = Vector2(1430, 330)
+theme_override_font_sizes/font_size = 18
+text = "成熟体：按住 Q 摆荡"
+
+[node name="GlideLabel" type="Label" parent="Course"]
+position = Vector2(1840, 500)
+theme_override_font_sizes/font_size = 18
+text = "下落按住空格滑翔"
+
+[node name="ToxinSection" type="Node2D" parent="Course"]
+
+[node name="ToxinZone" parent="Course/ToxinSection" instance=ExtResource("7_toxin")]
+unique_name_in_owner = true
+position = Vector2(2900, 620)
+
+[node name="CollisionShape2D" parent="Course/ToxinSection/ToxinZone" index="0"]
+shape = SubResource("Shape_course_toxin")
+
+[node name="ToxinVisual" type="Polygon2D" parent="Course/ToxinSection"]
+polygon = PackedVector2Array(2400, 560, 3400, 560, 3400, 680, 2400, 680)
+color = Color(0.34, 0.16, 0.43, 0.7)
+
+[node name="Label" type="Label" parent="Course/ToxinSection"]
+position = Vector2(2670, 515)
+theme_override_font_sizes/font_size = 18
+text = "毒素区：稳定度归零会逐级退化"
+
+[node name="FinalTunnel" type="StaticBody2D" parent="Course"]
+collision_layer = 1
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Course/FinalTunnel"]
+position = Vector2(3550, 630)
+shape = SubResource("Shape_tunnel_final")
+
+[node name="Visual" type="Polygon2D" parent="Course/FinalTunnel"]
+polygon = PackedVector2Array(3400, 614, 3700, 614, 3700, 646, 3400, 646)
+color = Color(0.31, 0.4, 0.34, 1)
+
+[node name="Label" type="Label" parent="Course/FinalTunnel"]
+position = Vector2(3420, 576)
+text = "仅幼芽体可通过"
+
+[node name="FinalLowSwitch" parent="Course" instance=ExtResource("10_switch")]
+unique_name_in_owner = true
+position = Vector2(3650, 667)
+mode = 1
+
+[node name="ExitGoal" parent="Course" instance=ExtResource("13_goal")]
+unique_name_in_owner = true
+position = Vector2(3880, 680)
+
+[node name="ExitLabel" type="Label" parent="Course"]
+position = Vector2(3795, 560)
+theme_override_font_sizes/font_size = 20
+text = "出口"
+
 [node name="Interactions" type="Node2D" parent="."]
 
 [node name="NutritionTank" parent="Interactions" instance=ExtResource("6_nutrition")]
-position = Vector2(352, 560)
+position = Vector2(-600, 500)
+monitoring = false
 
 [node name="ToxinZone" parent="Interactions" instance=ExtResource("7_toxin")]
-position = Vector2(560, 560)
+position = Vector2(-700, 500)
+monitoring = false
 
 [node name="SwitchA" type="Node" parent="Interactions"]
 unique_name_in_owner = true
-script = ExtResource("2_switch")
+script = ExtResource("2_legacy_switch")
 
 [node name="PositionMarker" type="Marker2D" parent="Interactions/SwitchA"]
 position = Vector2(832, 560)
 
-[node name="WhiteboxVisual" type="Polygon2D" parent="Interactions/SwitchA"]
-polygon = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
-position = Vector2(832, 560)
-color = Color(0.94, 0.76, 0.2, 1)
-
 [node name="ExitDevice" type="Node" parent="Interactions"]
 unique_name_in_owner = true
-script = ExtResource("3_exit")
+script = ExtResource("3_legacy_exit")
 
 [node name="PositionMarker" type="Marker2D" parent="Interactions/ExitDevice"]
 position = Vector2(1120, 560)
-
-[node name="WhiteboxVisual" type="Polygon2D" parent="Interactions/ExitDevice"]
-polygon = PackedVector2Array(-24, -32, 24, -32, 24, 32, -24, 32)
-position = Vector2(1120, 560)
-color = Color(0.25, 0.75, 0.45, 1)
 
 [node name="Hazards" type="Node2D" parent="."]
 
 [node name="FallHazard" parent="Hazards" instance=ExtResource("5_hazard")]
 unique_name_in_owner = true
 position = Vector2(960, 576)
+monitoring = false
+
+[node name="DeathPlane" parent="Hazards" instance=ExtResource("5_hazard")]
+unique_name_in_owner = true
+position = Vector2(2000, 840)
+
+[node name="CollisionShape2D" parent="Hazards/DeathPlane" index="0"]
+shape = SubResource("Shape_death_plane")
+
+[node name="DeathPlaneVisual" type="Polygon2D" parent="Hazards"]
+polygon = PackedVector2Array(-100, 816, 4100, 816, 4100, 864, -100, 864)
+color = Color(0.48, 0.08, 0.12, 1)
 
 [node name="Checkpoints" type="Node2D" parent="."]
 
@@ -98,42 +272,41 @@ position = Vector2(96, 576)
 [node name="MidCheckpoint" parent="Checkpoints" instance=ExtResource("4_checkpoint")]
 unique_name_in_owner = true
 position = Vector2(640, 576)
+monitoring = false
 
 [node name="CameraRig" type="Node2D" parent="."]
 
 [node name="Camera2D" type="Camera2D" parent="CameraRig"]
+unique_name_in_owner = true
 position = Vector2(640, 360)
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+limit_left = 0
+limit_top = 0
+limit_right = 4000
+limit_bottom = 900
 
 [node name="Presentation" type="Node2D" parent="."]
 
 [node name="StartLabel" type="Label" parent="Presentation"]
-position = Vector2(56, 520)
-text = "START"
+position = Vector2(40, 510)
+theme_override_font_sizes/font_size = 20
+text = "起点 →"
 
-[node name="NutritionLabel" type="Label" parent="Presentation"]
-position = Vector2(304, 520)
-text = "NUTRITION"
+[node name="CourseTitle" type="Label" parent="Presentation"]
+position = Vector2(1600, 70)
+theme_override_font_sizes/font_size = 28
+text = "异光 · 白模能力验证关"
 
-[node name="ToxinLabel" type="Label" parent="Presentation"]
-position = Vector2(512, 520)
-text = "TOXIN"
+[node name="Interface" type="CanvasLayer" parent="."]
+layer = 10
 
-[node name="MidCheckpointLabel" type="Label" parent="Presentation"]
-position = Vector2(592, 544)
-text = "CHECKPOINT"
+[node name="GameHud" parent="Interface" instance=ExtResource("14_hud")]
+unique_name_in_owner = true
 
-[node name="SwitchLabel" type="Label" parent="Presentation"]
-position = Vector2(792, 520)
-text = "SWITCH"
+[node name="CompletionOverlay" parent="Interface" instance=ExtResource("15_overlay")]
+unique_name_in_owner = true
 
-[node name="ExitLabel" type="Label" parent="Presentation"]
-position = Vector2(1092, 520)
-text = "EXIT"
-
-[node name="HazardLabel" type="Label" parent="Presentation"]
-position = Vector2(928, 528)
-text = "FALL"
-
-[node name="HazardVisual" type="Polygon2D" parent="Presentation"]
-polygon = PackedVector2Array(928, 560, 992, 560, 992, 592, 928, 592)
-color = Color(0.7, 0.2, 0.24, 1)
+[editable path="Course/WindSection/WindHazard"]
+[editable path="Course/ToxinSection/ToxinZone"]
+[editable path="Hazards/DeathPlane"]

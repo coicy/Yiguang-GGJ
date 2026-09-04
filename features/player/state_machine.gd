@@ -39,7 +39,7 @@ func _evaluate_target(move_dir: float, jump_held: bool) -> StringName:
 		return STATE_RUN if move_dir != 0.0 else STATE_IDLE
 
 	var form := _form_controller.get_current()
-	if jump_held and form.glide_enabled and _body.velocity.y > 0.0:
+	if jump_held and form.can_glide and _body.velocity.y > 0.0:
 		return STATE_GLIDE
 	if _body.velocity.y < 0.0:
 		return STATE_JUMP

@@ -9,6 +9,7 @@ signal form_changed(form_id: StringName)
 @export var default_form_id: StringName = &"humanoid"
 
 var current_form: FormDefinition
+var _switch_validator: Callable
 
 
 func _ready() -> void:
@@ -30,6 +31,30 @@ func get_current() -> FormDefinition:
 
 
 func switch_to(form_id: StringName) -> bool:
+	return _switch_to_internal(form_id, false)
+
+
+func set_switch_validator(validator: Callable) -> void:
+	_switch_validator = validator
+
+
+func peek_grown_form() -> FormDefinition:
+	return _peek_by_offset(1)
+
+
+func peek_withered_form() -> FormDefinition:
+	return _peek_by_offset(-1)
+
+
+func grow() -> bool:
+	return _switch_by_offset(1)
+
+
+func wither() -> bool:
+	return _switch_by_offset(-1)
+
+
+func restore_form(form_id: StringName) -> bool:
 	return _switch_to_internal(form_id, false)
 
 
@@ -61,6 +86,27 @@ func _switch_to_internal(form_id: StringName, silent: bool) -> bool:
 	else:
 		push_error("FormController: unknown form id '%s'" % form_id)
 	return false
+
+
+func _switch_by_offset(offset: int) -> bool:
+	var target := _peek_by_offset(offset)
+	if target == null:
+		return false
+	if _switch_validator.is_valid() and not bool(_switch_validator.call(target)):
+		return false
+	return _switch_to_internal(target.id, false)
+
+
+func _peek_by_offset(offset: int) -> FormDefinition:
+	if current_form == null:
+		return null
+	var index := _find_index(current_form.id)
+	if index < 0:
+		return null
+	var target_index := index + offset
+	if target_index < 0 or target_index >= forms.size():
+		return null
+	return _form_at(target_index)
 
 
 func _find_index(form_id: StringName) -> int:
