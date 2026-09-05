@@ -26,9 +26,10 @@ The current main scene is a playable whitebox vertical slice covering all three 
 
 - `A` / `D`: move.
 - `Space`: jump; hold while falling in mature form to glide.
-- Hold `Q`: root immediately during strong-wind phases in humanoid form, or swing from the nearest visible vine anchor in mature form; release to stop. Strong wind overpowers normal walking, so advance during warnings and root during gusts.
-- Hold `F`: extend upward in humanoid form, keep walking, and step onto platforms up to the leg-extension height; release to retract.
+- Left Mouse: toggle root in humanoid form, or attach/detach from the nearest visible vine anchor in mature form.
+- `W/A/S/D`: while rooted in humanoid form, slowly extend the leg in cardinal directions and push the player; release to retract.
+- Hold `E` inside nutrition or toxin liquid to absorb it; without `E`, neither liquid is absorbed.
 - `R`: restart the complete course from the beginning.
 - `F3`: toggle the existing debug overlay.
 
-Forms are earned through gameplay. The old `E` form-cycle shortcut is intentionally disabled during normal play.
+Forms are earned through gameplay. `E` is reserved for resource absorption; it does not cycle forms.

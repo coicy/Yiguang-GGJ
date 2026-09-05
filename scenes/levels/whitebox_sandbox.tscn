@@ -150,7 +150,7 @@ position = Vector2(1136, 540)
 
 [node name="HighSwitchLabel" type="Label" parent="Course"]
 position = Vector2(1040, 488)
-text = "按住 F 向右走上高台"
+text = "扎根后按住方向键伸腿推进"
 
 [node name="HighGate" parent="Course" instance=ExtResource("11_gate")]
 unique_name_in_owner = true
@@ -176,7 +176,7 @@ position = Vector2(1530, 390)
 [node name="Label" type="Label" parent="Course/VineSection"]
 position = Vector2(1430, 330)
 theme_override_font_sizes/font_size = 18
-text = "成熟体：按住 Q 摆荡"
+text = "成熟体：左键连接/断开藤蔓"
 
 [node name="GlideLabel" type="Label" parent="Course"]
 position = Vector2(1840, 500)

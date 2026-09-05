@@ -2,8 +2,6 @@ class_name Player
 extends CharacterBody2D
 ## Composition root: reads input and wires child components together.
 
-const LEG_EXTENSION_HEIGHT := 72.0
-
 @onready var state_machine: StateMachine = %StateMachine
 @onready var movement: MovementController = %Movement
 @onready var form_controller: FormController = %FormController
@@ -13,13 +11,14 @@ const LEG_EXTENSION_HEIGHT := 72.0
 @onready var collision_shape: CollisionShape2D = %CollisionShape2D
 @onready var growth_cast: ShapeCast2D = %GrowthCast
 @onready var leg_area: Area2D = %LegExtension
+@onready var leg_collision_shape: CollisionShape2D = %LegCollisionShape
 
 
 func _ready() -> void:
 	resources.setup(form_controller)
 	movement.setup(self, form_controller.get_current(), resources)
 	state_machine.setup(self, movement, form_controller)
-	abilities.setup(self, movement, form_controller, leg_area)
+	abilities.setup(self, movement, form_controller, leg_area, leg_collision_shape)
 	form_controller.set_switch_validator(_can_fit_form)
 	_apply_form_shape(form_controller.get_current())
 	visuals.set_form(form_controller.get_current())
@@ -32,15 +31,9 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	resources.tick(delta)
-	abilities.tick()
-	if Input.is_action_just_pressed("ability_primary"):
-		abilities.start_primary()
-	if Input.is_action_just_released("ability_primary"):
-		abilities.stop_primary()
-	if Input.is_action_just_pressed("ability_secondary"):
-		abilities.try_extend_legs()
-	if Input.is_action_just_released("ability_secondary"):
-		abilities.stop_secondary()
+	var leg_direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	abilities.set_leg_extension_direction(leg_direction)
+	abilities.tick(delta)
 	var move_dir := Input.get_axis("move_left", "move_right")
 	var jump_held := Input.is_action_pressed("jump")
 
@@ -50,20 +43,15 @@ func _physics_process(delta: float) -> void:
 		movement.release_jump()
 
 	state_machine.tick(delta, move_dir, jump_held)
+	abilities.post_movement_update()
+	visuals.set_leg_direction(abilities.get_leg_extension_direction())
+	visuals.set_leg_path(abilities.get_leg_path())
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	var key_event := event as InputEventKey
-	if key_event != null and key_event.echo:
-		return
 	if event.is_action_pressed("ability_primary"):
-		abilities.start_primary()
-	elif event.is_action_released("ability_primary"):
-		abilities.stop_primary()
-	elif event.is_action_pressed("ability_secondary"):
-		abilities.try_extend_legs()
-	elif event.is_action_released("ability_secondary"):
-		abilities.stop_secondary()
+		abilities.toggle_primary()
+
 
 func _on_form_changed(form_id: StringName) -> void:
 	cancel_actions()
@@ -98,8 +86,29 @@ func is_grounded() -> bool:
 	return is_on_floor()
 
 
+func can_root_here() -> bool:
+	if not is_on_floor():
+		return false
+	for collision_index: int in get_slide_collision_count():
+		var collision := get_slide_collision(collision_index)
+		if collision == null or collision.get_normal().dot(Vector2.UP) < 0.7:
+			continue
+		var collider := collision.get_collider()
+		if collider != null and collider.has_method(&"can_root"):
+			return bool(collider.call(&"can_root"))
+	return true
+
+
+func is_absorbing_resource() -> bool:
+	return Input.is_action_pressed("absorb_resource")
+
+
 func absorb_nutrition(amount: float) -> bool:
 	return resources.absorb_nutrition(amount)
+
+
+func absorb_toxin(amount: float) -> bool:
+	return resources.absorb_toxin(amount)
 
 
 func enter_toxin(source: Object) -> void:
@@ -133,19 +142,6 @@ func restore_state(saved: Dictionary) -> void:
 
 func cancel_actions() -> void:
 	abilities.cancel_all()
-
-
-func set_leg_extension_active(active: bool) -> bool:
-	var form := form_controller.get_current()
-	if form == null:
-		return false
-	var target_size := form.collision_size
-	if active:
-		target_size.y += LEG_EXTENSION_HEIGHT
-		if not _can_fit_shape(target_size):
-			return false
-	_apply_collision_shape(target_size)
-	return true
 
 
 func _apply_form_shape(form: FormDefinition) -> void:

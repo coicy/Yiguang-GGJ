@@ -8,7 +8,6 @@ const STATE_RUN := &"run"
 const STATE_JUMP := &"jump"
 const STATE_FALL := &"fall"
 const STATE_GLIDE := &"glide"
-const LEG_EXTENSION_HEIGHT := 72.0
 
 @onready var animated_sprite: AnimatedSprite2D = %AnimatedSprite2D
 
@@ -20,6 +19,7 @@ var _legs_extended: bool = false
 var _vine_attached: bool = false
 var _vine_anchor: Node2D
 var _leg_direction := Vector2.UP
+var _leg_path := PackedVector2Array([Vector2.ZERO])
 
 
 func _ready() -> void:
@@ -56,7 +56,12 @@ func set_ability_state(rooted: bool, legs_extended: bool, vine_attached: bool) -
 
 func set_leg_direction(direction: Vector2) -> void:
 	if not direction.is_zero_approx():
-		_leg_direction = direction.normalized()
+		_leg_direction = direction
+	queue_redraw()
+
+
+func set_leg_path(path: PackedVector2Array) -> void:
+	_leg_path = path
 	queue_redraw()
 
 
@@ -86,22 +91,18 @@ func _apply_animation() -> void:
 
 func _draw() -> void:
 	var body_size := _current_form.collision_size if _current_form != null else Vector2(28.0, 40.0)
-	var body_offset_y := -LEG_EXTENSION_HEIGHT if _legs_extended else 0.0
+	_draw_leg_path()
 	if animated_sprite.sprite_frames != null:
-		_draw_vine(Vector2(0.0, -body_size.y * 0.5 + body_offset_y))
+		_draw_vine(Vector2(0.0, -body_size.y * 0.5))
 		return
 
 	var body_color := _current_form.body_color if _current_form != null else Color("#66c2a5")
-	_draw_vine(Vector2(0.0, -body_size.y * 0.5 + body_offset_y))
-	draw_rect(Rect2(-body_size.x * 0.5, -body_size.y + body_offset_y, body_size.x, body_size.y), body_color)
-	draw_circle(Vector2(0.0, -body_size.y + 5.0 + body_offset_y), minf(6.0, body_size.x * 0.25), Color.WHITE)
+	_draw_vine(Vector2(0.0, -body_size.y * 0.5))
+	draw_rect(Rect2(-body_size.x * 0.5, -body_size.y, body_size.x, body_size.y), body_color)
+	draw_circle(Vector2(0.0, -body_size.y + 5.0), minf(6.0, body_size.x * 0.25), Color.WHITE)
 	if _rooted:
 		draw_line(Vector2.ZERO, Vector2(-16.0, 10.0), Color("#b58a52"), 4.0)
 		draw_line(Vector2.ZERO, Vector2(16.0, 10.0), Color("#b58a52"), 4.0)
-	if _legs_extended:
-		var hip_offset := body_size.x * 0.22
-		draw_line(Vector2(-hip_offset, body_offset_y), Vector2(-hip_offset, 0.0), Color("#ffe083"), 8.0)
-		draw_line(Vector2(hip_offset, body_offset_y), Vector2(hip_offset, 0.0), Color("#ffe083"), 8.0)
 	if _legs_extended:
 		return
 
@@ -118,6 +119,14 @@ func _draw() -> void:
 		STATE_GLIDE:
 			draw_arc(Vector2(-12.0, -10.0), 13.0, PI, TAU, 12, Color.WHITE, 2.0)
 			draw_arc(Vector2(12.0, -10.0), 13.0, PI, TAU, 12, Color.WHITE, 2.0)
+
+
+func _draw_leg_path() -> void:
+	if _leg_path.size() < 2:
+		return
+	for index in range(_leg_path.size() - 1):
+		draw_line(_leg_path[index], _leg_path[index + 1], Color("#ffe083"), 8.0, true)
+	draw_circle(_leg_path[_leg_path.size() - 1], 5.0, Color("#ffe083"))
 
 
 func _draw_vine(attachment_point: Vector2) -> void:

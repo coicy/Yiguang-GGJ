@@ -32,10 +32,11 @@ func _init() -> void:
 	assert(controller.restore_form(&"humanoid"))
 	assert(controller.get_current().id == &"humanoid")
 
-	assert(SPROUT.collision_size == Vector2(20.0, 24.0))
+	assert(SPROUT.collision_size == Vector2(16.0, 16.0))
 	assert(SPROUT.growth_threshold == 100.0)
 	assert(HUMANOID.can_root and HUMANOID.can_extend_legs)
 	assert(HUMANOID.growth_threshold == 120.0)
+	assert(MATURE.collision_size == HUMANOID.collision_size)
 	assert(MATURE.can_use_vine and MATURE.can_glide)
 	assert(MATURE.growth_threshold == 0.0)
 

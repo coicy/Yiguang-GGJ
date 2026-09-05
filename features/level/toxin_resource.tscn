@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/level/toxin_resource.gd" id="1_toxin_resource"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_toxin_resource"]
+radius = 12.0
+
+[node name="ToxinResource" type="Area2D"]
+collision_layer = 64
+collision_mask = 2
+monitoring = true
+script = ExtResource("1_toxin_resource")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_toxin_resource")

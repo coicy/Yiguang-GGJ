@@ -40,6 +40,9 @@ func use(ability_id: StringName) -> bool
 func tick_cooldowns(delta: float) -> void
 func toggle_primary() -> bool
 func set_leg_extension_direction(direction: Vector2) -> void
+func get_leg_length() -> float
+func get_max_leg_length() -> float
+func get_leg_path() -> PackedVector2Array
 func is_rooted() -> bool
 func get_leg_extension_direction() -> Vector2
 ```
@@ -54,6 +57,7 @@ signal form_changed(form_id: StringName)
 
 func reset_to_checkpoint(position: Vector2) -> void
 func get_current_form_id() -> StringName
+func is_absorbing_resource() -> bool
 ```
 
 玩家作为组合根负责接线和对外状态，不持有移动、形态和能力的内部算法。
@@ -64,15 +68,17 @@ func get_current_form_id() -> StringName
 | --- | --- | --- |
 | 幼芽期 | `small_passage` | 允许通过小尺寸通道 |
 | 人形期 | `root` | 固定玩家，抵抗移动或风力 |
-| 人形期 | `stretch_legs` | 扩大有效触发/跨越范围 |
-| 成熟期 | `vine_pull` | 牵引远处机关或连接锚点 |
+| 人形期 | `stretch_legs` | 正交缓慢伸长腿部并沿伸长方向推进 |
+| 成熟期 | `vine_pull` | 牵引远处机关或连接锚点；白盒中的 `Ring` 是可钩挂的环形锚点 |
 | 成熟期 | `leaf_glide` | 减缓下落并抵抗部分风力 |
 
-当前输入约定：人形期按住 `Q` 扎根抗风，按住 `F` 进入长腿行走并跨上伸腿高度内的高台；
-成熟期按住 `Q` 连接藤蔓摆荡，松开即脱离；滑翔继续复用跳跃键。
+当前输入约定：人形期左键切换扎根/拔根，扎根时 `W/A/S/D` 控制腿部沿上下左右缓慢伸长并推动玩家；腿部总路径长度不超过当前角色长度的 4 倍，方向变化只形成 90°转角；
+成熟期左键连接/断开藤蔓，滑翔继续复用跳跃键；在营养液或毒液区域内按住 `E` 才会吸取液体。
+藤蔓连接目标包括 `VineAnchor` 和白盒 `Ring`；`Ring` 不是装饰实体，只有成熟期可以钩挂。
 
 ## 变更记录
 
 | 日期 | 版本 | 说明 |
 | --- | --- | --- |
 | 2026-09-04 | 0.1 | 建立玩家、移动和能力公共接口。 |
+| 2026-09-05 | 0.2 | 明确白盒 `Ring` 为成熟期长藤蔓可钩挂的环形锚点。 |
