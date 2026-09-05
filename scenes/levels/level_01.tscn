@@ -7,10 +7,13 @@
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/spawn_point.tscn" id="3_spawn"]
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="4_bounds"]
 [ext_resource type="PackedScene" uid="uid://c65j2lesd56mx" path="res://features/level/handbuilt/terrain_piece.tscn" id="5_terrain"]
+[ext_resource type="PackedScene" uid="uid://de0u5xwpljsbi" path="res://features/level/branch_wall.tscn" id="6_jmes4"]
+[ext_resource type="PackedScene" uid="uid://cjyj11urlfue0" path="res://features/level/nutrition_tank.tscn" id="6_nutrition"]
+[ext_resource type="PackedScene" path="res://features/level/toxin_resource.tscn" id="7_toxin_resource"]
 [ext_resource type="Texture2D" uid="uid://cieqmw4uun2hu" path="res://assets/runtime/scenery/_0036_苔藓地1.png" id="30_moss"]
 [ext_resource type="Texture2D" uid="uid://dkq0p7me8pn8x" path="res://assets/runtime/scenery/_0014_培养罐.png" id="31_broken_tank"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_kfebt"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_jmes4"]
 resource_local_to_scene = true
 radius = 12.0
 
@@ -76,9 +79,85 @@ scale = Vector2(0.4, 0.4)
 [node name="RightCap" parent="Geometry/Terrain/StartFloor" index="4" unique_id=1455343970]
 scale = Vector2(0.4, 0.4)
 
+[node name="BranchWall" parent="Geometry/Terrain" unique_id=168909206 instance=ExtResource("6_jmes4")]
+position = Vector2(220, 346)
+rotation = 2.5920396
+scale = Vector2(0.9, 0.9)
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/BranchWall" index="1" unique_id=331758531]
+position = Vector2(2.958107, 4.743433)
+polygon = PackedVector2Array(-27.648926, -141.5304, -15.377289, -147.2066, -3.505066, -109.15253, 0.66567993, -72.88385, 12, -50, 5, -10, 27, 41, 10, 54, 14, 138, -6, 138, -11, 87, -6, 33, -6, 15, -25, -22, -17, -79, -18.494919, -111.00452)
+
+[node name="StartFloor2" parent="Geometry/Terrain" unique_id=1291361382 instance=ExtResource("5_terrain")]
+position = Vector2(-262, -3)
+piece_size = Vector2(1344, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor2" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
+disabled = false
+
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor2" index="1" unique_id=1185384908]
+visible = true
+offset_right = 3360.0
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("30_moss")
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor2" index="2" unique_id=1905841275]
+texture = ExtResource("30_moss")
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
+
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor2" index="3" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
+
+[node name="RightCap" parent="Geometry/Terrain/StartFloor2" index="4" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
+
+[node name="Node2" type="Node" parent="Geometry/Terrain/StartFloor2" unique_id=43964354]
+
+[node name="DecorativeScenery" parent="Geometry/Terrain/StartFloor2/Node2" unique_id=736504682 instance=ExtResource("2_t0hvh")]
+position = Vector2(-258, -4.9999847)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(20, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="DecorativeScenery2" parent="Geometry/Terrain/StartFloor2/Node2" unique_id=192915609 instance=ExtResource("2_t0hvh")]
+position = Vector2(-204, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(40, 1)
+tile_spacing = Vector2(-60, 0)
+
 [node name="Mechanisms" type="Node2D" parent="Geometry" unique_id=558713796]
 
 [node name="Areas" type="Node2D" parent="." unique_id=1858714879]
+
+[node name="GrowDrug" parent="Areas" unique_id=1480241049 instance=ExtResource("6_nutrition")]
+position = Vector2(-98, 456.00003)
+scale = Vector2(1.5, 1.5)
+
+[node name="UnGrowDrug" parent="Areas" unique_id=2028605519 instance=ExtResource("7_toxin_resource")]
+position = Vector2(6, 457)
+scale = Vector2(1.5, 1.5)
+
+[node name="GrowDrug2" parent="Areas" unique_id=225277071 instance=ExtResource("6_nutrition")]
+position = Vector2(347.00003, 451)
+scale = Vector2(2.25, 2.25)
+
+[node name="UnGrowDrug2" parent="Areas" unique_id=385952438 instance=ExtResource("7_toxin_resource")]
+position = Vector2(762, 440)
+scale = Vector2(2.25, 2.25)
 
 [node name="Checkpoints" type="Node2D" parent="." unique_id=422565820]
 
@@ -89,13 +168,13 @@ unique_name_in_owner = true
 position = Vector2(96, 464)
 
 [node name="CollisionShape2D" parent="Actors/Player" index="0"]
-shape = SubResource("CircleShape2D_kfebt")
+shape = SubResource("CircleShape2D_jmes4")
 
 [node name="Camera2D" type="Camera2D" parent="Actors/Player" unique_id=1453819068]
 unique_name_in_owner = true
 scale = Vector2(1.0025464, 0.8497827)
-offset = Vector2(0, -60)
-zoom = Vector2(4, 4)
+offset = Vector2(0, -80)
+zoom = Vector2(3, 3)
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 7.0
@@ -123,4 +202,6 @@ z_index = 10
 z_index = 20
 
 [editable path="Geometry/Terrain/StartFloor"]
+[editable path="Geometry/Terrain/BranchWall"]
+[editable path="Geometry/Terrain/StartFloor2"]
 [editable path="Actors/Player"]

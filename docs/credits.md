@@ -10,6 +10,7 @@
 | spine-godot GDExtension | Esoteric Software | 以官方 Spine Runtimes License 为准 | Godot 4.7.2 的 Spine 4.3 运行时 | `bin/` |
 | 场景 PNG 素材 | 用户提供的 `png.zip`；原作者待补充 | 待确认 | Level 01 地形、机关与环境装饰 | `assets/source/scenery_png/png/`、`assets/runtime/scenery/` |
 | 荆棘与小藤蔓 PNG 素材 | 用户提供的 `png-1.zip`；原作者待补充 | 待确认 | 荆棘危险机关与藤蔓环境装饰 | `assets/source/scenery_png/png-1/`、`assets/runtime/scenery/` |
+| Grow / UnGrow 罐子素材 | 用户提供的 `罐子.zip`；原作者待补充 | 待确认 | 绿色成长罐与紫色退化罐 | `assets/source/tanks/`、`assets/runtime/scenery/grow_tank.png`、`assets/runtime/scenery/ungrow_tank.png` |
 
 ## 音频素材
 

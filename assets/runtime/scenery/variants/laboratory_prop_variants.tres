@@ -2,20 +2,20 @@
 
 [ext_resource type="Script" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
 [ext_resource type="Script" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0014_培养罐.png" id="3_tank"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0018_锥形瓶.png" id="4_flask"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/grow_tank.png" id="3_tank"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/ungrow_tank.png" id="4_ungrow_tank"]
 
 [sub_resource type="Resource" id="Tank"]
 script = ExtResource("2_variant")
 id = &"nutrition_tank"
 texture = ExtResource("3_tank")
 
-[sub_resource type="Resource" id="Flask"]
+[sub_resource type="Resource" id="UnGrowTank"]
 script = ExtResource("2_variant")
-id = &"toxin_flask"
-texture = ExtResource("4_flask")
+id = &"ungrow_tank"
+texture = ExtResource("4_ungrow_tank")
 
 [resource]
 script = ExtResource("1_set")
 display_name = "Laboratory prop"
-variants = Array[ExtResource("2_variant")]([SubResource("Tank"), SubResource("Flask")])
+variants = Array[ExtResource("2_variant")]([SubResource("Tank"), SubResource("UnGrowTank")])
