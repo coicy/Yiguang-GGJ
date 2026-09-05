@@ -90,6 +90,10 @@ func _run() -> void:
 	global_signal_bus.disconnect(&"level_completed", _on_level_completed)
 	if created_global_signal_bus:
 		global_signal_bus.free()
+	# Let the audio mixer release completed/stopped victory playback before shutdown.
+	await process_frame
+	await create_timer(0.1).timeout
+	print("PASS: sandbox lifecycle and completion audio cleanup")
 	quit()
 
 

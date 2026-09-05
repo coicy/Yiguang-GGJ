@@ -37,3 +37,17 @@ Forms are earned through gameplay. `E` is reserved for resource absorption; it d
 ## Gameplay audio
 
 Existing Kenney sounds from the `lan` asset branch now accompany footsteps, jumping/landing, growth/withering, absorption, rooting/leg extension, vine attachment, gliding, buttons, moving cubes, checkpoints, and death. Sources and event tuning are recorded in [credits](docs/credits.md).
+
+## Button-operated door
+
+Touch B1 at world position `(448, 304)` to move the door at `(624, 432)` upward by 48 pixels. B1 still drives its original C1 platform. The door remains solid as it moves, stays open, and resets when the course reloads with `R`.
+
+Reuse `features/level/whitebox_door.tscn` for other doors. Choose `SLIDE` with `open_offset`, or `ROTATE` with `hinge_offset` and `opening_degrees` in the Inspector. The level parent connects a button's `pressed` signal to a call to `door.open()`. The existing map uses the button's `Entity_ref` list for this connection. See [entity rules](docs/whitebox_entity_rules.md) for configuration and verification.
+
+## Exit, completion, and HUD
+
+The main JSON course now includes a pixel-art exit at world position `(704, 464)`. Touch the button marked “出口按钮” (B1), wait for its door to finish opening, and enter the lit exit beyond it. Opening the door alone does not win. Completing the course freezes gameplay and shows elapsed time, retry count, a victory sound, and a restart button; click it or press `R` to reset the course.
+
+The HUD shows the current form, growth, stability, timer, retries, and exit objective. Controls update with the form, including the release-and-press-`E` requirement after each growth/withering stage, checkpoint feedback, and toxin warnings. The HUD leaves gameplay mouse input available.
+
+Exit art, sign, prompt/lever icons, numeric font, UI palette, and victory sound reuse the existing asset branch; see [credits](docs/credits.md). A full manual playthrough and a refreshed Windows export remain to be verified. Automated checks and rendered previews are recorded in [acceptance criteria](docs/whitebox_acceptance_criteria.md).

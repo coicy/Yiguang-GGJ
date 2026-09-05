@@ -2,6 +2,15 @@ class_name JsonWhiteboxLevel
 extends Node2D
 ## Runtime whitebox generated from LDtk data. World-space instance rectangles are authoritative.
 
+signal checkpoint_changed(checkpoint_id: StringName)
+signal completion_changed(completed: bool, seconds: float)
+
+@export var level_id: StringName = &"json_whitebox"
+@export var exit_door_iid: String = "e1e9a7b0-96d0-11f1-be70-0dbca0ba9a32"
+@export var exit_offset: Vector2 = Vector2(64.0, 0.0)
+
+const EXIT_SCENE: PackedScene = preload("res://features/level/exit_goal.tscn")
+const SIGN_TEXTURE: Texture2D = preload("res://assets/runtime/ui/sign.png")
 const SOUND_SCENE: PackedScene = preload("res://features/audio/sound_emitter.tscn")
 
 const SOURCE_PATH := "res://data/Yiguang.json"
@@ -16,6 +25,7 @@ const WIND_SCENE: PackedScene = preload("res://features/level/wind_zone.tscn")
 const RING_SCENE: PackedScene = preload("res://features/abilities/vine_anchor.tscn")
 const CUBE_SCENE: PackedScene = preload("res://features/level/moveable_cube.tscn")
 const BUTTON_SCENE: PackedScene = preload("res://features/level/whitebox_button.tscn")
+const DOOR_SCENE: PackedScene = preload("res://features/level/whitebox_door.tscn")
 const CHECKPOINT_SCENE: PackedScene = preload("res://features/level/checkpoint.tscn")
 const DAMAGE_MACHINE_SCENE: PackedScene = preload("res://features/level/damage_machine.tscn")
 
@@ -26,6 +36,15 @@ const CAMERA_DRAG_MARGIN_HORIZONTAL := 0.2
 const CAMERA_DRAG_MARGIN_VERTICAL := 0.25
 const SUPPORT_EPSILON := 0.01
 
+@onready var _hud: GameHud = %GameHud
+@onready var _completion_overlay: CompletionOverlay = %CompletionOverlay
+
+var _exit_goal: ExitGoal
+var _exit_door: WhiteboxDoor
+var _elapsed: float = 0.0
+var _death_count: int = 0
+var _is_completed: bool = false
+var _restart_pending: bool = false
 var _audio: SoundEmitter
 var _player: Player
 var _spawn_position := Vector2.ZERO
@@ -54,6 +73,9 @@ func _ready() -> void:
 	_build_from_source()
 	_player.global_position = _spawn_position
 	_create_camera()
+	_hud.bind_player(_player, self)
+	_completion_overlay.restart_requested.connect(restart_level)
+	_build_exit()
 	queue_redraw()
 
 
@@ -70,8 +92,9 @@ func get_data_issues() -> PackedStringArray:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"restart"):
-		get_tree().reload_current_scene()
+	if event.is_action_pressed(&"restart") and not event.is_echo():
+		get_viewport().set_input_as_handled()
+		restart_level()
 
 
 func _build_from_source() -> void:
@@ -141,7 +164,7 @@ func _collect_cube_rectangles(data: Dictionary) -> Array[Rect2]:
 				continue
 			for raw_entity: Variant in layer.get("entityInstances", []):
 				var entity := raw_entity as Dictionary
-				if entity.get("__identifier", "") == "MoveableCube":
+				if entity.get("__identifier", "") in ["MoveableCube", "Door"]:
 					rectangles.append(_entity_rect(entity, world_offset))
 	return rectangles
 
@@ -212,7 +235,10 @@ func _spawn_entity(entity: Dictionary, world_offset: Vector2) -> void:
 			_register_entity(entity_id, frog)
 			_entity_labels.append({"text": "Frog", "position": rect.position + Vector2(0.0, -4.0)})
 		"Door":
-			var door := _make_cube(rect)
+			var door := DOOR_SCENE.instantiate() as WhiteboxDoor
+			door.cube_size = rect.size
+			door.global_position = rect.position
+			door.motion_completed.connect(func(_cube: MoveableCube) -> void: _audio.play_cue(&"mechanism_stop"))
 			add_child(door)
 			_register_entity(entity_id, door)
 		"Button":
@@ -221,7 +247,10 @@ func _spawn_entity(entity: Dictionary, world_offset: Vector2) -> void:
 			button.global_position = rect.position
 			add_child(button)
 			_register_entity(entity_id, button)
-			_entity_labels.append({"text": "Button", "position": rect.position + Vector2(0.0, -4.0)})
+			var is_exit_button: bool = exit_door_iid in _entity_links.get(entity_id, [])
+			var button_label := "出口按钮" if is_exit_button else "Button"
+			var label_offset := Vector2(-8.0, -4.0) if is_exit_button else Vector2(0.0, -4.0)
+			_entity_labels.append({"text": button_label, "position": rect.position + label_offset, "font_size": 8 if is_exit_button else 12})
 		"DamageMachine":
 			var machine := DAMAGE_MACHINE_SCENE.instantiate() as Area2D
 			machine.global_position = rect.get_center()
@@ -263,7 +292,7 @@ func _spawn_entity(entity: Dictionary, world_offset: Vector2) -> void:
 
 
 func _wire_data_mechanisms() -> void:
-	var controlled_cubes: Dictionary = {}
+	var controlled_entities: Dictionary = {}
 	for entity_id: String in _entity_links:
 		if _entity_identifiers.get(entity_id) != "Button":
 			continue
@@ -272,19 +301,27 @@ func _wire_data_mechanisms() -> void:
 			_add_data_issue("Button %s has no runtime instance." % entity_id)
 			continue
 		if (_entity_links[entity_id] as Array).is_empty():
-			_add_data_issue("Button %s has no target MoveableCube." % entity_id)
+			_add_data_issue("Button %s has no target Door or MoveableCube." % entity_id)
 		button.pressed.connect(_on_button_pressed.bind(entity_id))
 		for cube_id: String in _entity_links[entity_id]:
-			controlled_cubes[cube_id] = true
+			controlled_entities[cube_id] = true
 	for cube_id: String in _entity_links:
-		if _entity_identifiers.get(cube_id) == "MoveableCube" and not (_entity_links[cube_id] as Array).is_empty() and not controlled_cubes.has(cube_id):
+		if _entity_identifiers.get(cube_id) == "Door" and not controlled_entities.has(cube_id):
+			_add_data_issue("Door %s has no controlling button." % cube_id)
+		if _entity_identifiers.get(cube_id) == "MoveableCube" and not (_entity_links[cube_id] as Array).is_empty() and not controlled_entities.has(cube_id):
 			_add_data_issue("MoveableCube %s has a destination but no controlling button." % cube_id)
 
 
 func _on_button_pressed(_button: WhiteboxButton, _actor: Node2D, button_id: String) -> void:
 	var motions: Array[Dictionary] = []
+	var doors: Array[WhiteboxDoor] = []
 	var shared_duration := 0.0
 	for cube_id: String in _entity_links.get(button_id, []):
+		var door := get_entity(cube_id) as WhiteboxDoor
+		if door != null:
+			if not door.is_open() and not door.is_moving():
+				doors.append(door)
+			continue
 		var cube := get_entity(cube_id) as MoveableCube
 		if cube == null:
 			_add_data_issue("Button %s references non-runtime MoveableCube %s." % [button_id, cube_id])
@@ -299,9 +336,13 @@ func _on_button_pressed(_button: WhiteboxButton, _actor: Node2D, button_id: Stri
 			continue
 		shared_duration = maxf(shared_duration, cube.get_rect_motion_duration(target_rect))
 		motions.append({"cube": cube, "rect": target_rect})
-	if not motions.is_empty():
+	if not motions.is_empty() or not doors.is_empty():
 		_audio.play_cue(&"button")
 		_audio.play_cue(&"mechanism_start")
+	for door: WhiteboxDoor in doors:
+		if door.open() and door == _exit_door:
+			_hud.set_objective("出口门正在开启…")
+			_hud.show_message("机关已启动 · 门和平台正在移动")
 	for motion: Dictionary in motions:
 		(motion["cube"] as MoveableCube).move_to_rect(motion["rect"] as Rect2, shared_duration)
 
@@ -480,9 +521,14 @@ func _on_checkpoint_reached(actor: Node2D, position: Vector2) -> void:
 	if actor == _player:
 		_spawn_position = position
 		_audio.play_cue(&"checkpoint")
+		checkpoint_changed.emit(&"current")
 
 
 func _respawn_player() -> void:
+	if _is_completed:
+		return
+	_death_count += 1
+	_hud.show_message("回到最近的检查点 · 继续尝试")
 	_audio.play_cue(&"death")
 	_player.cancel_actions()
 	_player.global_position = _spawn_position
@@ -519,4 +565,90 @@ func _draw() -> void:
 		var color := entry["color"] as Color
 		draw_rect(rect, color)
 	for entry: Dictionary in _entity_labels:
-		draw_string(ThemeDB.fallback_font, entry["position"] as Vector2, String(entry["text"]), HORIZONTAL_ALIGNMENT_LEFT, -1.0, 12, Color.WHITE)
+		draw_string(ThemeDB.fallback_font, entry["position"] as Vector2, String(entry["text"]), HORIZONTAL_ALIGNMENT_LEFT, -1.0, int(entry.get("font_size", 12)), Color.WHITE)
+
+
+func _process(delta: float) -> void:
+	if not _is_completed:
+		_elapsed += delta
+
+
+func elapsed_time() -> float:
+	return _elapsed
+
+
+func death_count() -> int:
+	return _death_count
+
+
+func is_completed() -> bool:
+	return _is_completed
+
+
+func restart_level() -> void:
+	if _restart_pending:
+		return
+	_restart_pending = true
+	_reload_scene.call_deferred()
+
+
+func _reload_scene() -> void:
+	var error := get_tree().reload_current_scene()
+	if error != OK:
+		_restart_pending = false
+		push_error("Unable to restart the course: %s" % error_string(error))
+
+
+func _build_exit() -> void:
+	_exit_door = get_entity(exit_door_iid) as WhiteboxDoor
+	if _exit_door == null:
+		_add_data_issue("Exit requires a Door instance: %s" % exit_door_iid)
+		_hud.set_objective("出口尚未配置")
+		return
+	var door_rect := get_source_rect(exit_door_iid)
+	_exit_goal = EXIT_SCENE.instantiate() as ExitGoal
+	_exit_goal.name = "ExitGoal"
+	_exit_goal.goal_size = door_rect.size
+	_exit_goal.position = door_rect.position + Vector2(door_rect.size.x * 0.5, door_rect.size.y) + exit_offset
+	_exit_goal.set_unlocked(false)
+	add_child(_exit_goal)
+	_exit_goal.locked_entered.connect(_on_exit_locked)
+	_exit_goal.player_completed.connect(_on_exit_completed)
+	_exit_door.opened.connect(_on_exit_door_opened)
+	var sign_sprite := Sprite2D.new()
+	sign_sprite.name = "ExitSign"
+	sign_sprite.texture = SIGN_TEXTURE
+	sign_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sign_sprite.position = Vector2(-door_rect.size.x * 0.5 - 12.0, -8.0)
+	_exit_goal.add_child(sign_sprite)
+	_hud.set_objective("找到并触碰出口按钮")
+	if _exit_door.is_open():
+		_on_exit_door_opened()
+
+
+func _on_exit_door_opened() -> void:
+	_exit_goal.set_unlocked(true)
+	_hud.set_objective("出口已开启 · 前往门后的出口", true)
+	_hud.show_message("向右穿过门，抵达亮起的出口")
+
+
+func _on_exit_locked(player: Player) -> void:
+	if player == _player and not _is_completed:
+		_hud.show_message("出口尚未开启 · 先触碰出口按钮")
+
+
+func _on_exit_completed(player: Player) -> void:
+	if player != _player or _is_completed or not _exit_door.is_open():
+		return
+	_is_completed = true
+	_player.cancel_actions()
+	_player.velocity = Vector2.ZERO
+	_player.set_physics_process(false)
+	_player.set_process_unhandled_input(false)
+	completion_changed.emit(true, _elapsed)
+	_completion_overlay.show_completion(_elapsed, _death_count)
+	var signal_bus := get_node_or_null("/root/GlobalSignalBus")
+	if signal_bus != null:
+		signal_bus.level_completed.emit(level_id)
+	# Freeze gameplay after the physics callback; Interface keeps processing for restart.
+	set_deferred("process_mode", Node.PROCESS_MODE_DISABLED)

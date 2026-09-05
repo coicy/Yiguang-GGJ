@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://features/level/moveable_cube.tscn" id="1_cube"]
+[ext_resource type="Script" path="res://features/level/whitebox_door.gd" id="2_door"]
+
+[node name="WhiteboxDoor" instance=ExtResource("1_cube")]
+script = ExtResource("2_door")
+cube_size = Vector2(32, 32)

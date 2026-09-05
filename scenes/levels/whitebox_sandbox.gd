@@ -56,6 +56,7 @@ func _ready() -> void:
 	_checkpoint_snapshot = _initial_snapshot.duplicate(true)
 	_player_anchor.global_position = _checkpoint_position
 	_hud.bind_player(_player, self)
+	_completion_overlay.restart_requested.connect(restart_level)
 
 
 func _process(delta: float) -> void:

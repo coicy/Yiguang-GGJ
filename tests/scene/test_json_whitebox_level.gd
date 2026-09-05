@@ -32,7 +32,7 @@ func _run() -> void:
 	_assert_supported_entity_binding(level)
 	assert(level.get_data_issues().is_empty(), "The supplied map must not require hard-coded mechanism fallbacks.")
 	level.queue_free()
-	print("PASS: map references, B1/B2 motion, gated Rings and resizing attachments")
+	print("PASS: map references, B1 door, B1/B2 motion, gated Rings and resizing attachments")
 	# Let queued nodes and the audio mixer release stopped playback before shutdown.
 	await process_frame
 	await create_timer(0.1).timeout
@@ -100,9 +100,9 @@ func _assert_button_to_cube_paths(level: JsonWhiteboxLevel, source_data: Diction
 		if button_data.get("__identifier", "") != "Button":
 			continue
 		var button_targets := _linked_ids(button_data)
-		assert(not button_targets.is_empty(), "Every supplied button must control a cube.")
+		assert(not button_targets.is_empty(), "Every supplied button must control a door or cube.")
 		if button_id == "0f859c40-96d0-11f1-9ec0-a7f50fdb1f9d":
-			assert(button_targets == ["14f1b660-96d0-11f1-ba31-2fb3210b8ae8"])
+			assert(button_targets == ["14f1b660-96d0-11f1-ba31-2fb3210b8ae8", "e1e9a7b0-96d0-11f1-be70-0dbca0ba9a32"])
 		if button_id == B2:
 			assert(button_targets.size() == 2 and C2 in button_targets and C6 in button_targets)
 		if button_id == "17ea7d40-96d0-11f1-9ec0-5b135eaa7d6d":
@@ -124,6 +124,13 @@ func _assert_button_to_cube_paths(level: JsonWhiteboxLevel, source_data: Diction
 			assert(not a.is_moving() and not b.is_moving(), "B2 must finish within six seconds.")
 		for cube_id: String in button_targets:
 			var cube_data := source_entities[cube_id] as Dictionary
+			if cube_data.get("__identifier", "") == "Door":
+				var door := level.get_entity(cube_id) as WhiteboxDoor
+				assert(door != null)
+				await _wait_for_motion(door)
+				assert(door.is_open())
+				assert(door.get_world_rect().is_equal_approx(Rect2(624.0, 384.0, 32.0, 32.0)))
+				continue
 			assert(cube_data.get("__identifier", "") == "MoveableCube")
 			var destinations := _linked_ids(cube_data)
 			assert(destinations.size() == 1, "A button-driven cube must have exactly one next-cube destination.")
