@@ -1,6 +1,7 @@
-[gd_scene format=3 uid="uid://cjyj11urlfue0"]
+[gd_scene load_steps=3 format=3 uid="uid://cjyj11urlfue0"]
 
 [ext_resource type="Script" uid="uid://q587l1lasgm8" path="res://features/level/nutrition_tank.gd" id="1_nutrition"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/grow_tank.png" id="2_tank"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nutrition"]
 size = Vector2(48, 48)
@@ -13,3 +14,8 @@ script = ExtResource("1_nutrition")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1220073360]
 shape = SubResource("RectangleShape2D_nutrition")
 debug_color = Color(0, 0.6, 0.69803923, 0)
+
+[node name="TankSprite" type="Sprite2D" parent="."]
+position = Vector2(0, -4)
+scale = Vector2(0.06, 0.06)
+texture = ExtResource("2_tank")

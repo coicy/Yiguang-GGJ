@@ -70,9 +70,6 @@ func _set_absorbing_actor(actor: Node2D) -> void:
 func _draw() -> void:
 	var rect := _resource_rect()
 	var center := rect.get_center()
-	draw_rect(rect, Color("#31543b"), true)
-	draw_rect(rect.grow(-1.0), Color("#65d46e"), true)
-	draw_rect(rect, Color("#d5ffd5"), false, 1.0)
 	if _actors.is_empty():
 		return
 	var prompt := "E 吸收"
@@ -80,11 +77,10 @@ func _draw() -> void:
 		if is_instance_valid(actor) and actor.has_method(&"requires_absorption_release") and actor.call(&"requires_absorption_release"):
 			prompt = "松开 E 后继续吸收"
 			break
-	var prompt_color := Color("#e7ffe7")
+	var prompt_color := Color.WHITE
 	if _absorbing_actor != null:
-		prompt = "吸收营养液"
-		prompt_color = Color("#b9ffb1")
-		_draw_absorption_stream(center, Color("#b9ff76"))
+		prompt = "吸收中"
+		_draw_absorption_stream(center, Color.WHITE)
 	draw_string(ThemeDB.fallback_font, Vector2(rect.position.x - 8.0, rect.position.y - 6.0), prompt, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 12, prompt_color)
 
 
