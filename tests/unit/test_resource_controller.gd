@@ -28,6 +28,12 @@ func _run() -> void:
 	assert(forms.get_current().id == &"sprout")
 	resources.absorb_nutrition(100.0)
 	assert(forms.get_current().id == &"humanoid")
+	resources.absorb_nutrition(120.0)
+	assert(forms.get_current().id == &"mature")
+	assert(resources.absorb_toxin(119.0))
+	assert(forms.get_current().id == &"mature")
+	assert(resources.absorb_toxin(1.0))
+	assert(forms.get_current().id == &"humanoid")
 
 	var toxin := Node.new()
 	resources.enter_toxin(toxin)

@@ -30,6 +30,16 @@ func _run() -> void:
 	assert(player.current_form_id() == &"humanoid")
 	Input.action_release(&"absorb_resource")
 
+	var toxin_resource := preload("res://features/level/toxin_resource.tscn").instantiate() as ToxinResource
+	root.add_child(toxin_resource)
+	assert(player.form_controller.restore_form(&"mature"))
+	toxin_resource.body_entered.emit(player)
+	Input.action_press(&"absorb_resource")
+	toxin_resource._physics_process(3.0)
+	assert(player.current_form_id() == &"humanoid", "The mature form must be able to absorb a toxin tank and wither.")
+	Input.action_release(&"absorb_resource")
+	toxin_resource.body_exited.emit(player)
+
 	var toxin_zone := preload("res://features/level/toxin_zone.tscn").instantiate() as ToxinZone
 	root.add_child(toxin_zone)
 	toxin_zone.actor_entered.connect(func(actor: Node2D) -> void: actor.enter_toxin(toxin_zone))
@@ -178,7 +188,7 @@ func _run() -> void:
 	assert(completed_count[0] == 1)
 
 	for node: Node in [
-		player, ground, nutrition_tank, toxin_zone, wind_zone, hard_floor, high_switch, gate,
+		player, ground, nutrition_tank, toxin_resource, toxin_zone, wind_zone, hard_floor, high_switch, gate,
 		low_switch, incomplete_switch, exit_goal,
 	]:
 		node.free()

@@ -63,15 +63,25 @@ func absorb_toxin(amount: float) -> bool:
 	if amount <= 0.0 or _forms == null:
 		return false
 	var form := _forms.get_current()
-	if form == null or form.id == &"sprout" or form.growth_threshold <= 0.0:
+	if form == null or form.id == &"sprout":
 		return false
-	toxin_progress = minf(toxin_progress + amount, form.growth_threshold)
-	if toxin_progress >= form.growth_threshold and _forms.wither():
+	var toxin_threshold := _toxin_threshold(form)
+	if toxin_threshold <= 0.0:
+		return false
+	toxin_progress = minf(toxin_progress + amount, toxin_threshold)
+	if toxin_progress >= toxin_threshold and _forms.wither():
 		toxin_progress = 0.0
 		growth_progress = 0.0
 		form_transitioned.emit(_forms.get_current().id)
 	_emit_values()
 	return true
+
+
+func _toxin_threshold(form: FormDefinition) -> float:
+	if form.growth_threshold > 0.0:
+		return form.growth_threshold
+	var withered_form := _forms.peek_withered_form()
+	return withered_form.growth_threshold if withered_form != null else 0.0
 
 
 func enter_toxin(source: Object) -> void:
