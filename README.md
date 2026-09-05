@@ -26,13 +26,14 @@ The current main scene is a playable whitebox vertical slice covering all three 
 
 - `A` / `D`: move.
 - `Space`: jump; hold while falling in mature form to glide.
-- Left Mouse: toggle root in humanoid form, or attach/detach from the nearest visible vine anchor in mature form.
+- Left Mouse: toggle root in humanoid form, or attach/detach from a visible vine anchor in the mouse direction in mature form.
 - `W/A/S/D`: while rooted in humanoid form, slowly extend the leg in cardinal directions and push the player; release to retract.
 - Hold `E` inside nutrition or toxin liquid to absorb it; without `E`, neither liquid is absorbed. Each stage change ends that absorption session: release and press `E` again to continue.
+- While attached to a vine ring, press `E` to move above it if the player fits and the path is clear; reaching the top releases the vine.
 - `R`: restart the complete course from the beginning.
 - `F3`: toggle the existing debug overlay.
 
-Forms are earned through gameplay. `E` is reserved for resource absorption; it does not cycle forms.
+Forms are earned through gameplay. `E` absorbs resources or climbs an attached ring; it does not cycle forms.
 
 ## Gameplay audio
 

@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="SpriteVariantSet" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
+[ext_resource type="Script" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0000_草团1.png" id="3_grass"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0002_红花1.png" id="4_flower"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0011_高草1.png" id="5_tall_grass"]
+
+[sub_resource type="Resource" id="GrassTuft"]
+script = ExtResource("2_variant")
+id = &"grass_tuft"
+texture = ExtResource("3_grass")
+
+[sub_resource type="Resource" id="RedFlower"]
+script = ExtResource("2_variant")
+id = &"red_flower"
+texture = ExtResource("4_flower")
+
+[sub_resource type="Resource" id="TallGrass"]
+script = ExtResource("2_variant")
+id = &"tall_grass"
+texture = ExtResource("5_tall_grass")
+
+[resource]
+script = ExtResource("1_set")
+display_name = "Foliage decoration"
+variants = Array[ExtResource("2_variant")]([SubResource("GrassTuft"), SubResource("RedFlower"), SubResource("TallGrass")])

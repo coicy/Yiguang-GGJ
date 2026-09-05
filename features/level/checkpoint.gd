@@ -10,6 +10,7 @@ var _is_activated := false
 
 
 func _ready() -> void:
+	add_to_group(&"handbuilt_checkpoints")
 	body_entered.connect(_on_body_entered)
 
 

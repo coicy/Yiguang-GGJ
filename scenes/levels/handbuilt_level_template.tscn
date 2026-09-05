@@ -1,0 +1,73 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://features/level/handbuilt/handbuilt_level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/spawn_point.tscn" id="3_spawn"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="4_camera_bounds"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/terrain_piece.tscn" id="5_terrain"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/hard_floor_piece.tscn" id="6_hard_floor"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/moving_platform.tscn" id="7_platform"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/trigger_button.tscn" id="8_button"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/hazard_area.tscn" id="9_hazard"]
+[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="10_checkpoint"]
+[ext_resource type="PackedScene" path="res://features/abilities/vine_anchor.tscn" id="11_anchor"]
+
+[node name="HandbuiltLevel" type="Node2D"]
+script = ExtResource("1_level")
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="StartFloor" parent="Terrain" instance=ExtResource("5_terrain")]
+position = Vector2(0, 560)
+piece_size = Vector2(1344, 80)
+
+[node name="RaisedHardFloor" parent="Terrain" instance=ExtResource("6_hard_floor")]
+position = Vector2(704, 448)
+piece_size = Vector2(192, 32)
+
+[node name="Mechanisms" type="Node2D" parent="."]
+
+[node name="MovingPlatform" parent="Mechanisms" instance=ExtResource("7_platform")]
+position = Vector2(392, 456)
+platform_size = Vector2(120, 24)
+destination_offset = Vector2(184, 0)
+
+[node name="VineAnchor" parent="Mechanisms/MovingPlatform/Body/Attachments" instance=ExtResource("11_anchor")]
+position = Vector2(60, -52)
+
+[node name="PlatformButton" parent="Mechanisms" instance=ExtResource("8_button")]
+position = Vector2(288, 544)
+targets = [NodePath("../MovingPlatform")]
+
+[node name="Areas" type="Node2D" parent="."]
+
+[node name="PitHazard" parent="Areas" instance=ExtResource("9_hazard")]
+position = Vector2(1024, 528)
+area_size = Vector2(160, 32)
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="StartCheckpoint" parent="Checkpoints" instance=ExtResource("10_checkpoint")]
+position = Vector2(96, 560)
+
+[node name="Actors" type="Node2D" parent="."]
+
+[node name="Player" parent="Actors" instance=ExtResource("2_player")]
+unique_name_in_owner = true
+position = Vector2(96, 560)
+
+[node name="Camera2D" type="Camera2D" parent="Actors/Player"]
+unique_name_in_owner = true
+position = Vector2(180, -160)
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+
+[node name="SpawnPoint" parent="." instance=ExtResource("3_spawn")]
+unique_name_in_owner = true
+position = Vector2(96, 560)
+
+[node name="CameraBounds" parent="." instance=ExtResource("4_camera_bounds")]
+unique_name_in_owner = true
+bounds_size = Vector2(1344, 640)

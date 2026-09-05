@@ -1,32 +1,42 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://c65j2lesd56mx"]
 
-[ext_resource type="Script" path="res://features/level/handbuilt/terrain_piece.gd" id="1_script"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_terrain"]
-size = Vector2(192, 48)
-
-[node name="TerrainPiece" type="StaticBody2D"]
-collision_layer = 1
+[ext_resource type="Script" uid="uid://dusqu2s6kl0m5" path="res://features/level/handbuilt/terrain_piece.gd" id="1_script"]
+[ext_resource type="Resource" uid="uid://q21f1j5pkevv" path="res://assets/runtime/scenery/variants/natural_floor_variants.tres" id="2_i7xpm"]
+[node name="TerrainPiece" type="StaticBody2D" unique_id=1291361382]
 collision_mask = 2
 script = ExtResource("1_script")
+sprite_variants = ExtResource("2_i7xpm")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1031688781]
 unique_name_in_owner = true
-position = Vector2(96, 24)
-shape = SubResource("RectangleShape2D_terrain")
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-unique_name_in_owner = true
-disabled = true
 polygon = PackedVector2Array(0, 0, 192, 0, 192, 48, 0, 48)
+disabled = true
 
-[node name="Artwork" type="Sprite2D" parent="."]
-unique_name_in_owner = true
-centered = false
-
-[node name="PolygonArtwork" type="Polygon2D" parent="."]
+[node name="TerrainVisual" type="NinePatchRect" parent="." unique_id=1185384908]
 unique_name_in_owner = true
 visible = false
+mouse_filter = 2
+patch_margin_left = 64
+patch_margin_top = 16
+patch_margin_right = 64
+patch_margin_bottom = 16
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="PolygonArtwork" type="Polygon2D" parent="." unique_id=1905841275]
+unique_name_in_owner = true
+visible = false
+texture_repeat = 2
 polygon = PackedVector2Array(0, 0, 192, 0, 192, 48, 0, 48)
 
-[node name="Decorations" type="Node2D" parent="."]
+[node name="LeftCap" type="Sprite2D" parent="." unique_id=1739312993]
+unique_name_in_owner = true
+visible = false
+centered = false
+
+[node name="RightCap" type="Sprite2D" parent="." unique_id=1455343970]
+unique_name_in_owner = true
+visible = false
+centered = false
+
+[node name="Decorations" type="Node2D" parent="." unique_id=862953115]

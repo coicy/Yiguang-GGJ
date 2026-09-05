@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/moving_platform.tscn" id="1_platform"]
+
+[node name="Door" instance=ExtResource("1_platform")]
+platform_size = Vector2(48, 144)
+destination_offset = Vector2(0, -144)
+placeholder_color = Color(0.38, 0.26, 0.2, 1)

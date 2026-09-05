@@ -36,7 +36,7 @@ func _process(_delta: float) -> void:
 	elif _player.abilities.is_leg_extended():
 		ability = "伸腿推进"
 	elif _player.abilities.is_vine_attached():
-		ability = "藤蔓摆荡"
+		ability = "翻越圆环" if _player.movement.is_vine_climbing() else "藤蔓摆荡"
 	state_label.text = "状态：%s · %s" % [_player.current_state(), ability]
 
 
@@ -68,7 +68,7 @@ func _on_form_changed(form_id: StringName) -> void:
 			controls += " · 左键扎根/拔根 · 扎根后 WASD 正交伸腿推进 · 按住 E 吸取液体"
 		&"mature":
 			display = "成熟体"
-			controls += " · 左键连接/断开藤蔓 · 按住 E 吸取液体 · 下落按住空格滑翔"
+			controls += " · 左键连接/断开藤蔓 · 连环后 E 上环 · 按住 E 吸液 · 下落空格滑翔"
 	form_label.text = "形态：%s" % display
 	controls_label.text = controls
 

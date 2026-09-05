@@ -2,13 +2,21 @@ class_name FormDefinition
 extends Resource
 ## Serializable form configuration. Data only: no node references, no per-frame logic.
 
+enum CollisionShapeKind {
+	CAPSULE,
+	CIRCLE,
+}
+
 @export var id: StringName = &"humanoid"
 @export var display_name: String = "Humanoid"
 @export var move_speed: float = 300.0
+@export var can_jump: bool = true
 @export var jump_force: float = -400.0
 @export var gravity_scale: float = 1.0
 @export var max_fall_speed: float = 800.0
 @export var collision_size: Vector2 = Vector2(28.0, 40.0)
+@export var collision_shape_kind: CollisionShapeKind = CollisionShapeKind.CAPSULE
+@export var collision_offset: Vector2 = Vector2.ZERO
 @export var body_color: Color = Color("5abf77")
 @export_range(0.0, 1000.0, 1.0) var growth_threshold: float = 0.0
 @export var can_root: bool = false
@@ -19,6 +27,9 @@ extends Resource
 @export var glide_enabled: bool = false
 @export var glide_fall_speed: float = 140.0
 @export var sprite_frames: SpriteFrames
+@export var visual_scene: PackedScene
+@export_range(0.01, 4.0, 0.01) var visual_scale: float = 1.0
+@export var visual_offset: Vector2 = Vector2.ZERO
 
 
 static func from_dict(data: Dictionary) -> FormDefinition:
@@ -26,10 +37,13 @@ static func from_dict(data: Dictionary) -> FormDefinition:
 	definition.id = StringName(str(data.get("id", "form")))
 	definition.display_name = str(data.get("display_name", ""))
 	definition.move_speed = float(data.get("move_speed", 300.0))
+	definition.can_jump = bool(data.get("can_jump", true))
 	definition.jump_force = float(data.get("jump_force", -400.0))
 	definition.gravity_scale = float(data.get("gravity_scale", 1.0))
 	definition.max_fall_speed = float(data.get("max_fall_speed", 800.0))
 	definition.collision_size = data.get("collision_size", Vector2(28.0, 40.0)) as Vector2
+	definition.collision_shape_kind = int(data.get("collision_shape_kind", CollisionShapeKind.CAPSULE)) as CollisionShapeKind
+	definition.collision_offset = data.get("collision_offset", Vector2.ZERO) as Vector2
 	definition.body_color = data.get("body_color", Color("5abf77")) as Color
 	definition.growth_threshold = float(data.get("growth_threshold", 0.0))
 	definition.can_root = bool(data.get("can_root", false))

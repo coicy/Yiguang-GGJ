@@ -12,6 +12,7 @@ var _direction: float = 1.0
 
 
 func _ready() -> void:
+	add_to_group(&"handbuilt_hazards")
 	_origin_x = global_position.x
 	body_entered.connect(_on_body_entered)
 	queue_redraw()

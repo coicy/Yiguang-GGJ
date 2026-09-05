@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="SpriteVariantSet" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
+[ext_resource type="Script" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0026_树枝平台（延申）.png" id="3_branch"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0028_石板3.png" id="4_stone"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0037_已插入图像.png" id="5_island_small"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0038_图层-53.png" id="6_island_wide"]
+
+[sub_resource type="Resource" id="Branch"]
+script = ExtResource("2_variant")
+id = &"branch"
+texture = ExtResource("3_branch")
+
+[sub_resource type="Resource" id="Stone"]
+script = ExtResource("2_variant")
+id = &"stone_platform"
+texture = ExtResource("4_stone")
+
+[sub_resource type="Resource" id="IslandSmall"]
+script = ExtResource("2_variant")
+id = &"island_small"
+texture = ExtResource("5_island_small")
+
+[sub_resource type="Resource" id="IslandWide"]
+script = ExtResource("2_variant")
+id = &"island_wide"
+texture = ExtResource("6_island_wide")
+
+[resource]
+script = ExtResource("1_set")
+display_name = "Platform"
+variants = Array[ExtResource("2_variant")]([SubResource("Branch"), SubResource("Stone"), SubResource("IslandSmall"), SubResource("IslandWide")])

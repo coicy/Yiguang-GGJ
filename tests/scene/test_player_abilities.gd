@@ -88,11 +88,23 @@ func _run() -> void:
 	player.velocity.y = 500.0
 	player.movement.tick(0.1, 0.0, true)
 	assert(player.velocity.y <= player.form_controller.get_current().glide_fall_speed)
+	var off_direction_anchor := preload("res://features/abilities/vine_anchor.tscn").instantiate() as VineAnchor
+	root.add_child(off_direction_anchor)
+	off_direction_anchor.global_position = player.global_position + Vector2(40.0, -40.0)
+	var aimed_anchor := preload("res://features/abilities/vine_anchor.tscn").instantiate() as VineAnchor
+	root.add_child(aimed_anchor)
+	aimed_anchor.global_position = player.global_position + Vector2(180.0, 0.0)
+	_press_primary(player, aimed_anchor.global_position)
+	await _physics_steps(2)
+	assert(player.abilities.get_vine_anchor() == aimed_anchor, "Vine must attach to the anchor in the mouse direction.")
+	player.abilities.stop_primary()
+	off_direction_anchor.free()
+	aimed_anchor.free()
 
 	var anchor := preload("res://features/abilities/vine_anchor.tscn").instantiate() as VineAnchor
 	root.add_child(anchor)
 	anchor.global_position = player.global_position + Vector2(120.0, -160.0)
-	_press_primary(player)
+	_press_primary(player, anchor.global_position)
 	await _physics_steps(2)
 	assert(player.abilities.is_vine_attached())
 	var length_before := player.global_position.distance_to(anchor.global_position)
@@ -172,9 +184,10 @@ func _physics_steps(count: int) -> void:
 		await physics_frame
 
 
-func _press_primary(player: Player) -> void:
+func _press_primary(player: Player, mouse_position: Vector2 = Vector2.ZERO) -> void:
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
+	event.position = mouse_position
 	event.pressed = true
 	player._unhandled_input(event)
 
