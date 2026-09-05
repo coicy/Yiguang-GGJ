@@ -24,7 +24,8 @@ func interact(actor: Node) -> bool
 func absorb(actor: Node, amount: float) -> bool
 ```
 
-吸收必须是连续过程；资源点不能直接修改玩家内部字段，应调用玩家暴露的资源入口。
+吸收必须是连续过程；运行时区域只有在角色的 `is_absorbing_resource()` 返回 `true` 时才会处理吸收，
+资源点不能直接修改玩家内部字段，应调用玩家暴露的资源入口。直接调用 `absorb()` 仍表示一次明确的逻辑命令。
 
 ### `NutritionTank : Area2D`
 
@@ -32,18 +33,22 @@ func absorb(actor: Node, amount: float) -> bool
 func absorb(actor: Node, amount: float) -> bool
 ```
 
-营养液罐仅调用 `actor.absorb_nutrition(amount)`；当数值不为正或目标未实现该公开入口时返回 `false`。
+营养液罐仅在角色按住 `absorb_resource`（默认 `E`）时调用 `actor.absorb_nutrition(amount)`；
+当数值不为正或目标未实现该公开入口时返回 `false`。未按 `E` 不会自动吸收。
 
 ### `ToxinZone : Area2D`
 
 ```gdscript
 signal actor_entered(actor: Node2D)
 signal actor_exited(actor: Node2D)
+signal actor_absorption_started(actor: Node2D)
+signal actor_absorption_stopped(actor: Node2D)
 
 func is_actor_inside(actor: Node2D) -> bool
 ```
 
-毒素区只负责检测范围与报告事实；毒素消耗、速度修正和稳定度规则由玩家/形态状态系统处理。
+毒素区只负责检测范围与报告事实；角色在范围内按住 `absorb_resource`（默认 `E`）时发出
+`actor_absorption_started`，松开或离开时发出 `actor_absorption_stopped`。毒素消耗、速度修正和稳定度规则由玩家/形态状态系统处理。
 
 ### `WhiteboxSwitch : Node`
 

@@ -11,6 +11,7 @@ func _init() -> void:
 	assert(_action_has_mouse_button(&"ability_primary"))
 	assert(_action_has_physical_key(&"move_up", KEY_W))
 	assert(_action_has_physical_key(&"move_down", KEY_S))
+	assert(_action_has_physical_key(&"absorb_resource", KEY_E))
 
 	var controller := AbilityControllerScript.new()
 	controller.setup(HUMANOID_FORM)

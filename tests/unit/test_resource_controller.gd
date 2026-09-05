@@ -24,6 +24,10 @@ func _run() -> void:
 	assert(is_zero_approx(resources.growth_progress))
 	resources.absorb_nutrition(100.0)
 	assert(forms.get_current().id == &"humanoid")
+	assert(resources.absorb_toxin(120.0))
+	assert(forms.get_current().id == &"sprout")
+	resources.absorb_nutrition(100.0)
+	assert(forms.get_current().id == &"humanoid")
 
 	var toxin := Node.new()
 	resources.enter_toxin(toxin)

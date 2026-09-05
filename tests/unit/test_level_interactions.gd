@@ -9,6 +9,20 @@ class NutritionActor extends Node2D:
 		return true
 
 
+class ToxinActor extends CharacterBody2D:
+	var absorbing_resource: bool = false
+	var toxin_active: bool = false
+
+	func is_absorbing_resource() -> bool:
+		return absorbing_resource
+
+	func enter_toxin(_source: Object) -> void:
+		toxin_active = true
+
+	func exit_toxin(_source: Object) -> void:
+		toxin_active = false
+
+
 func _init() -> void:
 	call_deferred("_run_tests")
 
@@ -23,14 +37,19 @@ func _run_tests() -> void:
 
 func _test_toxin_zone_tracks_physical_entry_and_exit() -> void:
 	var toxin_zone := ToxinZone.new()
-	var actor := _create_physics_actor()
+	var actor := ToxinActor.new()
 	var entered_actors: Array[Node2D] = []
 	var exited_actors: Array[Node2D] = []
 
 	_configure_area(toxin_zone, Vector2(128.0, 64.0), 64)
+	actor.collision_layer = 2
+	actor.collision_mask = 64
+	_add_collision_shape(actor, Vector2(16.0, 16.0))
 	root.add_child(toxin_zone)
 	toxin_zone.actor_entered.connect(func(reported_actor: Node2D) -> void: entered_actors.append(reported_actor))
 	toxin_zone.actor_exited.connect(func(reported_actor: Node2D) -> void: exited_actors.append(reported_actor))
+	toxin_zone.actor_absorption_started.connect(func(reported_actor: Node2D) -> void: reported_actor.enter_toxin(toxin_zone))
+	toxin_zone.actor_absorption_stopped.connect(func(reported_actor: Node2D) -> void: reported_actor.exit_toxin(toxin_zone))
 
 	actor.position = Vector2(256.0, 0.0)
 	root.add_child(actor)
@@ -39,6 +58,13 @@ func _test_toxin_zone_tracks_physical_entry_and_exit() -> void:
 	await _await_collision_update()
 	assert(toxin_zone.is_actor_inside(actor))
 	assert(entered_actors == [actor])
+	assert(not actor.toxin_active)
+	actor.absorbing_resource = true
+	await _await_collision_update()
+	assert(actor.toxin_active)
+	actor.absorbing_resource = false
+	await _await_collision_update()
+	assert(not actor.toxin_active)
 
 	actor.position = Vector2(256.0, 0.0)
 	await _await_collision_update()

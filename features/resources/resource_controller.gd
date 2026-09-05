@@ -13,6 +13,7 @@ const NUTRITION_STABILITY_MULTIPLIER := 1.25
 const TOXIN_SPEED_MULTIPLIER := 0.55
 
 var growth_progress: float = 0.0
+var toxin_progress: float = 0.0
 var stability: float = MAX_STABILITY
 
 var _forms: FormController
@@ -58,6 +59,21 @@ func absorb_nutrition(amount: float) -> bool:
 	return true
 
 
+func absorb_toxin(amount: float) -> bool:
+	if amount <= 0.0 or _forms == null:
+		return false
+	var form := _forms.get_current()
+	if form == null or form.id == &"sprout" or form.growth_threshold <= 0.0:
+		return false
+	toxin_progress = minf(toxin_progress + amount, form.growth_threshold)
+	if toxin_progress >= form.growth_threshold and _forms.wither():
+		toxin_progress = 0.0
+		growth_progress = 0.0
+		form_transitioned.emit(_forms.get_current().id)
+	_emit_values()
+	return true
+
+
 func enter_toxin(source: Object) -> void:
 	if source == null:
 		return
@@ -82,12 +98,14 @@ func speed_multiplier() -> float:
 func snapshot() -> Dictionary:
 	return {
 		"growth": growth_progress,
+		"toxin": toxin_progress,
 		"stability": stability,
 	}
 
 
 func restore(saved: Dictionary) -> void:
 	growth_progress = maxf(0.0, float(saved.get("growth", 0.0)))
+	toxin_progress = maxf(0.0, float(saved.get("toxin", 0.0)))
 	stability = clampf(float(saved.get("stability", MAX_STABILITY)), 0.0, MAX_STABILITY)
 	_toxin_sources.clear()
 	toxin_changed.emit(false)
@@ -96,6 +114,7 @@ func restore(saved: Dictionary) -> void:
 
 func reset() -> void:
 	growth_progress = 0.0
+	toxin_progress = 0.0
 	stability = MAX_STABILITY
 	_toxin_sources.clear()
 	toxin_changed.emit(false)

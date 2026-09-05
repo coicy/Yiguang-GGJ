@@ -1,11 +1,11 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/levels/whitebox_sandbox.tscn" id="1_sandbox"]
+[ext_resource type="PackedScene" path="res://scenes/levels/json_whitebox_level.tscn" id="1_whitebox"]
 
 [node name="Main" type="Node2D"]
 
 [node name="LevelHost" type="Node2D" parent="."]
 
-[node name="WhiteboxSandbox" parent="LevelHost" instance=ExtResource("1_sandbox")]
+[node name="JsonWhiteboxLevel" parent="LevelHost" instance=ExtResource("1_whitebox")]
 
 [node name="Debug" type="Node" parent="."]

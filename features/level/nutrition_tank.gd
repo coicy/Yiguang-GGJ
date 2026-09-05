@@ -15,10 +15,11 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	for actor: Node in _actors.duplicate():
-		if is_instance_valid(actor):
+		if is_instance_valid(actor) and _is_absorbing(actor):
 			absorb(actor, nutrition_per_second * delta)
 		else:
-			_actors.erase(actor)
+			if not is_instance_valid(actor):
+				_actors.erase(actor)
 
 
 func absorb(actor: Node, amount: float) -> bool:
@@ -38,6 +39,10 @@ func _on_body_entered(actor: Node) -> void:
 
 func _on_body_exited(actor: Node) -> void:
 	_actors.erase(actor)
+
+
+func _is_absorbing(actor: Node) -> bool:
+	return actor.has_method(&"is_absorbing_resource") and actor.call(&"is_absorbing_resource") == true
 
 
 func _draw() -> void:
