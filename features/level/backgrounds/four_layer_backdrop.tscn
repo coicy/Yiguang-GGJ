@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/level/backgrounds/parallax_silhouette_layer.gd" id="1_layer"]
+
+[node name="FourLayerBackdrop" type="Node2D"]
+
+[node name="Sky" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(1344, 640)
+repeat_times = 2
+
+[node name="Artwork" type="Node2D" parent="Sky"]
+script = ExtResource("1_layer")
+layer_style = "sky"
+
+[node name="FarCanopy" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.08, 0.03)
+repeat_size = Vector2(1344, 640)
+repeat_times = 2
+
+[node name="Artwork" type="Node2D" parent="FarCanopy"]
+script = ExtResource("1_layer")
+layer_style = "far_canopy"
+
+[node name="GreenhouseStructure" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.22, 0.08)
+repeat_size = Vector2(1344, 640)
+repeat_times = 2
+
+[node name="Artwork" type="Node2D" parent="GreenhouseStructure"]
+script = ExtResource("1_layer")
+layer_style = "mid_structure"
+
+[node name="NearFoliage" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.45, 0.15)
+repeat_size = Vector2(1344, 640)
+repeat_times = 2
+
+[node name="Artwork" type="Node2D" parent="NearFoliage"]
+script = ExtResource("1_layer")
+layer_style = "near_foliage"
