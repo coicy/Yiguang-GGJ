@@ -3,8 +3,10 @@ extends Control
 ## Presentation-only start screen. Main owns the run transition.
 
 signal start_requested
+signal exit_requested
 
 @onready var start_button: Button = %StartButton
+@onready var exit_button: Button = %ExitButton
 
 var _start_enabled: bool = true
 
@@ -12,6 +14,7 @@ var _start_enabled: bool = true
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	start_button.pressed.connect(_on_start_pressed)
+	exit_button.pressed.connect(_on_exit_pressed)
 	start_button.grab_focus()
 
 
@@ -26,3 +29,7 @@ func _on_start_pressed() -> void:
 	_start_enabled = false
 	start_button.disabled = true
 	start_requested.emit()
+
+
+func _on_exit_pressed() -> void:
+	exit_requested.emit()

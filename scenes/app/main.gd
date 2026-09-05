@@ -16,6 +16,7 @@ func _ready() -> void:
 		run_state.call(&"reset")
 		run_state.set(&"current_level_id", LEVEL_ID)
 	start_screen.connect(&"start_requested", _on_start_requested)
+	start_screen.connect(&"exit_requested", _on_exit_requested)
 	get_tree().paused = true
 
 
@@ -47,3 +48,9 @@ func _emit_run_started() -> void:
 			signal_bus.emit_signal(&"run_started")
 		if signal_bus.has_signal(&"level_started"):
 			signal_bus.emit_signal(&"level_started", LEVEL_ID)
+
+
+func _on_exit_requested() -> void:
+	if _run_started:
+		return
+	get_tree().quit()

@@ -12,9 +12,10 @@ func _run() -> void:
 	var standalone_screen := START_SCREEN_SCENE.instantiate()
 	root.add_child(standalone_screen)
 	await process_frame
-	var standalone_button := standalone_screen.get_node("Content/Columns/InfoPanel/Info/StartButton") as Button
+	var standalone_button := standalone_screen.get_node("Content/Center/Stack/MenuCenter/Menu/StartButton") as Button
 	assert(standalone_button != null)
 	assert(standalone_button.has_focus())
+	assert(standalone_screen.get_node("Content/Center/Stack/MenuCenter/Menu/ExitButton") != null)
 	standalone_screen.free()
 
 	var main := MAIN_SCENE.instantiate()
@@ -28,7 +29,7 @@ func _run() -> void:
 	assert(run_state != null)
 	assert(run_state.get(&"current_level_id") == &"yiguang_whitebox")
 
-	var start_button := start_screen.get_node("Content/Columns/InfoPanel/Info/StartButton") as Button
+	var start_button := start_screen.get_node("Content/Center/Stack/MenuCenter/Menu/StartButton") as Button
 	assert(start_button != null)
 	assert(start_button.has_focus())
 	start_button.pressed.emit()
@@ -36,6 +37,6 @@ func _run() -> void:
 
 	assert(not paused)
 	assert(not start_screen.visible)
-	assert(main.get_node("LevelHost/YiguangWhitebox") != null)
+	assert(main.get_node("LevelHost/JsonWhiteboxLevel") != null)
 	main.free()
 	quit()

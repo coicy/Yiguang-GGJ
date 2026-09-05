@@ -1,11 +1,21 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/levels/json_whitebox_level.tscn" id="1_whitebox"]
+[ext_resource type="PackedScene" path="res://features/ui/start_screen.tscn" id="2_start_screen"]
+[ext_resource type="Script" path="res://scenes/app/main.gd" id="3_main"]
 
 [node name="Main" type="Node2D"]
+script = ExtResource("3_main")
 
 [node name="LevelHost" type="Node2D" parent="."]
 
 [node name="JsonWhiteboxLevel" parent="LevelHost" instance=ExtResource("1_whitebox")]
 
 [node name="Debug" type="Node" parent="."]
+
+[node name="Interface" type="CanvasLayer" parent="."]
+layer = 10
+process_mode = 3
+
+[node name="StartScreen" parent="Interface" instance=ExtResource("2_start_screen")]
+unique_name_in_owner = true
