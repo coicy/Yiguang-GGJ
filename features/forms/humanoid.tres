@@ -24,4 +24,4 @@ glide_enabled = false
 glide_fall_speed = 140.0
 visual_scene = ExtResource("2_visual")
 visual_scale = 0.12
-visual_offset = Vector2(3, -2)
+visual_offset = Vector2(3, -0.37)

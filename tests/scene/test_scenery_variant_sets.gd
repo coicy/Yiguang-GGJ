@@ -5,6 +5,7 @@ const VARIANT_SETS := {
 	"hard": ["res://assets/runtime/scenery/variants/hard_floor_variants.tres", 3],
 	"platform": ["res://assets/runtime/scenery/variants/platform_variants.tres", 4],
 	"foliage": ["res://assets/runtime/scenery/variants/foliage_variants.tres", 3],
+	"grass_turf": ["res://assets/runtime/scenery/variants/grass_turf_variants.tres", 3],
 	"vine_root": ["res://assets/runtime/scenery/variants/vine_root_variants.tres", 3],
 	"laboratory": ["res://assets/runtime/scenery/variants/laboratory_prop_variants.tres", 2],
 	"thorn_hazard": ["res://assets/runtime/scenery/variants/thorn_hazard_variants.tres", 3],

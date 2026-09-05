@@ -14,8 +14,6 @@
 # 待确认文档
 
 - `docs/scenery_asset_mapping_template.md`：场景 PNG 素材到 JSON 关卡 Tile / Entity 的待填写映射表。
-- `scenes/levels/level_01.tscn`：使用非 Tile 美术与手工实体搭建的正式关卡；完成视觉复核后评估为默认权威关卡入口。
-
 - `docs/handbuilt_level_building.md`：补充普通与硬质地板的 Polygon2D / CollisionPolygon2D 编辑、素材变体与实例覆盖说明。
 
 - `assets/runtime/scenery/variants/`：根据场景素材表建立可复用的 `SpriteVariantSet` 素材组；待关卡实际采用后评估是否提升至权威索引。

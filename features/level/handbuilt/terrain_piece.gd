@@ -20,6 +20,25 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 		one_way_collision = value
 		_request_sync()
 
+@export_category("Collision")
+## Insets are measured from the visual piece rectangle and keep transparent art margins non-solid.
+@export_range(0.0, 4096.0, 0.5) var collision_left_inset := 0.0:
+	set(value):
+		collision_left_inset = maxf(value, 0.0)
+		_request_sync()
+@export_range(0.0, 4096.0, 0.5) var collision_top_inset := 0.0:
+	set(value):
+		collision_top_inset = maxf(value, 0.0)
+		_request_sync()
+@export_range(0.0, 4096.0, 0.5) var collision_right_inset := 0.0:
+	set(value):
+		collision_right_inset = maxf(value, 0.0)
+		_request_sync()
+@export_range(0.0, 4096.0, 0.5) var collision_bottom_inset := 0.0:
+	set(value):
+		collision_bottom_inset = maxf(value, 0.0)
+		_request_sync()
+
 @export_category("Modes")
 ## NinePatchRect art is the default so piece_size extends terrain without stretching pixels.
 @export var display_mode: DisplayMode = DisplayMode.SPRITE:
@@ -82,9 +101,7 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 		placeholder_color = value
 		queue_redraw()
 
-@onready var _collision_shape: CollisionShape2D = %CollisionShape2D
 @onready var _collision_polygon: CollisionPolygon2D = %CollisionPolygon2D
-@onready var _artwork: Sprite2D = %Artwork
 @onready var _terrain_visual: NinePatchRect = %TerrainVisual
 @onready var _polygon_artwork: Polygon2D = %PolygonArtwork
 @onready var _left_cap: Sprite2D = %LeftCap
@@ -92,13 +109,27 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 
 var _last_visual_polygon := PackedVector2Array()
 var _invalid_polygon_reported := false
+var _invalid_root_scale_reported := false
+var _is_baking_root_scale := false
+var _base_patch_margins := Vector4i()
 
 func _ready() -> void:
-	_make_collision_shape_unique()
+	_base_patch_margins = Vector4i(
+		_terrain_visual.patch_margin_left,
+		_terrain_visual.patch_margin_top,
+		_terrain_visual.patch_margin_right,
+		_terrain_visual.patch_margin_bottom,
+	)
 	_ensure_polygon_defaults()
+	_bake_root_scale_into_piece_size()
 	_sync_layout()
 
 func _process(_delta: float) -> void:
+	# A NinePatchRect repeats from its size, not from a parent CanvasItem scale.
+	# Bake inspector scale on this reusable root into piece_size so visuals and
+	# collision both grow without scaling pixels or physics shapes.
+	if Engine.is_editor_hint():
+		_bake_root_scale_into_piece_size()
 	# Native polygon edits write directly to the child. This check only runs in the editor.
 	if not Engine.is_editor_hint() or polygon_layout != PolygonLayout.CUSTOM_POLYGON or not collision_follows_visual or display_mode != DisplayMode.POLYGON:
 		return
@@ -128,18 +159,31 @@ func _request_sync() -> void:
 		call_deferred("_sync_layout")
 		update_configuration_warnings()
 
-func _sync_layout() -> void:
-	if not is_instance_valid(_collision_shape) or not is_instance_valid(_collision_polygon):
+func _bake_root_scale_into_piece_size() -> void:
+	if _is_baking_root_scale or scale.is_equal_approx(Vector2.ONE):
 		return
-	var shape := _collision_shape.shape as RectangleShape2D
-	if shape == null:
-		shape = RectangleShape2D.new()
-		_collision_shape.shape = shape
-	shape.size = piece_size
-	_collision_shape.position = piece_size * 0.5
+	# Mirroring carries directional meaning and cannot be converted to a positive size.
+	# Leave it intact instead of silently changing the piece orientation.
+	if scale.x <= 0.0 or scale.y <= 0.0:
+		if not _invalid_root_scale_reported:
+			push_warning("%s only bakes positive root scale into piece_size; use a positive Scale for terrain resizing." % name)
+			_invalid_root_scale_reported = true
+		return
+	_invalid_root_scale_reported = false
+	_is_baking_root_scale = true
+	piece_size *= scale
+	scale = Vector2.ONE
+	_is_baking_root_scale = false
+
+func _sync_layout() -> void:
+	if not is_instance_valid(_collision_polygon):
+		return
 	_sync_visual_polygon_layout()
 	_apply_artwork()
-	if collision_follows_visual:
+	if collision_mode == CollisionMode.RECTANGLE:
+		_collision_polygon.polygon = _collision_rectangle_polygon()
+		_sync_collision_mode()
+	elif collision_follows_visual:
 		sync_polygons()
 	else:
 		_sync_collision_mode()
@@ -155,24 +199,16 @@ func _apply_artwork() -> void:
 	var offset := art_offset + (variant.offset if variant != null else Vector2.ZERO)
 	var art_scale := variant.scale if variant != null else Vector2.ONE
 	var should_stretch := stretch_art or (variant != null and variant.fit_mode == LevelSpriteVariant.FitMode.FIT_COMPONENT)
-	_artwork.texture = texture
-	_artwork.position = offset
-	_artwork.centered = false
-	_artwork.visible = false
-	_artwork.scale = art_scale * art_scale_multiplier
-	_artwork.rotation = deg_to_rad(art_rotation_degrees)
-	if texture != null and should_stretch:
-		var texture_size := texture.get_size()
-		if texture_size.x > 0.0 and texture_size.y > 0.0:
-			_artwork.scale *= piece_size / texture_size
 	var safe_visual_scale := Vector2(maxf(absf(art_scale.x * art_scale_multiplier), 0.01), maxf(absf(art_scale.y * art_scale_multiplier), 0.01))
+	var visual_size := piece_size / safe_visual_scale
 	_terrain_visual.texture = texture
 	_terrain_visual.position = offset
-	_terrain_visual.size = piece_size / safe_visual_scale
+	_fit_nine_patch_margins(visual_size)
+	_terrain_visual.size = visual_size
 	_terrain_visual.scale = safe_visual_scale
 	_terrain_visual.rotation = deg_to_rad(art_rotation_degrees)
-	_terrain_visual.axis_stretch_horizontal = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if stretch_art else NinePatchRect.AXIS_STRETCH_MODE_TILE
-	_terrain_visual.axis_stretch_vertical = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if stretch_art else NinePatchRect.AXIS_STRETCH_MODE_TILE
+	_terrain_visual.axis_stretch_horizontal = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if should_stretch else NinePatchRect.AXIS_STRETCH_MODE_TILE
+	_terrain_visual.axis_stretch_vertical = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if should_stretch else NinePatchRect.AXIS_STRETCH_MODE_TILE
 	_terrain_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_terrain_visual.visible = display_mode == DisplayMode.SPRITE and texture != null
 	_polygon_artwork.texture = texture
@@ -187,6 +223,23 @@ func _apply_artwork() -> void:
 	_polygon_artwork.texture_repeat = variant.polygon_texture_repeat if variant != null else CanvasItem.TEXTURE_REPEAT_ENABLED
 	_polygon_artwork.visible = display_mode == DisplayMode.POLYGON and texture != null
 	_apply_caps(variant, art_scale * art_scale_multiplier)
+
+func _fit_nine_patch_margins(visual_size: Vector2) -> void:
+	# NinePatchRect clamps its rendered size to the sum of opposite patch margins.
+	# Shrink margins only for undersized pieces so the rendered bounds still match
+	# piece_size and the collision rectangle.
+	var horizontal_ratio := _margin_ratio(visual_size.x, _base_patch_margins.x, _base_patch_margins.z)
+	var vertical_ratio := _margin_ratio(visual_size.y, _base_patch_margins.y, _base_patch_margins.w)
+	_terrain_visual.patch_margin_left = floori(_base_patch_margins.x * horizontal_ratio)
+	_terrain_visual.patch_margin_right = floori(_base_patch_margins.z * horizontal_ratio)
+	_terrain_visual.patch_margin_top = floori(_base_patch_margins.y * vertical_ratio)
+	_terrain_visual.patch_margin_bottom = floori(_base_patch_margins.w * vertical_ratio)
+
+func _margin_ratio(axis_size: float, first_margin: int, second_margin: int) -> float:
+	var margin_total := first_margin + second_margin
+	if margin_total <= 0:
+		return 1.0
+	return minf(1.0, axis_size / float(margin_total))
 
 func _apply_caps(variant: LevelSpriteVariant, cap_scale: Vector2) -> void:
 	var show_caps := display_mode == DisplayMode.POLYGON and variant != null
@@ -206,15 +259,13 @@ func _apply_caps(variant: LevelSpriteVariant, cap_scale: Vector2) -> void:
 	_right_cap.visible = show_caps and _right_cap.texture != null
 
 func _sync_collision_mode() -> void:
-	var use_polygon := collision_mode == CollisionMode.POLYGON and _is_valid_polygon(_collision_polygon.polygon)
+	var use_polygon := _is_valid_polygon(_collision_polygon.polygon)
 	if is_inside_tree():
-		_collision_shape.set_deferred(&"disabled", use_polygon)
 		_collision_polygon.set_deferred(&"disabled", not use_polygon)
 	else:
-		_collision_shape.disabled = use_polygon
 		_collision_polygon.disabled = not use_polygon
 	_collision_polygon.build_mode = CollisionPolygon2D.BUILD_SOLIDS
-	_collision_polygon.one_way_collision = one_way_collision and use_polygon
+	_collision_polygon.one_way_collision = one_way_collision and collision_mode == CollisionMode.POLYGON and use_polygon
 
 func _ensure_polygon_defaults() -> void:
 	var rectangle := _rectangle_polygon()
@@ -232,6 +283,19 @@ func _rectangle_polygon() -> PackedVector2Array:
 		Vector2(0.0, piece_size.y),
 	])
 
+func _collision_rectangle_polygon() -> PackedVector2Array:
+	var collision_size := Vector2(
+		maxf(piece_size.x - collision_left_inset - collision_right_inset, 1.0),
+		maxf(piece_size.y - collision_top_inset - collision_bottom_inset, 1.0)
+	)
+	var origin := Vector2(collision_left_inset, collision_top_inset)
+	return PackedVector2Array([
+		origin,
+		origin + Vector2(collision_size.x, 0.0),
+		origin + collision_size,
+		origin + Vector2(0.0, collision_size.y),
+	])
+
 func _selected_variant() -> LevelSpriteVariant:
 	if sprite_variants == null or sprite_variants.variants.is_empty():
 		return null
@@ -239,10 +303,6 @@ func _selected_variant() -> LevelSpriteVariant:
 
 func _is_valid_polygon(points: PackedVector2Array) -> bool:
 	return points.size() >= 3 and not Geometry2D.triangulate_polygon(points).is_empty()
-
-func _make_collision_shape_unique() -> void:
-	if is_instance_valid(_collision_shape) and _collision_shape.shape != null:
-		_collision_shape.shape = _collision_shape.shape.duplicate(true)
 
 func _get_configuration_warnings() -> PackedStringArray:
 	var warnings := PackedStringArray()

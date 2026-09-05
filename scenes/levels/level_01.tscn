@@ -2,527 +2,125 @@
 
 [ext_resource type="Script" uid="uid://bmrw83r1jfdo" path="res://features/level/handbuilt/handbuilt_level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/decorative_scenery.tscn" id="2_t0hvh"]
+[ext_resource type="Resource" uid="uid://beekb7ob3irq1" path="res://assets/runtime/scenery/variants/grass_turf_variants.tres" id="3_kfebt"]
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/spawn_point.tscn" id="3_spawn"]
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="4_bounds"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/terrain_piece.tscn" id="5_terrain"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/hard_floor_piece.tscn" id="6_hard"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/hazard_area.tscn" id="7_hazard"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/trigger_button.tscn" id="8_button"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/mechanism_motion.tscn" id="9_motion"]
-[ext_resource type="PackedScene" path="res://features/level/moveable_cube.tscn" id="10_cube"]
-[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="11_checkpoint"]
-[ext_resource type="PackedScene" path="res://features/level/nutrition_tank.tscn" id="12_nutrition"]
-[ext_resource type="PackedScene" path="res://features/level/toxin_resource.tscn" id="13_toxin_resource"]
-[ext_resource type="PackedScene" path="res://features/level/toxin_zone.tscn" id="14_toxin_zone"]
-[ext_resource type="PackedScene" path="res://features/level/wind_zone.tscn" id="15_wind"]
-[ext_resource type="PackedScene" path="res://features/abilities/vine_anchor.tscn" id="16_anchor"]
-[ext_resource type="PackedScene" path="res://features/level/damage_machine.tscn" id="17_machine"]
-[ext_resource type="Texture2D" uid="uid://dpmfuq4h8nu85" path="res://assets/runtime/scenery/_0000_草团1.png" id="18_grass"]
-[ext_resource type="Texture2D" uid="uid://br00noyvleosb" path="res://assets/runtime/scenery/_0002_红花1.png" id="19_flower"]
-[ext_resource type="Texture2D" uid="uid://cn7es1sgtnvna" path="res://assets/runtime/scenery/_0006_树根1.png" id="20_root"]
-[ext_resource type="Texture2D" uid="uid://ctwio77v1eaf6" path="res://assets/runtime/scenery/_0008_藤蔓1.png" id="21_vine"]
-[ext_resource type="Texture2D" uid="uid://cfybeu3xbt1fy" path="res://assets/runtime/scenery/_0011_高草1.png" id="22_tall_grass"]
-[ext_resource type="Texture2D" uid="uid://dkq0p7me8pn8x" path="res://assets/runtime/scenery/_0014_培养罐.png" id="23_nutrition_art"]
-[ext_resource type="Texture2D" uid="uid://dro5iy56hydcp" path="res://assets/runtime/scenery/_0018_锥形瓶.png" id="24_toxin_art"]
-[ext_resource type="Texture2D" uid="uid://b3e3gkvy2vau7" path="res://assets/runtime/scenery/_0021_爬墙藤.png" id="25_climb_vine"]
-[ext_resource type="Texture2D" uid="uid://bvey8p5docyyt" path="res://assets/runtime/scenery/_0026_树枝平台（延申）.png" id="26_branch"]
-[ext_resource type="Texture2D" uid="uid://ep6xij8k7k3m" path="res://assets/runtime/scenery/_0028_石板3.png" id="27_stone"]
-[ext_resource type="Texture2D" uid="uid://co0i4vaem6bqt" path="res://assets/runtime/scenery/_0030_锈蚀钢板-.png" id="28_rust"]
-[ext_resource type="Texture2D" uid="uid://srrsqf6go31k" path="res://assets/runtime/scenery/_0031_水泥板.png" id="29_cement"]
+[ext_resource type="PackedScene" uid="uid://c65j2lesd56mx" path="res://features/level/handbuilt/terrain_piece.tscn" id="5_terrain"]
 [ext_resource type="Texture2D" uid="uid://cieqmw4uun2hu" path="res://assets/runtime/scenery/_0036_苔藓地1.png" id="30_moss"]
-[ext_resource type="Texture2D" uid="uid://dtj0k056lk63" path="res://assets/runtime/scenery/_0039_苔藓水泥块.png" id="31_moss_block"]
-[ext_resource type="Texture2D" uid="uid://dcg5aepatmfvk" path="res://assets/runtime/scenery/_0037_已插入图像.png" id="32_island_small"]
-[ext_resource type="Texture2D" uid="uid://dndjac26i7qyx" path="res://assets/runtime/scenery/_0038_图层-53.png" id="33_island_wide"]
+[ext_resource type="Texture2D" uid="uid://dkq0p7me8pn8x" path="res://assets/runtime/scenery/_0014_培养罐.png" id="31_broken_tank"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kfebt"]
+resource_local_to_scene = true
+radius = 12.0
 
 [node name="Level01" type="Node2D" unique_id=943232891]
 script = ExtResource("1_level")
+metadata/_edit_vertical_guides_ = [-8.0]
 
-[node name="Background" type="Node2D" parent="." unique_id=2085666710]
-z_index = -10
+[node name="Node" type="Node" parent="." unique_id=1887232084]
 
-[node name="RootMass" type="Sprite2D" parent="Background" unique_id=892810358]
-position = Vector2(-256, 610)
-scale = Vector2(0.8, 0.8)
-texture = ExtResource("20_root")
-centered = false
+[node name="DecorativeScenery" parent="Node" unique_id=819484407 instance=ExtResource("2_t0hvh")]
+position = Vector2(-258, 467)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(20, 1)
+tile_spacing = Vector2(-60, 0)
 
-[node name="BackVine" type="Sprite2D" parent="Background" unique_id=373358364]
-modulate = Color(0.75, 0.83, 0.72, 0.7)
-position = Vector2(320, -40)
-scale = Vector2(0.55, 0.55)
-texture = ExtResource("21_vine")
-centered = false
+[node name="DecorativeScenery2" parent="Node" unique_id=1336819193 instance=ExtResource("2_t0hvh")]
+position = Vector2(-209, 474.99997)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(40, 1)
+tile_spacing = Vector2(-60, 0)
 
-[node name="Terrain" type="Node2D" parent="." unique_id=45379716]
+[node name="Background" type="Node2D" parent="." unique_id=1684300338]
+z_index = -20
 
-[node name="ShaftLeftWall" parent="Terrain" unique_id=1782741369 instance=ExtResource("6_hard")]
-position = Vector2(-256, 320)
-piece_size = Vector2(24, 576)
-art_texture = ExtResource("29_cement")
-art_offset = Vector2(24, 0)
-art_scale_multiplier = 0.5
-art_rotation_degrees = 90.0
-metadata/source_region = "Level_1"
+[node name="Geometry" type="Node2D" parent="." unique_id=1772310243]
 
-[node name="ShaftBottomHazard" parent="Terrain" unique_id=898967837 instance=ExtResource("7_hazard")]
-position = Vector2(-256, 896)
-area_size = Vector2(256, 16)
-art_texture = ExtResource("28_rust")
-art_scale_multiplier = 0.65
-metadata/source_region = "Level_1"
+[node name="Terrain" type="Node2D" parent="Geometry" unique_id=1030929769]
 
-[node name="ShaftRightWall" parent="Terrain" unique_id=939408511 instance=ExtResource("5_terrain")]
-position = Vector2(-16, 128)
-piece_size = Vector2(16, 64)
-art_texture = ExtResource("29_cement")
-art_offset = Vector2(16, 0)
-art_scale_multiplier = 0.13
-art_rotation_degrees = 90.0
-metadata/source_region = "Level_1"
-
-[node name="ShaftTopA" parent="Terrain" unique_id=961145985 instance=ExtResource("5_terrain")]
-position = Vector2(-256, 192)
-piece_size = Vector2(128, 16)
-art_texture = ExtResource("30_moss")
-art_scale_multiplier = 0.28
-metadata/source_region = "Level_1"
-
-[node name="ShaftTopB" parent="Terrain" unique_id=1080517257 instance=ExtResource("5_terrain")]
-position = Vector2(-128, 192)
-piece_size = Vector2(128, 16)
-art_texture = ExtResource("30_moss")
-art_scale_multiplier = 0.28
-metadata/source_region = "Level_1"
-
-[node name="StartGroundA" parent="Terrain" unique_id=468303651 instance=ExtResource("5_terrain")]
-position = Vector2(0, 464)
-piece_size = Vector2(192, 16)
-art_texture = ExtResource("30_moss")
+[node name="StartFloor" parent="Geometry/Terrain" unique_id=373654360 instance=ExtResource("5_terrain")]
+position = Vector2(-256, 469)
+piece_size = Vector2(1344, 40)
+collision_top_inset = 6.5
 art_scale_multiplier = 0.4
-metadata/source_region = "Level_0"
 
-[node name="StartGroundB" parent="Terrain" unique_id=581641450 instance=ExtResource("5_terrain")]
-position = Vector2(184, 464)
-piece_size = Vector2(192, 16)
-art_texture = ExtResource("30_moss")
-art_scale_multiplier = 0.4
-metadata/source_region = "Level_0"
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
+disabled = false
 
-[node name="StartGroundC" parent="Terrain" unique_id=4761508 instance=ExtResource("5_terrain")]
-position = Vector2(368, 464)
-piece_size = Vector2(176, 16)
-art_texture = ExtResource("30_moss")
-art_scale_multiplier = 0.4
-metadata/source_region = "Level_0"
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor" index="1" unique_id=1185384908]
+visible = true
+offset_right = 3360.0
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("30_moss")
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
 
-[node name="RightGround" parent="Terrain" unique_id=1935578262 instance=ExtResource("5_terrain")]
-position = Vector2(624, 464)
-piece_size = Vector2(128, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.25
-metadata/source_region = "Level_0"
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor" index="2" unique_id=1905841275]
+texture = ExtResource("30_moss")
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
 
-[node name="MiddleGroundA" parent="Terrain" unique_id=823853299 instance=ExtResource("5_terrain")]
-position = Vector2(0, 304)
-piece_size = Vector2(176, 16)
-art_texture = ExtResource("33_island_wide")
-art_scale_multiplier = 0.42
-metadata/source_region = "Level_0"
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor" index="3" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
 
-[node name="MiddleGroundB" parent="Terrain" unique_id=968689441 instance=ExtResource("5_terrain")]
-position = Vector2(208, 304)
-piece_size = Vector2(128, 16)
-art_texture = ExtResource("32_island_small")
-art_scale_multiplier = 0.4
-metadata/source_region = "Level_0"
+[node name="RightCap" parent="Geometry/Terrain/StartFloor" index="4" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
 
-[node name="MiddleGroundC" parent="Terrain" unique_id=97297356 instance=ExtResource("5_terrain")]
-position = Vector2(328, 304)
-piece_size = Vector2(152, 16)
-art_texture = ExtResource("33_island_wide")
-art_scale_multiplier = 0.38
-metadata/source_region = "Level_0"
+[node name="Mechanisms" type="Node2D" parent="Geometry" unique_id=558713796]
 
-[node name="LeftBranch" parent="Terrain" unique_id=1324394751 instance=ExtResource("5_terrain")]
-position = Vector2(32, 256)
-piece_size = Vector2(96, 16)
-art_texture = ExtResource("32_island_small")
-art_scale_multiplier = 0.3
-metadata/source_region = "Level_0"
+[node name="Areas" type="Node2D" parent="." unique_id=1858714879]
 
-[node name="UpperLeftBranch" parent="Terrain" unique_id=667427461 instance=ExtResource("5_terrain")]
-position = Vector2(80, 240)
-piece_size = Vector2(112, 16)
-art_texture = ExtResource("32_island_small")
-art_scale_multiplier = 0.35
-metadata/source_region = "Level_0"
+[node name="Checkpoints" type="Node2D" parent="." unique_id=422565820]
 
-[node name="UpperMiddleStone" parent="Terrain" unique_id=1684457773 instance=ExtResource("5_terrain")]
-position = Vector2(240, 176)
-piece_size = Vector2(48, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.1
-metadata/source_region = "Level_0"
+[node name="Actors" type="Node2D" parent="." unique_id=25705282]
 
-[node name="UpperLongStone" parent="Terrain" unique_id=531354038 instance=ExtResource("5_terrain")]
-position = Vector2(320, 176)
-piece_size = Vector2(160, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.31
-metadata/source_region = "Level_0"
-
-[node name="UpperMiddleStoneB" parent="Terrain" unique_id=795059878 instance=ExtResource("5_terrain")]
-position = Vector2(336, 224)
-piece_size = Vector2(128, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.24
-metadata/source_region = "Level_0"
-
-[node name="UpperPillar" parent="Terrain" unique_id=1703971522 instance=ExtResource("5_terrain")]
-position = Vector2(336, 192)
-piece_size = Vector2(16, 32)
-art_texture = ExtResource("29_cement")
-art_offset = Vector2(16, 0)
-art_scale_multiplier = 0.07
-art_rotation_degrees = 90.0
-metadata/source_region = "Level_0"
-
-[node name="LeftStep" parent="Terrain" unique_id=444459657 instance=ExtResource("5_terrain")]
-position = Vector2(96, 272)
-piece_size = Vector2(32, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.07
-metadata/source_region = "Level_0"
-
-[node name="MiddlePillar" parent="Terrain" unique_id=1820626454 instance=ExtResource("5_terrain")]
-position = Vector2(320, 320)
-piece_size = Vector2(16, 112)
-art_texture = ExtResource("29_cement")
-art_offset = Vector2(16, 0)
-art_scale_multiplier = 0.22
-art_rotation_degrees = 90.0
-metadata/source_region = "Level_0"
-
-[node name="RightTower" parent="Terrain" unique_id=1150267627 instance=ExtResource("5_terrain")]
-position = Vector2(592, 320)
-piece_size = Vector2(16, 128)
-art_texture = ExtResource("25_climb_vine")
-art_scale_multiplier = 0.17
-metadata/source_region = "Level_0"
-
-[node name="WindWallCap" parent="Terrain" unique_id=1386971040 instance=ExtResource("5_terrain")]
-position = Vector2(592, 160)
-piece_size = Vector2(16, 16)
-art_texture = ExtResource("29_cement")
-art_offset = Vector2(16, 0)
-art_scale_multiplier = 0.04
-art_rotation_degrees = 90.0
-metadata/source_region = "Level_0"
-
-[node name="WindRoof" parent="Terrain" unique_id=1915612444 instance=ExtResource("5_terrain")]
-position = Vector2(592, 144)
-piece_size = Vector2(160, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.31
-metadata/source_region = "Level_0"
-
-[node name="LowerHardFloor" parent="Terrain" unique_id=613527687 instance=ExtResource("6_hard")]
-position = Vector2(544, 464)
-piece_size = Vector2(80, 16)
-art_texture = ExtResource("28_rust")
-art_scale_multiplier = 0.21
-
-[node name="MidHardFloor" parent="Terrain" unique_id=1974729064 instance=ExtResource("6_hard")]
-position = Vector2(480, 416)
-piece_size = Vector2(64, 16)
-art_texture = ExtResource("28_rust")
-art_scale_multiplier = 0.17
-
-[node name="LowerStepA" parent="Terrain" unique_id=1239398050 instance=ExtResource("5_terrain")]
-position = Vector2(480, 400)
-piece_size = Vector2(16, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.04
-
-[node name="LowerHazardA" parent="Terrain" unique_id=153265236 instance=ExtResource("7_hazard")]
-position = Vector2(496, 400)
-area_size = Vector2(32, 16)
-art_texture = ExtResource("28_rust")
-art_scale_multiplier = 0.09
-
-[node name="LowerStepB" parent="Terrain" unique_id=338008053 instance=ExtResource("5_terrain")]
-position = Vector2(528, 400)
-piece_size = Vector2(16, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.04
-
-[node name="LowerBlock" parent="Terrain" unique_id=916190637 instance=ExtResource("5_terrain")]
-position = Vector2(416, 432)
-piece_size = Vector2(32, 32)
-art_texture = ExtResource("31_moss_block")
-art_scale_multiplier = 0.1
-
-[node name="LowerHazardB" parent="Terrain" unique_id=785459629 instance=ExtResource("7_hazard")]
-position = Vector2(496, 432)
-area_size = Vector2(32, 16)
-art_texture = ExtResource("28_rust")
-art_scale_multiplier = 0.09
-
-[node name="UpperHardFloor" parent="Terrain" unique_id=1196193079 instance=ExtResource("6_hard")]
-position = Vector2(512, 304)
-piece_size = Vector2(16, 16)
-art_texture = ExtResource("28_rust")
-art_scale_multiplier = 0.05
-
-[node name="Mechanisms" type="Node2D" parent="." unique_id=1805215118]
-
-[node name="C1" parent="Mechanisms" unique_id=698252441 instance=ExtResource("10_cube")]
-position = Vector2(480, 240)
-cube_size = Vector2(32, 64)
-motion_speed = 180.0
-art_texture = ExtResource("26_branch")
-art_scale_multiplier = 0.12
-art_offset = Vector2(32, 0)
-art_rotation_degrees = 90.0
-metadata/source_iid = "14f1b660-96d0-11f1-ba31-2fb3210b8ae8"
-metadata/source_label = "C1"
-
-[node name="C2" parent="Mechanisms" unique_id=1908129120 instance=ExtResource("10_cube")]
-position = Vector2(592, 176)
-cube_size = Vector2(16, 144)
-motion_speed = 180.0
-art_texture = ExtResource("25_climb_vine")
-art_scale_multiplier = 0.19
-art_offset = Vector2(-3, 2)
-metadata/source_iid = "3005cb90-96d0-11f1-9ec0-231d9bef30a8"
-metadata/source_label = "C2"
-
-[node name="C6" parent="Mechanisms" unique_id=1750745309 instance=ExtResource("10_cube")]
-position = Vector2(560, 240)
-cube_size = Vector2(32, 16)
-motion_speed = 180.0
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.06
-art_offset = Vector2(0, 4)
-metadata/source_iid = "322a3230-96d0-11f1-9ec0-65ba33f44fa8"
-metadata/source_label = "C6"
-
-[node name="C6Anchor" parent="Mechanisms/C6" unique_id=1301727730 instance=ExtResource("16_anchor")]
-position = Vector2(16, 0)
-
-[node name="C3" parent="Mechanisms" unique_id=514195500 instance=ExtResource("10_cube")]
-position = Vector2(160, -288)
-cube_size = Vector2(32, 80)
-art_texture = ExtResource("26_branch")
-art_scale_multiplier = 0.14
-art_offset = Vector2(28, 0)
-art_rotation_degrees = 90.0
-metadata/source_iid = "3c92f320-96d0-11f1-9ec0-adb2f775b414"
-metadata/source_label = "C3"
-
-[node name="C3Anchor" parent="Mechanisms/C3" unique_id=257920920 instance=ExtResource("16_anchor")]
-position = Vector2(16, 80)
-
-[node name="C4" parent="Mechanisms" unique_id=2142518274 instance=ExtResource("10_cube")]
-position = Vector2(48, -288)
-cube_size = Vector2(32, 128)
-art_texture = ExtResource("25_climb_vine")
-art_scale_multiplier = 0.17
-art_offset = Vector2(5, 1)
-metadata/source_iid = "dbcf3f60-96d0-11f1-ba31-81dc80293df2"
-metadata/source_label = "C4"
-
-[node name="C4Anchor" parent="Mechanisms/C4" unique_id=52202404 instance=ExtResource("16_anchor")]
-position = Vector2(16, 128)
-
-[node name="C5" parent="Mechanisms" unique_id=1265475703 instance=ExtResource("10_cube")]
-position = Vector2(176, 160)
-cube_size = Vector2(32, 16)
-art_texture = ExtResource("27_stone")
-art_scale_multiplier = 0.06
-art_offset = Vector2(0, 4)
-metadata/source_iid = "de356dc0-96d0-11f1-9ec0-15760920bd18"
-metadata/source_label = "C5"
-
-[node name="Door" parent="Mechanisms" unique_id=785765712 instance=ExtResource("10_cube")]
-position = Vector2(624, 432)
-cube_size = Vector2(32, 32)
-art_texture = ExtResource("31_moss_block")
-art_scale_multiplier = 0.1
-art_offset = Vector2(0, 9)
-metadata/source_iid = "e1e9a7b0-96d0-11f1-be70-0dbca0ba9a32"
-
-[node name="B1Motion" parent="Mechanisms" unique_id=396975063 instance=ExtResource("9_motion")]
-motion_mode = 1
-targets = Array[NodePath]([NodePath("../C1")])
-pivot_global = Vector2(512, 304)
-
-[node name="B2Motion" parent="Mechanisms" unique_id=1892555545 instance=ExtResource("9_motion")]
-motion_mode = 1
-targets = Array[NodePath]([NodePath("../C2"), NodePath("../C6")])
-pivot_global = Vector2(592, 176)
-
-[node name="B3Motion" parent="Mechanisms" unique_id=1828619026 instance=ExtResource("9_motion")]
-targets = Array[NodePath]([NodePath("../C5")])
-destination_offset = Vector2(0, 128)
-
-[node name="B4Motion" parent="Mechanisms" unique_id=397930940 instance=ExtResource("9_motion")]
-targets = Array[NodePath]([NodePath("../C3"), NodePath("../C4")])
-destination_offset = Vector2(0, 160)
-
-[node name="B1" parent="Mechanisms" unique_id=1315955465 instance=ExtResource("8_button")]
-position = Vector2(448, 288)
-button_size = Vector2(16, 16)
-targets = Array[NodePath]([NodePath("../B1Motion")])
-metadata/source_iid = "0f859c40-96d0-11f1-9ec0-a7f50fdb1f9d"
-metadata/source_label = "B1"
-
-[node name="B2" parent="Mechanisms" unique_id=83965345 instance=ExtResource("8_button")]
-position = Vector2(144, 288)
-button_size = Vector2(16, 16)
-targets = Array[NodePath]([NodePath("../B2Motion")])
-metadata/source_iid = "bbbb4660-96d0-11f1-9ec0-d3fb842dd849"
-metadata/source_label = "B2"
-
-[node name="B3" parent="Mechanisms" unique_id=2074470487 instance=ExtResource("8_button")]
-position = Vector2(672, 128)
-button_size = Vector2(16, 16)
-targets = Array[NodePath]([NodePath("../B3Motion")])
-metadata/source_iid = "59bb7020-96d0-11f1-9ec0-1f9ad61c57bc"
-metadata/source_label = "B3"
-
-[node name="B4" parent="Mechanisms" unique_id=550003606 instance=ExtResource("8_button")]
-position = Vector2(-16, 144)
-button_size = Vector2(16, 16)
-targets = Array[NodePath]([NodePath("../B4Motion")])
-metadata/source_iid = "17ea7d40-96d0-11f1-9ec0-5b135eaa7d6d"
-metadata/source_label = "B4"
-
-[node name="StaticAnchors" type="Node2D" parent="Mechanisms" unique_id=1987598859]
-
-[node name="AnchorA" parent="Mechanisms/StaticAnchors" unique_id=113957000 instance=ExtResource("16_anchor")]
-position = Vector2(264, 200)
-
-[node name="AnchorB" parent="Mechanisms/StaticAnchors" unique_id=899331400 instance=ExtResource("16_anchor")]
-position = Vector2(344, 232)
-
-[node name="AnchorC" parent="Mechanisms/StaticAnchors" unique_id=1720147029 instance=ExtResource("16_anchor")]
-position = Vector2(536, 312)
-
-[node name="Areas" type="Node2D" parent="." unique_id=1642625366]
-
-[node name="GrowStart" parent="Areas" unique_id=202807827 instance=ExtResource("12_nutrition")]
-position = Vector2(136, 448)
-accepted_form_id = &"sprout"
-metadata/source_iid = "673f66b0-96d0-11f1-be70-43df1eb1fd82"
-
-[node name="Artwork" type="Sprite2D" parent="Areas/GrowStart" unique_id=382753053]
-scale = Vector2(0.06, 0.06)
-texture = ExtResource("23_nutrition_art")
-
-[node name="ToxinStart" parent="Areas" unique_id=653575393 instance=ExtResource("13_toxin_resource")]
-position = Vector2(200, 448)
-metadata/source_iid = "5c0eb750-96d0-11f1-be70-49c57359a6ea"
-
-[node name="Artwork" type="Sprite2D" parent="Areas/ToxinStart" unique_id=2114269955]
-scale = Vector2(0.15, 0.15)
-texture = ExtResource("24_toxin_art")
-
-[node name="GrowMid" parent="Areas" unique_id=1375288020 instance=ExtResource("12_nutrition")]
-position = Vector2(376, 448)
-metadata/source_iid = "3560b800-96d0-11f1-be70-5705f590a87f"
-
-[node name="Artwork" type="Sprite2D" parent="Areas/GrowMid" unique_id=1214732409]
-scale = Vector2(0.045, 0.045)
-texture = ExtResource("23_nutrition_art")
-
-[node name="ToxinMid" parent="Areas" unique_id=153842886 instance=ExtResource("13_toxin_resource")]
-position = Vector2(568, 448)
-metadata/source_iid = "36b41300-96d0-11f1-be70-19e08a98d217"
-
-[node name="Artwork" type="Sprite2D" parent="Areas/ToxinMid" unique_id=98794868]
-scale = Vector2(0.13, 0.13)
-texture = ExtResource("24_toxin_art")
-
-[node name="GrowUpper" parent="Areas" unique_id=755303433 instance=ExtResource("12_nutrition")]
-position = Vector2(536, 384)
-metadata/source_iid = "9e686560-96d0-11f1-9ec0-19399c52530a"
-
-[node name="Artwork" type="Sprite2D" parent="Areas/GrowUpper" unique_id=1795716190]
-scale = Vector2(0.045, 0.045)
-texture = ExtResource("23_nutrition_art")
-
-[node name="FrogFogA" parent="Areas" unique_id=1552343417 instance=ExtResource("14_toxin_zone")]
-position = Vector2(552, 208)
-zone_size = Vector2(80, 64)
-metadata/source_iid = "724a1020-96d0-11f1-be70-23949d3e6fd3"
-
-[node name="FrogFogB" parent="Areas" unique_id=585247559 instance=ExtResource("14_toxin_zone")]
-position = Vector2(64, 288)
-zone_size = Vector2(64, 32)
-metadata/source_iid = "b9453d50-96d0-11f1-9ec0-67b1294b69fb"
-
-[node name="Wind" parent="Areas" unique_id=1405740318 instance=ExtResource("15_wind")]
-position = Vector2(592, 0)
-zone_size = Vector2(160, 144)
-metadata/source_iid = "15386020-96d0-11f1-9ec0-17f407aa03fa"
-
-[node name="DamageMachineA" parent="Areas" unique_id=1990430338 instance=ExtResource("17_machine")]
-position = Vector2(376, 184)
-metadata/source_iid = "bdd46590-96d0-11f1-9ec0-b76c2805ffe7"
-
-[node name="DamageMachineB" parent="Areas" unique_id=2049924198 instance=ExtResource("17_machine")]
-position = Vector2(424, 184)
-metadata/source_iid = "be616350-96d0-11f1-9ec0-c7ac8cd11a03"
-
-[node name="Checkpoints" type="Node2D" parent="." unique_id=1684300338]
-
-[node name="CheckpointA" parent="Checkpoints" unique_id=1030929769 instance=ExtResource("11_checkpoint")]
-position = Vector2(344, 448)
-metadata/source_iid = "a2469ae0-96d0-11f1-9ec0-314d82ca9fcb"
-
-[node name="CheckpointB" parent="Checkpoints" unique_id=373654360 instance=ExtResource("11_checkpoint")]
-position = Vector2(424, 288)
-metadata/source_iid = "a8139720-96d0-11f1-9ec0-076994b461f9"
-
-[node name="Actors" type="Node2D" parent="." unique_id=1772310243]
-
-[node name="Player" parent="Actors" unique_id=25705282 instance=ExtResource("2_player")]
+[node name="Player" parent="Actors" unique_id=1995216275 instance=ExtResource("2_player")]
 unique_name_in_owner = true
-position = Vector2(8, 464)
+position = Vector2(96, 464)
 
-[node name="Camera2D" type="Camera2D" parent="Actors/Player" unique_id=422565820]
+[node name="CollisionShape2D" parent="Actors/Player" index="0"]
+shape = SubResource("CircleShape2D_kfebt")
+
+[node name="Camera2D" type="Camera2D" parent="Actors/Player" unique_id=1453819068]
 unique_name_in_owner = true
+scale = Vector2(1.0025464, 0.8497827)
+offset = Vector2(0, -60)
 zoom = Vector2(4, 4)
+limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 7.0
 
-[node name="Foreground" type="Node2D" parent="." unique_id=630626508]
-z_index = 5
-
-[node name="StartGrass" type="Sprite2D" parent="Foreground" unique_id=1902889109]
-position = Vector2(16, 408)
-scale = Vector2(0.55, 0.55)
-texture = ExtResource("18_grass")
-centered = false
-
-[node name="MidFlower" type="Sprite2D" parent="Foreground" unique_id=30697125]
-position = Vector2(292, 350)
-scale = Vector2(0.24, 0.24)
-texture = ExtResource("19_flower")
-centered = false
-
-[node name="TallGrass" type="Sprite2D" parent="Foreground" unique_id=59484298]
-position = Vector2(690, 360)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("22_tall_grass")
-centered = false
-
-[node name="SpawnPoint" parent="." unique_id=558713796 instance=ExtResource("3_spawn")]
+[node name="SpawnPoint" parent="." unique_id=943232892 instance=ExtResource("3_spawn")]
 unique_name_in_owner = true
-position = Vector2(8, 464)
+position = Vector2(-229, 465)
+scale = Vector2(2, 2)
 
-[node name="CameraBounds" parent="." unique_id=1858714879 instance=ExtResource("4_bounds")]
+[node name="BrokenTankIcon" type="Sprite2D" parent="SpawnPoint" unique_id=1622603824]
+z_index = -1
+position = Vector2(-1, -15)
+scale = Vector2(0.07, 0.07)
+texture = ExtResource("31_broken_tank")
+
+[node name="CameraBounds" parent="." unique_id=943232893 instance=ExtResource("4_bounds")]
 unique_name_in_owner = true
 position = Vector2(-256, -128)
-bounds_size = Vector2(1008, 1040)
+bounds_size = Vector2(1344, 768)
+
+[node name="Foreground" type="Node2D" parent="." unique_id=943232894]
+z_index = 10
+
+[node name="Effects" type="Node2D" parent="." unique_id=943232895]
+z_index = 20
+
+[editable path="Geometry/Terrain/StartFloor"]
+[editable path="Actors/Player"]

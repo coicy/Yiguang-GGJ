@@ -10,6 +10,7 @@ func _init() -> void:
 
 func _run() -> void:
 	await _verify_root_texture_drives_both_artwork_modes()
+	await _verify_root_scale_expands_tiled_visual_and_collision()
 	await _verify_rect_polygon_layout_tracks_piece_size()
 	await _verify_polygon_repeat_offset_is_instance_local()
 	await _verify_polygon_collision_syncs_on_scene_load()
@@ -30,12 +31,10 @@ func _verify_root_texture_drives_both_artwork_modes() -> void:
 	terrain.display_mode = TerrainPiece.DisplayMode.SPRITE
 	root.add_child(terrain)
 	await process_frame
-	var sprite_artwork := terrain.get_node("Artwork") as Sprite2D
 	var nine_patch := terrain.get_node("TerrainVisual") as NinePatchRect
 	var polygon_artwork := terrain.get_node("PolygonArtwork") as Polygon2D
 	assert(terrain.art_texture == root_texture)
-	assert(sprite_artwork.texture == root_texture)
-	assert(not sprite_artwork.visible)
+	assert(nine_patch.texture == root_texture)
 	assert(nine_patch.visible)
 	assert(nine_patch.size == terrain.piece_size)
 	assert(nine_patch.patch_margin_left == 64)
@@ -49,7 +48,6 @@ func _verify_root_texture_drives_both_artwork_modes() -> void:
 	assert(polygon_artwork.texture == root_texture)
 	assert(polygon_artwork.visible)
 	assert(not nine_patch.visible)
-	assert(not sprite_artwork.visible)
 	var variant_texture := GradientTexture2D.new()
 	variant_texture.width = 8
 	variant_texture.height = 8
@@ -60,6 +58,22 @@ func _verify_root_texture_drives_both_artwork_modes() -> void:
 	terrain.sprite_variants = variants
 	await process_frame
 	assert(polygon_artwork.texture == variant_texture)
+	terrain.queue_free()
+
+
+func _verify_root_scale_expands_tiled_visual_and_collision() -> void:
+	var terrain := TERRAIN_SCENE.instantiate() as TerrainPiece
+	terrain.sprite_variants = null
+	terrain.art_texture = _test_texture(16)
+	terrain.scale = Vector2(2.0, 0.5)
+	root.add_child(terrain)
+	await process_frame
+	var visual := terrain.get_node("TerrainVisual") as NinePatchRect
+	var collision := terrain.get_node("CollisionPolygon2D") as CollisionPolygon2D
+	assert(terrain.scale == Vector2.ONE)
+	assert(terrain.piece_size == Vector2(384.0, 24.0))
+	assert(visual.size == terrain.piece_size)
+	assert(collision.polygon == _rectangle_polygon(terrain.piece_size))
 	terrain.queue_free()
 
 
@@ -173,9 +187,7 @@ func _verify_untextured_polygon_keeps_valid_collision() -> void:
 	visual.polygon = _slope_polygon()
 	root.add_child(terrain)
 	await process_frame
-	var sprite_artwork := terrain.get_node("Artwork") as Sprite2D
 	var collision := terrain.get_node("CollisionPolygon2D") as CollisionPolygon2D
-	assert(sprite_artwork.texture == null)
 	assert(visual.texture == null)
 	assert(not visual.visible)
 	assert(not Geometry2D.triangulate_polygon(collision.polygon).is_empty())

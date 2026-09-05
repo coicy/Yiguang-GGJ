@@ -51,6 +51,7 @@ func _run() -> void:
 	await _verify_glide_leaf_rig()
 	await _verify_animation_machine()
 	await _verify_player_form_visuals()
+	await _verify_player_grounding()
 	quit()
 
 
@@ -170,4 +171,31 @@ func _verify_player_form_visuals() -> void:
 	await process_frame
 	assert(visual_host.get_child_count() == 1)
 	assert(visual_host.get_child(0).name == &"Part3SpineVisual")
+	player.free()
+
+
+func _verify_player_grounding() -> void:
+	var player := PLAYER_SCENE.instantiate() as Player
+	root.add_child(player)
+	await process_frame
+	for form_id: StringName in [&"sprout", &"humanoid", &"mature"]:
+		if player.current_form_id() != form_id:
+			assert(player.form_controller.switch_to(form_id))
+			await process_frame
+		var form := player.form_controller.get_current()
+		var collision := player.collision_shape
+		var collision_bottom := collision.position.y
+		if collision.shape is CircleShape2D:
+			collision_bottom += (collision.shape as CircleShape2D).radius
+		else:
+			collision_bottom += (collision.shape as CapsuleShape2D).height * 0.5
+		assert(is_zero_approx(collision_bottom), "%s collision bottom must align to player origin: %s" % [form_id, collision_bottom])
+		var visual_host := player.get_node("%VisualHost") as Node2D
+		var visual := visual_host.get_child(0) as SpineCharacterVisual
+		assert(visual != null)
+		assert(visual.play_animation(&"idle", false))
+		visual.spine_sprite.update_skeleton(0.0)
+		var bounds: Rect2 = visual.spine_sprite.get_skeleton().get_bounds()
+		var visual_bottom := visual_host.position.y + visual.scale.y * bounds.end.y
+		assert(absf(visual_bottom) <= 0.05, "%s visual bottom must align to player origin: %s" % [form_id, visual_bottom])
 	player.free()

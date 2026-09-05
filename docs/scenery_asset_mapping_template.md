@@ -148,6 +148,7 @@
 | 硬质地面 | `assets/runtime/scenery/variants/hard_floor_variants.tres` | 石板、水泥板、锈蚀钢板 |
 | 悬空平台 | `assets/runtime/scenery/variants/platform_variants.tres` | 树枝、石板、小浮岛、宽浮岛 |
 | 自然装饰 | `assets/runtime/scenery/variants/foliage_variants.tres` | 草团、红花、高草 |
+| 草皮装饰 | `assets/runtime/scenery/variants/grass_turf_variants.tres` | 草皮、草皮 2、草皮短段 |
 | 藤根装饰 | `assets/runtime/scenery/variants/vine_root_variants.tres` | 树根、藤蔓、爬墙藤 |
 | 实验室道具 | `assets/runtime/scenery/variants/laboratory_prop_variants.tres` | 培养罐、锥形瓶 |
 | 荆棘危险机关 | `assets/runtime/scenery/variants/thorn_hazard_variants.tres` | 荆棘 1、荆棘 2、荆棘 3 |

@@ -1,6 +1,8 @@
 # 手工非 Tile 关卡搭建
 
-`scenes/levels/handbuilt_level_template.tscn` 是手工关卡的起点。复制它后，直接在 Godot 的 2D 视图中摆放组件；JSON 白盒仅保留为玩法行为参考，不再参与新关卡布局。
+`scenes/levels/handbuilt_level_template.tscn` 是手工关卡的起点。复制它后，直接在 Godot 的 2D 视图中摆放组件；JSON 白盒仅保留为玩法行为参考，不再参与新关卡布局。当前权威可玩关卡入口是 `scenes/levels/Level_main.tscn`，它包装具体实现关卡 `level_01.tscn`。
+
+`level_01.tscn` 的基础场景先保持清晰的层级边界：根节点下分为 `Background`、`Geometry`、`Areas`、`Checkpoints`、`Actors`、`Foreground` 和 `Effects`；`Geometry` 再划分为 `Terrain` 与 `Mechanisms`。新机关、危险区和美术应按职责放入对应层，不要重新把节点平铺到关卡根节点。
 
 ## 搭建顺序
 
@@ -31,16 +33,17 @@
 
 - 组件根节点的原点是布局锚点；不要缩放物理根节点。
 - `VisualRoot` / `Artwork` 可以偏移、缩放或替换为美术子场景；碰撞尺寸由组件的尺寸字段或 `CollisionPolygon2D` 管理。
+- 当素材带有透明边缘时，在 `TerrainPiece` 的 `Collision` 分类设置四个 `collision_*_inset`，不要直接移动或缩放碰撞节点；矩形轮廓会根据这些内缩值自动同步。
 - 矩形地形使用 `piece_size`。简单不规则地面使用 `TerrainPiece` 的多边形模式；只有需要多段碰撞、特殊机关或独立行为时，才创建专用 `StaticBody2D` 场景。
 - TerrainPiece 的贴图只在根节点配置：单张素材填入 `art_texture`，需要复用多张精灵图时填入 `sprite_variants` 并选择 `variant_index`。`SpriteVariantSet` 优先于 `art_texture`；不要在 `Artwork` 或 `PolygonArtwork` 子节点手工填贴图。`SpriteVariantSet` 的每项保存贴图、偏移、缩放和是否适配组件尺寸。地形、危险区、按钮和平台共享该资源后，只需选择 `variant_index`。`variant_sprite_2d.tscn` 可作为现有资源区、风区等组件的直接子节点，复用同一套变体资源；其 `component_size` 用于需要拉伸适配的变体。
 - `art_texture` 与精灵变体都为空时，组件显示白模占位图；多边形模式的白模按 `PolygonArtwork` 轮廓绘制，配置素材后占位图自动隐藏。
 
 ### 多边形地板
 
-`terrain_piece.tscn` 与 `hard_floor_piece.tscn` 都提供两套独立模式：`display_mode=SPRITE` 使用 `NinePatchRect` 平铺矩形地块，`display_mode=POLYGON` 使用纹理 `Polygon2D`，`collision_mode` 控制矩形或 `CollisionPolygon2D`。两者默认使用 `SPRITE + RECTANGLE`；改变 `piece_size` 会直接扩大 NinePatch 视觉。
+`terrain_piece.tscn` 与 `hard_floor_piece.tscn` 都提供两套独立模式：`display_mode=SPRITE` 使用 `NinePatchRect` 平铺矩形地块，`display_mode=POLYGON` 使用纹理 `Polygon2D`；唯一的 `CollisionPolygon2D` 在矩形模式下生成矩形轮廓，在多边形模式下承载自定义轮廓。两者默认使用 `SPRITE + RECTANGLE`；改变 `piece_size` 会直接扩大 NinePatch 视觉。
 
 - 选择 `POLYGON` 后，在 2D 视图编辑 `PolygonArtwork` 的顶点；`collision_follows_visual` 默认开启，加载实例和编辑有效视觉轮廓时都会同步到碰撞轮廓。
-- 若视觉边缘不适合承重，关闭 `collision_follows_visual`，再单独编辑 `CollisionPolygon2D`。
+- 若视觉边缘不适合承重，关闭 `collision_follows_visual`，再单独编辑唯一的 `CollisionPolygon2D`。
 - 地板根节点和碰撞节点均保持单位缩放。多边形必须有至少三个不自交顶点；无效轮廓会保留上一份有效碰撞并显示一次警告。
 - `one_way_collision` 仅用于多边形碰撞的平台版本。矩形碰撞时该开关不会生效，Inspector 会给出配置警告。普通地板默认允许扎根，硬质地板默认禁止。
 - 自然和硬质地板的默认素材组位于 `assets/runtime/scenery/variants/`。设置 `sprite_variants` 后通过 `variant_index` 换肤；它只影响显示，不修改碰撞或扎根规则。
@@ -63,12 +66,15 @@
 
 每个组件场景应可单独 F6 启动。完整关卡至少验证：出生与复活、普通/不可扎根地面、危险区、按钮控制的平台、平台随动挂环、摄像机边界，以及 R 重开。
 
-## 正式关卡 Level 01
+## 正式关卡 Level_main
 
-`scenes/levels/level_01.tscn` 是根据 `data/Yiguang.json` 的总体边界和谜题关系搭建的正式实体关卡。地图边界为 `Rect2(-256, -128, 1008, 1040)`，运行时不读取 JSON。
+`scenes/levels/Level_main.tscn` 是正式关卡入口，启动壳和场景测试均从这里进入；它实例化当前从基础层级重新搭建的 `level_01.tscn`。初始白盒只保留一块 `StartFloor`、玩家出生点和摄像机边界，地图边界为 `Rect2(-256, -128, 1344, 768)`，运行时不读取 JSON。后续机关、危险区、检查点和美术应逐层加入，不应直接恢复旧关卡的整套内容。
 
 - 场景素材来自 `assets/runtime/scenery`，只使用等比缩放；`stretch_art` 保持关闭。
+- 非地形装饰使用 `features/level/handbuilt/decorative_scenery.tscn`。组件固定包含单张渲染用的 `Artwork: Sprite2D` 和运行时批量平铺用的 `TiledArtwork: MultiMeshInstance2D`，不绑定具体素材；在任意关卡实例的 Inspector 中修改 `sprite_variants` 和 `variant_index` 即可立即换图。`layout_mode=SINGLE` 显示单张素材；改为 `GRID` 后，通过 `tile_count` 设置列数和行数，组件会按纹理缩放后的实际宽高自动排列，`tile_spacing` 追加横纵间距，也允许负值让相邻透明边缘重叠。`tile_spacing` 使用组件局部单位，最终显示间距还会乘以根节点 Transform Scale。GRID 的编辑器预览由 `DecorativeScenery` 根节点直接自绘，并只在配置签名变化时自动刷新；运行时自动切换为 MultiMesh 批量渲染。组件实例本身的 Position、Rotation、Scale、Z Index 和 Modulate 负责整组摆放，`flip_h` / `flip_v` 负责翻转；无需创建 Placement 资源或专用素材场景。组件不生成碰撞、不承担地形规则。
+- 装饰组件适用于草团、花、针草、高草、根、藤蔓、爬墙藤、草皮、实验室道具、垂坠和遮盖素材。荆棘由 Damage 组件负责，不放入装饰组件。
+- 草皮精灵集为 `assets/runtime/scenery/variants/grass_turf_variants.tres`，包含 `_0022_草皮.png`、`_0023_草皮2.png` 和 `_0024_草皮.png` 三个变体。
 - 长地面遵循“中段平铺、端帽定尺、碰撞覆盖连续表面”的规则；多个 `TerrainPiece` 拼接时，用各实例的 `polygon_repeat_offset` 保持纹理连续，透明装饰不参与碰撞。
-- B1 控制 C1 绕铰点旋转；B2 同步控制 C2/C6；B3、B4 分别控制 C5 与 C3/C4 下降。
-- `MechanismMotion` 是按钮与一个或多个 `MoveableCube` 之间的场景内动作节点。按钮仍通过本地 NodePath 调用 `activate()`。
-- C1–C6 和 B1–B4 在节点 metadata 中保留 `source_iid` 与 `source_label`，便于对照白盒数据。
+- 摄像机由 `Actors/Player/Camera2D` 承载，使用 `zoom = Vector2(4, 4)`、平滑边界和位置平滑；边界由根节点的 `CameraBounds` 统一配置。
+- 当前 `StartFloor` 使用 `art_scale_multiplier = 0.4` 做首轮像素密度校准：`_0036_苔藓地1.png` 的原始高度约为 136px，缩放后约 54 世界单位，与成熟角色的视觉高度处于同一量级。
+- `MechanismMotion`、按钮、平台和门等玩法组件，待对应层级稳定后再按本文件的本地 NodePath 规则接入。

@@ -1,12 +1,7 @@
 [gd_scene format=3 uid="uid://bu47g8135klxu"]
 
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="1_bvpoh"]
-[ext_resource type="PackedScene" uid="uid://c65j2lesd56mx" path="res://features/level/handbuilt/terrain_piece.tscn" id="2_bvpoh"]
+[ext_resource type="PackedScene" path="res://scenes/levels/level_01.tscn" id="1_level"]
 
 [node name="LevelMain" type="Node2D" unique_id=1995216275]
 
-[node name="CameraBounds" parent="." unique_id=1189434824 instance=ExtResource("1_bvpoh")]
-position = Vector2(0, -167)
-
-[node name="TerrainPiece" parent="." unique_id=1009602761 instance=ExtResource("2_bvpoh")]
-position = Vector2(-1, 422)
+[node name="Level01" parent="." instance=ExtResource("1_level")]
