@@ -37,13 +37,10 @@ func _physics_process(delta: float) -> void:
 	resources.tick(delta)
 	abilities.tick()
 	if Input.is_action_just_pressed("ability_primary"):
-		abilities.start_primary()
-	if Input.is_action_just_released("ability_primary"):
-		abilities.stop_primary()
-	if Input.is_action_just_pressed("ability_secondary"):
-		abilities.try_extend_legs()
-	if Input.is_action_just_released("ability_secondary"):
-		abilities.stop_secondary()
+		abilities.toggle_primary()
+	var leg_direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	abilities.set_leg_extension_direction(leg_direction)
+	visuals.set_leg_direction(leg_direction)
 	var move_dir := Input.get_axis("move_left", "move_right")
 	var jump_held := Input.is_action_pressed("jump")
 
@@ -53,20 +50,6 @@ func _physics_process(delta: float) -> void:
 		movement.release_jump()
 
 	state_machine.tick(delta, move_dir, jump_held)
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	var key_event := event as InputEventKey
-	if key_event != null and key_event.echo:
-		return
-	if event.is_action_pressed("ability_primary"):
-		abilities.start_primary()
-	elif event.is_action_released("ability_primary"):
-		abilities.stop_primary()
-	elif event.is_action_pressed("ability_secondary"):
-		abilities.try_extend_legs()
-	elif event.is_action_released("ability_secondary"):
-		abilities.stop_secondary()
 
 func _on_form_changed(form_id: StringName) -> void:
 	cancel_actions()

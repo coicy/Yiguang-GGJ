@@ -8,9 +8,9 @@ var _requested_ability: StringName = &""
 
 
 func _init() -> void:
-	assert(_action_has_physical_key(&"ability_primary", KEY_Q))
-	assert(not _action_has_mouse_button(&"ability_primary"))
-	assert(_action_has_physical_key(&"ability_secondary", KEY_F))
+	assert(_action_has_mouse_button(&"ability_primary"))
+	assert(_action_has_physical_key(&"move_up", KEY_W))
+	assert(_action_has_physical_key(&"move_down", KEY_S))
 
 	var controller := AbilityControllerScript.new()
 	controller.setup(HUMANOID_FORM)

@@ -39,18 +39,12 @@ func _run() -> void:
 	assert(player.form_controller.restore_form(&"humanoid"))
 	await physics_frame
 	player.velocity.x = 300.0
-	var root_pressed := InputEventAction.new()
-	root_pressed.action = &"ability_primary"
-	root_pressed.pressed = true
-	player._unhandled_input(root_pressed)
+	assert(player.abilities.toggle_primary())
 	assert(player.abilities.is_rooted())
 	assert(player.velocity == Vector2.ZERO)
 	wind_zone.apply_to_actor(player, 0.5)
 	assert(player.velocity == Vector2.ZERO)
-	var root_released := InputEventAction.new()
-	root_released.action = &"ability_primary"
-	root_released.pressed = false
-	player._unhandled_input(root_released)
+	assert(player.abilities.toggle_primary())
 	assert(not player.abilities.is_rooted())
 
 	var high_switch := preload("res://features/level/ability_switch.tscn").instantiate() as AbilitySwitch
@@ -60,7 +54,8 @@ func _run() -> void:
 	gate.position = Vector2(300.0, 0.0)
 	root.add_child(gate)
 	gate.bind_switch(high_switch)
-	assert(player.abilities.try_extend_legs())
+	assert(player.abilities.toggle_primary())
+	player.abilities.set_leg_extension_direction(Vector2.UP)
 	await physics_frame
 	assert(not high_switch.is_active())
 	assert(high_switch.try_activate_area(player.abilities.leg_area()))
