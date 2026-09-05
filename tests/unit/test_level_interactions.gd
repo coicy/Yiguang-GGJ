@@ -1,11 +1,25 @@
 extends SceneTree
 
+const TOXIN_ZONE_SCENE: PackedScene = preload("res://features/level/toxin_zone.tscn")
 
 class NutritionActor extends Node2D:
 	var absorbed_amount: float = 0.0
 
 	func absorb_nutrition(amount: float) -> bool:
 		absorbed_amount += amount
+		return true
+
+
+class ResourceActor extends Node2D:
+	var nutrition_amount: float = 0.0
+	var toxin_amount: float = 0.0
+
+	func absorb_nutrition(amount: float) -> bool:
+		nutrition_amount += amount
+		return true
+
+	func absorb_toxin(amount: float) -> bool:
+		toxin_amount += amount
 		return true
 
 
@@ -32,11 +46,12 @@ func _run_tests() -> void:
 	await _test_hazard_reports_hurt_before_killed_on_physical_entry()
 	await _test_checkpoint_activates_once_on_physical_entry()
 	_test_nutrition_tank_uses_actor_absorption_contract()
+	_test_resource_vessels_emit_absorption_feedback()
 	quit()
 
 
 func _test_toxin_zone_tracks_physical_entry_and_exit() -> void:
-	var toxin_zone := ToxinZone.new()
+	var toxin_zone := TOXIN_ZONE_SCENE.instantiate() as ToxinZone
 	var actor := ToxinActor.new()
 	var entered_actors: Array[Node2D] = []
 	var exited_actors: Array[Node2D] = []
@@ -132,6 +147,24 @@ func _test_nutrition_tank_uses_actor_absorption_contract() -> void:
 	assert(nutrition_tank.absorb(actor, 1.5))
 	assert(actor.absorbed_amount == 1.5)
 	_free_nodes([nutrition_tank, invalid_actor, actor])
+
+
+func _test_resource_vessels_emit_absorption_feedback() -> void:
+	var nutrition_tank := NutritionTank.new()
+	var toxin_resource := ToxinResource.new()
+	var actor := ResourceActor.new()
+	var nutrition_feedback := [0]
+	var toxin_feedback := [0]
+	nutrition_tank.resource_absorbed.connect(func(_actor: Node2D, _amount: float) -> void: nutrition_feedback[0] += 1)
+	toxin_resource.resource_absorbed.connect(func(_actor: Node2D, _amount: float) -> void: toxin_feedback[0] += 1)
+
+	assert(nutrition_tank.absorb(actor, 1.0))
+	assert(toxin_resource.absorb(actor, 1.0))
+	assert(actor.nutrition_amount == 1.0)
+	assert(actor.toxin_amount == 1.0)
+	assert(nutrition_feedback[0] == 1)
+	assert(toxin_feedback[0] == 1)
+	_free_nodes([nutrition_tank, toxin_resource, actor])
 
 
 func _create_physics_actor() -> CharacterBody2D:

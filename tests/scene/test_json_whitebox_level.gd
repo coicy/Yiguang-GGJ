@@ -26,6 +26,12 @@ func _run() -> void:
 	await physics_frame
 	_assert_source_entities_built(level)
 	var player := level.get_node("Player") as Player
+	var player_collision := player.collision_shape.shape as RectangleShape2D
+	assert(player_collision.size.is_equal_approx(Vector2(16.0, 16.0)), "The sprout must use a 16 x 16 collision shape in the opening room.")
+	var camera := player.get_node("Camera") as Camera2D
+	assert(camera != null)
+	assert(camera.zoom.is_equal_approx(Vector2(4.0, 4.0)))
+	assert(camera.global_position.is_equal_approx(Vector2(168.0, 400.0)), "The initial camera must frame the 336 x 160 first room.")
 	assert(level.call(&"get_entity", B1_ID) != null)
 	assert(level.call(&"get_entity", B2_ID) != null)
 	assert(level.call(&"get_entity", B3_ID) != null)
@@ -51,7 +57,7 @@ func _run() -> void:
 	assert(c3_ring.global_position.is_equal_approx(Vector2(168.0, -88.0)), "C3's Ring must remain hidden with C3.")
 	assert(c3.global_position.is_equal_approx(Vector2(160.0, -160.0)))
 	assert(c4.global_position.is_equal_approx(Vector2(48.0, -160.0)))
-	await _press_button_with_player(player, b4, Vector2(-8.0, 176.0))
+	await _press_button_with_player(player, b4, Vector2(-8.0, 175.0))
 	await _wait_for_motion(c3)
 	await _wait_for_motion(c4)
 	assert(c3.global_position.is_equal_approx(Vector2(160.0, 0.0)))
