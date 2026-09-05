@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://features/level/backgrounds/four_layer_backdrop.tscn" id="four_layer_backdrop"]
 [ext_resource type="Script" path="res://features/level/terrain/terrain_skin.gd" id="skin"]
 [ext_resource type="Resource" path="res://features/level/terrain/data/root_passage.tres" id="style_root_passage"]
 [ext_resource type="ShaderMaterial" path="res://features/level/terrain/terrain_cutout.tres" id="cutout"]
@@ -101,6 +102,8 @@ script = ExtResource("level")
 
 [node name="Background" type="Node2D" parent="."]
 z_index = -20
+
+[node name="FourLayerBackdrop" parent="Background" instance=ExtResource("four_layer_backdrop")]
 
 [node name="Glasshouse" type="Node2D" parent="Background"]
 script = ExtResource("backdrop")
