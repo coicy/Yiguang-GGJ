@@ -9,7 +9,7 @@
 1. 在 `Terrain` 下拖入 `terrain_piece.tscn`、`hard_floor_piece.tscn` 或单独的美术场景。调整 `piece_size`，再选择共享的 `sprite_variants` 资源和 `variant_index`；单张专用贴图仍可填入 `art_texture`。
 2. 在 `Mechanisms` 下拖入 `moving_platform.tscn`、`door.tscn` 和 `trigger_button.tscn`。平台以根节点为起点，使用 `destination_offset` 配置终点；随平台移动的挂环和装饰放到 `Body/Attachments`。
 3. 选择按钮，在 `targets` 中通过节点选择器加入平台或门。目标必须提供 `activate()` 方法。
-4. 在 `Areas` 下摆放 `hazard_area.tscn`、现有营养液、毒素、毒雾、风区和伤害机关。每个范围组件的碰撞层与掩码已经按项目约定预设。
+4. 在 `Areas` 下摆放 `thorn_damage.tscn`、毒雾 `hazard_area.tscn`、营养液、毒素、风区和其他伤害机关。每个组件的碰撞层与掩码已经按项目约定预设。
 5. 移动 `SpawnPoint` 与 `CameraBounds`，按 F6 运行关卡。`HandbuiltLevel` 会自动连接危险区和检查点，并用最近激活的检查点复活玩家。
 
 ## 组件映射
@@ -18,7 +18,7 @@
 | --- | --- |
 | Ground | `terrain_piece.tscn` |
 | HardFloor | `hard_floor_piece.tscn` |
-| Damage | `hazard_area.tscn` |
+| Damage / ThornDamage | `thorn_damage.tscn` |
 | Start | `spawn_point.tscn` |
 | Camera | `camera_bounds.tscn` |
 | Door | `door.tscn` |
@@ -36,15 +36,16 @@
 - 当素材带有透明边缘时，在 `TerrainPiece` 的 `Collision` 分类设置四个 `collision_*_inset`，不要直接移动或缩放碰撞节点；矩形轮廓会根据这些内缩值自动同步。
 - 矩形地形使用 `piece_size`。简单不规则地面使用 `TerrainPiece` 的多边形模式；只有需要多段碰撞、特殊机关或独立行为时，才创建专用 `StaticBody2D` 场景。
 - TerrainPiece 的贴图只在根节点配置：单张素材填入 `art_texture`，需要复用多张精灵图时填入 `sprite_variants` 并选择 `variant_index`。`SpriteVariantSet` 优先于 `art_texture`；不要在 `Artwork` 或 `PolygonArtwork` 子节点手工填贴图。`SpriteVariantSet` 的每项保存贴图、偏移、缩放和是否适配组件尺寸。地形、危险区、按钮和平台共享该资源后，只需选择 `variant_index`。`variant_sprite_2d.tscn` 可作为现有资源区、风区等组件的直接子节点，复用同一套变体资源；其 `component_size` 用于需要拉伸适配的变体。
-- `art_texture` 与精灵变体都为空时，组件显示白模占位图；多边形模式的白模按 `PolygonArtwork` 轮廓绘制，配置素材后占位图自动隐藏。
+- `art_texture` 与精灵变体都为空时，组件显示白模占位图；多边形模式的白模按 `PolygonArtwork` 轮廓绘制，配置素材后占位图自动隐藏。荆棘使用 `thorn_damage.tscn`，它的 `Artwork` 与 `CollisionPolygon2D` 使用相同的素材变换；调整 `ThornDamage` 根节点的 `Scale` 会同步缩放显示和碰撞。
 
 ### 多边形地板
 
-`terrain_piece.tscn` 与 `hard_floor_piece.tscn` 都提供两套独立模式：`display_mode=SPRITE` 使用 `NinePatchRect` 平铺矩形地块，`display_mode=POLYGON` 使用纹理 `Polygon2D`；唯一的 `CollisionPolygon2D` 在矩形模式下生成矩形轮廓，在多边形模式下承载自定义轮廓。两者默认使用 `SPRITE + RECTANGLE`；改变 `piece_size` 会直接扩大 NinePatch 视觉。
+`terrain_piece.tscn` 与 `hard_floor_piece.tscn` 提供三套显示模式：`display_mode=SPRITE` 使用 `NinePatchRect` 平铺矩形地块，`display_mode=POLYGON` 使用纹理 `Polygon2D`，`display_mode=WHOLE_TEXTURE` 使用 `Sprite2D` 按原始素材整体显示；唯一的 `CollisionPolygon2D` 在矩形模式下生成矩形轮廓，在多边形模式下承载自定义轮廓。前两种模式默认使用 `SPRITE + RECTANGLE`；改变 `piece_size` 会直接扩大布局与碰撞。
 
 - 选择 `POLYGON` 后，在 2D 视图编辑 `PolygonArtwork` 的顶点；`collision_follows_visual` 默认开启，加载实例和编辑有效视觉轮廓时都会同步到碰撞轮廓。
 - 若视觉边缘不适合承重，关闭 `collision_follows_visual`，再单独编辑唯一的 `CollisionPolygon2D`。
 - 地板根节点和碰撞节点均保持单位缩放。多边形必须有至少三个不自交顶点；无效轮廓会保留上一份有效碰撞并显示一次警告。
+- 需要“素材整体与碰撞体一起缩放”时，选择 `display_mode=WHOLE_TEXTURE`，让 `piece_size` 先描述未缩放的本地碰撞范围，再直接调整 `TerrainPiece` 根节点的 `Scale`。该模式会保留根节点缩放，不执行普通地形的缩放烘焙；素材和 `StaticBody2D` 碰撞会继承同一个 Transform。浮空岛等不规则素材应同时使用 `collision_mode=POLYGON` 并编辑 `CollisionPolygon2D`。
 - `one_way_collision` 仅用于多边形碰撞的平台版本。矩形碰撞时该开关不会生效，Inspector 会给出配置警告。普通地板默认允许扎根，硬质地板默认禁止。
 - 自然和硬质地板的默认素材组位于 `assets/runtime/scenery/variants/`。设置 `sprite_variants` 后通过 `variant_index` 换肤；它只影响显示，不修改碰撞或扎根规则。
 

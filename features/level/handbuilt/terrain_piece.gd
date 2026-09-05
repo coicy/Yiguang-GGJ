@@ -3,7 +3,7 @@ class_name TerrainPiece
 extends StaticBody2D
 ## A hand-built floor with independent artwork and collision modes.
 
-enum DisplayMode { SPRITE, POLYGON }
+enum DisplayMode { SPRITE, POLYGON, WHOLE_TEXTURE }
 enum CollisionMode { RECTANGLE, POLYGON }
 enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 
@@ -104,6 +104,7 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 @onready var _collision_polygon: CollisionPolygon2D = %CollisionPolygon2D
 @onready var _terrain_visual: NinePatchRect = %TerrainVisual
 @onready var _polygon_artwork: Polygon2D = %PolygonArtwork
+@onready var _whole_artwork: Sprite2D = %WholeArtwork
 @onready var _left_cap: Sprite2D = %LeftCap
 @onready var _right_cap: Sprite2D = %RightCap
 
@@ -160,7 +161,9 @@ func _request_sync() -> void:
 		update_configuration_warnings()
 
 func _bake_root_scale_into_piece_size() -> void:
-	if _is_baking_root_scale or scale.is_equal_approx(Vector2.ONE):
+	# Whole-texture mode intentionally keeps root scale so the material and
+	# StaticBody2D collision transform are scaled together.
+	if display_mode == DisplayMode.WHOLE_TEXTURE or _is_baking_root_scale or scale.is_equal_approx(Vector2.ONE):
 		return
 	# Mirroring carries directional meaning and cannot be converted to a positive size.
 	# Leave it intact instead of silently changing the piece orientation.
@@ -200,6 +203,12 @@ func _apply_artwork() -> void:
 	var art_scale := variant.scale if variant != null else Vector2.ONE
 	var should_stretch := stretch_art or (variant != null and variant.fit_mode == LevelSpriteVariant.FitMode.FIT_COMPONENT)
 	var safe_visual_scale := Vector2(maxf(absf(art_scale.x * art_scale_multiplier), 0.01), maxf(absf(art_scale.y * art_scale_multiplier), 0.01))
+	var whole_texture := display_mode == DisplayMode.WHOLE_TEXTURE
+	_whole_artwork.texture = texture if whole_texture else null
+	_whole_artwork.position = offset
+	_whole_artwork.scale = safe_visual_scale
+	_whole_artwork.rotation = deg_to_rad(art_rotation_degrees)
+	_whole_artwork.visible = whole_texture and texture != null
 	var visual_size := piece_size / safe_visual_scale
 	_terrain_visual.texture = texture
 	_terrain_visual.position = offset

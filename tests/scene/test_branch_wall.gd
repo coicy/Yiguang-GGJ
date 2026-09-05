@@ -20,6 +20,10 @@ func _run() -> void:
 	var polygon_collider := wall.get_node("CollisionPolygon2D") as CollisionPolygon2D
 	assert(polygon_collider.polygon.size() >= 3)
 	assert(not Geometry2D.triangulate_polygon(polygon_collider.polygon).is_empty())
+	var light_occluder := wall.get_node("LightOccluder2D") as LightOccluder2D
+	assert(light_occluder != null, "Solid walls must block 2D light.")
+	assert(light_occluder.occluder != null)
+	assert(light_occluder.occluder.polygon == polygon_collider.polygon)
 	var authored_outline := polygon_collider.polygon
 
 	wall.wall_height = 360.0

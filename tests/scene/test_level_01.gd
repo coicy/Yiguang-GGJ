@@ -23,8 +23,18 @@ func _run() -> void:
 
 	for layer_name: String in LAYER_NAMES:
 		assert(level.get_node_or_null(layer_name) != null, "Missing level layer: %s" % layer_name)
+	var canvas_modulate := level.get_node("CanvasModulate") as CanvasModulate
+	assert(canvas_modulate != null)
+	assert(canvas_modulate.color.is_equal_approx(Color(0.2, 0.24, 0.28, 1.0)))
 	assert(level.get_node_or_null("Geometry/Terrain") != null)
 	assert(level.get_node_or_null("Geometry/Mechanisms") != null)
+	var flower_decorations := level.get_node("FlowerDecorations") as Node2D
+	assert(flower_decorations != null)
+	assert(flower_decorations.get_child_count() == 4, "The level should have several glowing flower decorations.")
+	for child: Node in flower_decorations.get_children():
+		var flower_light := child.get_node("FlowerLight") as PointLight2D
+		assert(flower_light != null)
+		assert(flower_light.shadow_enabled)
 
 	var floor_piece := level.get_node("Geometry/Terrain/StartFloor") as TerrainPiece
 	assert(floor_piece != null, "The baseline level needs one terrain floor piece.")
@@ -67,6 +77,11 @@ func _run() -> void:
 	assert(ungrow_drug.collision_mask == grow_drug.collision_mask)
 
 	var player := level.get_node("Actors/Player") as Player
+	var flower_light := player.get_node("Visuals/FlowerLight") as PointLight2D
+	assert(flower_light != null, "The player flower needs a local 2D light in the dark level.")
+	assert(flower_light.position.is_equal_approx(Vector2(0.0, -34.0)))
+	assert(flower_light.energy > 1.0)
+	assert(flower_light.shadow_enabled)
 	var camera := player.get_node("Camera2D") as Camera2D
 	assert(camera.zoom.is_equal_approx(Vector2(3.0, 3.0)))
 	assert(camera.limit_smoothed)

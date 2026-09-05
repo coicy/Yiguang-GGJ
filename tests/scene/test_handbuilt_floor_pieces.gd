@@ -11,6 +11,7 @@ func _init() -> void:
 func _run() -> void:
 	await _verify_root_texture_drives_both_artwork_modes()
 	await _verify_root_scale_expands_tiled_visual_and_collision()
+	await _verify_whole_texture_scales_with_collision()
 	await _verify_rect_polygon_layout_tracks_piece_size()
 	await _verify_polygon_repeat_offset_is_instance_local()
 	await _verify_polygon_collision_syncs_on_scene_load()
@@ -74,6 +75,25 @@ func _verify_root_scale_expands_tiled_visual_and_collision() -> void:
 	assert(terrain.piece_size == Vector2(384.0, 24.0))
 	assert(visual.size == terrain.piece_size)
 	assert(collision.polygon == _rectangle_polygon(terrain.piece_size))
+	terrain.queue_free()
+
+
+func _verify_whole_texture_scales_with_collision() -> void:
+	var terrain := TERRAIN_SCENE.instantiate() as TerrainPiece
+	terrain.sprite_variants = null
+	terrain.art_texture = _test_texture(16)
+	terrain.piece_size = Vector2(16.0, 16.0)
+	terrain.display_mode = TerrainPiece.DisplayMode.WHOLE_TEXTURE
+	terrain.scale = Vector2(0.5, 0.5)
+	root.add_child(terrain)
+	await process_frame
+
+	var whole_artwork := terrain.get_node("WholeArtwork") as Sprite2D
+	var collision := terrain.get_node("CollisionPolygon2D") as CollisionPolygon2D
+	assert(terrain.scale.is_equal_approx(Vector2(0.5, 0.5)))
+	assert(whole_artwork.visible and whole_artwork.texture == terrain.art_texture)
+	assert(whole_artwork.global_transform.get_scale().is_equal_approx(Vector2(0.5, 0.5)))
+	assert(collision.global_transform.get_scale().is_equal_approx(Vector2(0.5, 0.5)))
 	terrain.queue_free()
 
 

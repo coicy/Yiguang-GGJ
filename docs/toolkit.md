@@ -20,6 +20,18 @@
 
 ## 可选第三方工具
 
+### Phantom Camera：运行时镜头约束
+
+版本锁定：Phantom Camera `0.11.0.3`，固定上游提交 `cb6e0966ac305202c47f1d1a81c105966e29da96`。
+
+来源/所有者：[ramokz/phantom-camera](https://github.com/ramokz/phantom-camera)，官方文档：[phantom-camera.dev](https://phantom-camera.dev/)，许可证：MIT。该版本的发布说明包含 Godot 4.7.1 兼容性修复；已在本项目 Godot 4.7.2 headless 启动与场景集成测试中验证。
+
+用途：`PhantomCamera2D` 提供 Framed Follow 跟随、可调水平/垂直死区、水平 look-ahead 与平滑插值；`CameraBounds` 仍是关卡边界真值，关卡脚本会同步设置 Phantom Camera 与备用 `Camera2D` 的四向限制。`PhantomCameraHost` 负责把活动 Phantom 相机接入场景中的 `Camera2D`。
+
+运行时集成：插件目录为 `addons/phantom_camera/`，并注册 `PhantomCameraManager` Autoload；当前仅使用 GDScript，不引入 GDExtension 或外部二进制。关卡场景保留普通 `Camera2D` 作为可回退路径。
+
+移除路径：删除 `addons/phantom_camera/`；从 `project.godot` 的 `[autoload]` 移除 `PhantomCameraManager`，从 `[editor_plugins]` 移除插件条目；删除关卡中的 `PhantomCameraHost`/`PhantomCamera2D` 节点及 `handbuilt_level.gd` 对 Phantom Camera 的同步代码。保留的 `Camera2D + CameraBounds` 可继续提供基础跟随和边界。
+
 ### 已筹备运行时：spine-godot GDExtension
 
 版本锁定：Spine runtime 4.3，Godot 4.7-stable，官方包 `spine-godot-extension-4.3-4.7-stable.zip`。

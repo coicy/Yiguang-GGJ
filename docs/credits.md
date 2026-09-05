@@ -11,6 +11,7 @@
 | 场景 PNG 素材 | 用户提供的 `png.zip`；原作者待补充 | 待确认 | Level 01 地形、机关与环境装饰 | `assets/source/scenery_png/png/`、`assets/runtime/scenery/` |
 | 荆棘与小藤蔓 PNG 素材 | 用户提供的 `png-1.zip`；原作者待补充 | 待确认 | 荆棘危险机关与藤蔓环境装饰 | `assets/source/scenery_png/png-1/`、`assets/runtime/scenery/` |
 | Grow / UnGrow 罐子素材 | 用户提供的 `罐子.zip`；原作者待补充 | 待确认 | 绿色成长罐与紫色退化罐 | `assets/source/tanks/`、`assets/runtime/scenery/grow_tank.png`、`assets/runtime/scenery/ungrow_tank.png` |
+| Phantom Camera `0.11.0.3` | [Marcus Skov / ramokz](https://github.com/ramokz/phantom-camera) | MIT | 2D 镜头跟随、可调死区、关卡边界与插值 | `addons/phantom_camera/` |
 
 ## 音频素材
 

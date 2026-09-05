@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="SpriteVariantSet" load_steps=8 format=3]
+[gd_resource type="Resource" script_class="SpriteVariantSet" format=3 uid="uid://d1i8obj2cf1xt"]
 
-[ext_resource type="Script" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
-[ext_resource type="Script" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0000_草团1.png" id="3_grass"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0002_红花1.png" id="4_flower"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0011_高草1.png" id="5_tall_grass"]
+[ext_resource type="Script" uid="uid://csn4mpi2ulpwq" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
+[ext_resource type="Script" uid="uid://dg2stga1rf3vc" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
+[ext_resource type="Texture2D" uid="uid://dpmfuq4h8nu85" path="res://assets/runtime/scenery/_0000_草团1.png" id="3_grass"]
+[ext_resource type="Texture2D" uid="uid://br00noyvleosb" path="res://assets/runtime/scenery/_0002_红花1.png" id="4_flower"]
+[ext_resource type="Texture2D" uid="uid://cfybeu3xbt1fy" path="res://assets/runtime/scenery/_0011_高草1.png" id="5_tall_grass"]
 
 [sub_resource type="Resource" id="GrassTuft"]
 script = ExtResource("2_variant")

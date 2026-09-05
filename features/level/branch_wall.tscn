@@ -1,7 +1,10 @@
-[gd_scene format=3 uid="uid://de0u5xwpljsbi"]
+[gd_scene load_steps=4 format=3 uid="uid://de0u5xwpljsbi"]
 
 [ext_resource type="Script" uid="uid://ca8m64fw4rbrv" path="res://features/level/branch_wall.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dhlaebktpu8ut" path="res://assets/runtime/scenery/branch_wall.png" id="2_texture"]
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_branch_wall"]
+polygon = PackedVector2Array(-23, -140, -17, -141, 2, -108, 3, -72, 12, -50, 5, -10, 27, 41, 10, 54, 14, 138, -6, 138, -11, 87, -6, 33, -6, 15, -25, -22, -17, -79, -14, -109)
 
 [node name="BranchWall" type="StaticBody2D" unique_id=1358648627]
 collision_layer = 1
@@ -18,3 +21,7 @@ texture = ExtResource("2_texture")
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=331758531]
 unique_name_in_owner = true
 polygon = PackedVector2Array(-23, -140, -17, -141, 2, -108, 3, -72, 12, -50, 5, -10, 27, 41, 10, 54, 14, 138, -6, 138, -11, 87, -6, 33, -6, 15, -25, -22, -17, -79, -14, -109)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+unique_name_in_owner = true
+occluder = SubResource("OccluderPolygon2D_branch_wall")

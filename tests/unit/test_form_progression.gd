@@ -36,7 +36,7 @@ func _init() -> void:
 	assert(SPROUT.collision_shape_kind == FormDefinition.CollisionShapeKind.CIRCLE)
 	assert(SPROUT.collision_offset == Vector2(2.0, 0.0))
 	assert(SPROUT.growth_threshold == 100.0)
-	assert(HUMANOID.collision_size == Vector2(20.0, 36.0))
+	assert(HUMANOID.collision_size == Vector2(16.0, 34.0))
 	assert(HUMANOID.collision_shape_kind == FormDefinition.CollisionShapeKind.CAPSULE)
 	assert(HUMANOID.collision_offset == Vector2(2.0, 0.0))
 	assert(HUMANOID.can_root and HUMANOID.can_extend_legs)

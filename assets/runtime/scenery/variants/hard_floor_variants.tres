@@ -1,10 +1,10 @@
-[gd_resource type="Resource" script_class="SpriteVariantSet" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="SpriteVariantSet" format=3 uid="uid://bpdw3nfq8olhe"]
 
-[ext_resource type="Script" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
-[ext_resource type="Script" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0028_石板3.png" id="3_stone"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0031_水泥板.png" id="4_cement"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0030_锈蚀钢板-.png" id="5_rust"]
+[ext_resource type="Script" uid="uid://csn4mpi2ulpwq" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
+[ext_resource type="Script" uid="uid://dg2stga1rf3vc" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
+[ext_resource type="Texture2D" uid="uid://ep6xij8k7k3m" path="res://assets/runtime/scenery/_0028_石板3.png" id="3_stone"]
+[ext_resource type="Texture2D" uid="uid://srrsqf6go31k" path="res://assets/runtime/scenery/_0031_水泥板.png" id="4_cement"]
+[ext_resource type="Texture2D" uid="uid://co0i4vaem6bqt" path="res://assets/runtime/scenery/_0030_锈蚀钢板-.png" id="5_rust"]
 
 [sub_resource type="Resource" id="Stone"]
 script = ExtResource("2_variant")
