@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/ui/glow_feedback.gd" id="1_glow"]
+
+[node name="GlowFeedback" type="Node2D"]
+unique_name_in_owner = true
+show_behind_parent = true
+script = ExtResource("1_glow")

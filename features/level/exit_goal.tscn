@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://features/level/exit_goal.gd" id="1_exit"]
+[ext_resource type="PackedScene" path="res://features/ui/glow_feedback.tscn" id="2_glow"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_exit"]
 size = Vector2(56, 72)
@@ -10,6 +11,10 @@ collision_layer = 64
 collision_mask = 2
 monitoring = true
 script = ExtResource("1_exit")
+
+[node name="GlowFeedback" parent="." instance=ExtResource("2_glow")]
+position = Vector2(0, -36)
+radius = 48.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -36)

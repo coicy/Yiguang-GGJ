@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://features/level/ability_switch.gd" id="1_switch"]
+[ext_resource type="PackedScene" path="res://features/ui/glow_feedback.tscn" id="2_glow"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_switch"]
 size = Vector2(44, 24)
@@ -11,6 +12,10 @@ collision_mask = 10
 monitoring = true
 monitorable = true
 script = ExtResource("1_switch")
+
+[node name="GlowFeedback" parent="." instance=ExtResource("2_glow")]
+style = 1
+radius = 34.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_switch")

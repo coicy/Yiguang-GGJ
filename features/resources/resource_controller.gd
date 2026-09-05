@@ -5,6 +5,7 @@ extends Node
 signal values_changed(growth: float, threshold: float, stability: float)
 signal toxin_changed(active: bool)
 signal form_transitioned(form_id: StringName)
+signal feedback_requested(kind: StringName)
 
 const MAX_STABILITY := 100.0
 const TOXIN_DRAIN_PER_SECOND := 35.0
@@ -32,6 +33,7 @@ func tick(delta: float) -> void:
 			if _forms != null and _forms.wither():
 				growth_progress = 0.0
 				form_transitioned.emit(_forms.get_current().id)
+				feedback_requested.emit(&"wither")
 			stability = MAX_STABILITY
 	else:
 		stability = minf(MAX_STABILITY, stability + STABILITY_RECOVERY_PER_SECOND * delta)
@@ -42,11 +44,14 @@ func absorb_nutrition(amount: float) -> bool:
 	if amount <= 0.0 or _forms == null:
 		return false
 	var nutrition_left := amount
+	var feedback_kind: StringName = &"nutrition"
 	if stability < MAX_STABILITY:
 		var needed := (MAX_STABILITY - stability) / NUTRITION_STABILITY_MULTIPLIER
 		var used := minf(needed, nutrition_left)
 		stability += used * NUTRITION_STABILITY_MULTIPLIER
 		nutrition_left -= used
+		if used > 0.0:
+			feedback_kind = &"stability_restored"
 
 	var form := _forms.get_current()
 	if form != null and form.growth_threshold > 0.0:
@@ -54,6 +59,8 @@ func absorb_nutrition(amount: float) -> bool:
 		if growth_progress >= form.growth_threshold and _forms.grow():
 			growth_progress = 0.0
 			form_transitioned.emit(_forms.get_current().id)
+			feedback_kind = &"grew"
+	feedback_requested.emit(feedback_kind)
 	_emit_values()
 	return true
 
@@ -77,6 +84,10 @@ func exit_toxin(source: Object) -> void:
 
 func speed_multiplier() -> float:
 	return TOXIN_SPEED_MULTIPLIER if not _toxin_sources.is_empty() else 1.0
+
+
+func has_toxin() -> bool:
+	return not _toxin_sources.is_empty()
 
 
 func snapshot() -> Dictionary:

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://features/level/toxin_zone.gd" id="1_toxin"]
+[ext_resource type="PackedScene" path="res://features/ui/glow_feedback.tscn" id="2_glow"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_toxin"]
 size = Vector2(128, 64)
@@ -9,6 +10,11 @@ size = Vector2(128, 64)
 collision_layer = 64
 collision_mask = 2
 script = ExtResource("1_toxin")
+
+[node name="GlowFeedback" parent="." instance=ExtResource("2_glow")]
+style = 2
+glow_color = Color(0.84, 0.33, 0.72, 1)
+idle_strength = 0.48
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_toxin")

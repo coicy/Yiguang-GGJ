@@ -1,11 +1,15 @@
 class_name NutritionTank
 extends Area2D
 
+const GlowFeedback = preload("res://features/ui/glow_feedback.gd")
+
 @export var nutrition_per_second: float = 40.0
 @export var accepted_form_id: StringName = &""
 @export var visual_size: Vector2 = Vector2(48.0, 48.0)
 @export var visual_color: Color = Color("#65d46e")
 @export var visual_label: String = "NUT"
+
+@onready var glow: GlowFeedback = get_node_or_null("GlowFeedback") as GlowFeedback
 
 var _actors: Array[Node] = []
 
@@ -13,6 +17,8 @@ var _actors: Array[Node] = []
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	if glow != null:
+		glow.set_glow_color(visual_color)
 	queue_redraw()
 
 
@@ -37,6 +43,8 @@ func absorb(actor: Node, amount: float) -> bool:
 func _on_body_entered(actor: Node) -> void:
 	if not _actors.has(actor):
 		_actors.append(actor)
+		if glow != null:
+			glow.pulse(0.9)
 
 
 func _on_body_exited(actor: Node) -> void:

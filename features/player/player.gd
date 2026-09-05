@@ -27,6 +27,9 @@ func _ready() -> void:
 	form_controller.form_changed.connect(_on_form_changed)
 	state_machine.state_changed.connect(_on_state_changed)
 	abilities.ability_state_changed.connect(_on_ability_state_changed)
+	resources.values_changed.connect(_on_resource_values_changed)
+	resources.toxin_changed.connect(_on_toxin_changed)
+	resources.feedback_requested.connect(_on_resource_feedback)
 	add_to_group("player")
 
 
@@ -84,6 +87,26 @@ func _on_ability_state_changed(_label: StringName) -> void:
 	visuals.set_ability_state(abilities.is_rooted(), abilities.is_leg_extended(), abilities.is_vine_attached())
 	visuals.set_vine_anchor(abilities.get_vine_anchor())
 	visuals.set_leg_direction(abilities.get_leg_extension_direction())
+
+
+func _on_resource_values_changed(_growth: float, _threshold: float, stability: float) -> void:
+	visuals.set_resource_state(stability, resources.has_toxin())
+
+
+func _on_toxin_changed(active: bool) -> void:
+	visuals.set_resource_state(resources.stability, active)
+	if active:
+		visuals.play_stability_hit_feedback()
+
+
+func _on_resource_feedback(kind: StringName) -> void:
+	match kind:
+		&"nutrition", &"stability_restored":
+			visuals.play_nutrition_feedback()
+		&"grew":
+			visuals.play_growth_feedback()
+		&"wither":
+			visuals.play_wither_feedback()
 
 
 func current_state() -> StringName:

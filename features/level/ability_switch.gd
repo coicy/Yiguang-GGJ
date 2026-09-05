@@ -2,6 +2,8 @@ class_name AbilitySwitch
 extends Area2D
 ## Latching switch that accepts exactly one physical ability contract.
 
+const GlowFeedback = preload("res://features/ui/glow_feedback.gd")
+
 enum Mode {
 	LEG_EXTENSION,
 	SPROUT_BODY,
@@ -12,12 +14,15 @@ signal activated
 @export var mode: Mode = Mode.LEG_EXTENSION
 @export var visual_size: Vector2 = Vector2(44.0, 24.0)
 
+@onready var glow: GlowFeedback = get_node_or_null("GlowFeedback") as GlowFeedback
+
 var _active: bool = false
 
 
 func _ready() -> void:
 	area_entered.connect(try_activate_area)
 	body_entered.connect(try_activate_body)
+	_refresh_glow()
 	queue_redraw()
 
 
@@ -47,6 +52,7 @@ func is_active() -> bool:
 
 func restore_active(active: bool) -> void:
 	_active = active
+	_refresh_glow()
 	queue_redraw()
 
 
@@ -55,7 +61,20 @@ func _activate() -> void:
 		return
 	_active = true
 	activated.emit()
+	if glow != null:
+		glow.set_active(true)
+		glow.set_glow_color(Color("#5aff73"))
+		glow.pulse(1.0)
 	queue_redraw()
+
+
+func _refresh_glow() -> void:
+	if glow == null:
+		return
+	glow.set_active(true)
+	glow.set_glow_color(Color("#5aff73") if _active else Color("#ffca3a"))
+	if not _active:
+		glow.idle_strength = 0.26
 
 
 func _draw() -> void:

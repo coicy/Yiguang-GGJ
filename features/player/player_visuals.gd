@@ -2,6 +2,7 @@ class_name PlayerVisuals
 extends Node2D
 ## Uses optional form SpriteFrames when provided; otherwise draws a readable whitebox.
 
+const GlowFeedback = preload("res://features/ui/glow_feedback.gd")
 const FALLBACK_ANIMATION := &"idle"
 const STATE_IDLE := &"idle"
 const STATE_RUN := &"run"
@@ -11,6 +12,7 @@ const STATE_GLIDE := &"glide"
 const LEG_EXTENSION_HEIGHT := 72.0
 
 @onready var animated_sprite: AnimatedSprite2D = %AnimatedSprite2D
+@onready var glow_feedback: GlowFeedback = get_node_or_null("GlowFeedback") as GlowFeedback
 
 var _default_frames: SpriteFrames
 var _current_form: FormDefinition
@@ -20,6 +22,11 @@ var _legs_extended: bool = false
 var _vine_attached: bool = false
 var _vine_anchor: Node2D
 var _leg_direction := Vector2.UP
+var _stability: float = 100.0
+var _toxin_active: bool = false
+var _feedback_pulse: float = 0.0
+var _feedback_flash: float = 0.0
+var _feedback_elapsed: float = 0.0
 
 
 func _ready() -> void:
@@ -28,7 +35,10 @@ func _ready() -> void:
 	queue_redraw()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_feedback_elapsed = fmod(_feedback_elapsed + delta, 120.0)
+	_feedback_pulse = move_toward(_feedback_pulse, 0.0, delta * 2.2)
+	_feedback_flash = move_toward(_feedback_flash, 0.0, delta * 3.5)
 	# The anchor is in world space while this canvas item follows the player.
 	# Rebuild the local endpoint every frame so the line stays pinned at both ends.
 	if _vine_attached:
@@ -37,6 +47,8 @@ func _process(_delta: float) -> void:
 
 func set_form(form: FormDefinition) -> void:
 	_current_form = form
+	if form != null:
+		glow_feedback.set_glow_color(form.body_color)
 	_apply_frames()
 	queue_redraw()
 
@@ -61,7 +73,44 @@ func set_leg_direction(direction: Vector2) -> void:
 
 
 func set_vine_anchor(anchor: Node2D) -> void:
+	if anchor != null and anchor != _vine_anchor and anchor.has_method(&"highlight"):
+		anchor.call(&"highlight")
 	_vine_anchor = anchor
+	queue_redraw()
+
+
+func set_resource_state(stability: float, toxin_active: bool) -> void:
+	_stability = clampf(stability, 0.0, 100.0)
+	_toxin_active = toxin_active
+	glow_feedback.set_active(true)
+	glow_feedback.set_glow_color(Color("#da4b8c") if toxin_active else (_current_form.body_color if _current_form != null else Color("#66c2a5")))
+	queue_redraw()
+
+
+func play_nutrition_feedback() -> void:
+	_feedback_pulse = maxf(_feedback_pulse, 0.65)
+	glow_feedback.pulse(0.7)
+	queue_redraw()
+
+
+func play_growth_feedback() -> void:
+	_feedback_pulse = 1.0
+	glow_feedback.pulse(1.0)
+	_feedback_flash = 0.0
+	queue_redraw()
+
+
+func play_wither_feedback() -> void:
+	_feedback_flash = 1.0
+	_feedback_pulse = 0.8
+	glow_feedback.set_glow_color(Color("#da4b8c"))
+	glow_feedback.pulse(1.0)
+	queue_redraw()
+
+
+func play_stability_hit_feedback() -> void:
+	_feedback_flash = maxf(_feedback_flash, 0.55)
+	glow_feedback.pulse(0.45)
 	queue_redraw()
 
 
@@ -87,11 +136,12 @@ func _apply_animation() -> void:
 func _draw() -> void:
 	var body_size := _current_form.collision_size if _current_form != null else Vector2(28.0, 40.0)
 	var body_offset_y := -LEG_EXTENSION_HEIGHT if _legs_extended else 0.0
+	var body_color := _current_form.body_color if _current_form != null else Color("#66c2a5")
+	_draw_feedback_aura(body_size, body_offset_y, body_color)
 	if animated_sprite.sprite_frames != null:
 		_draw_vine(Vector2(0.0, -body_size.y * 0.5 + body_offset_y))
 		return
 
-	var body_color := _current_form.body_color if _current_form != null else Color("#66c2a5")
 	_draw_vine(Vector2(0.0, -body_size.y * 0.5 + body_offset_y))
 	draw_rect(Rect2(-body_size.x * 0.5, -body_size.y + body_offset_y, body_size.x, body_size.y), body_color)
 	draw_circle(Vector2(0.0, -body_size.y + 5.0 + body_offset_y), minf(6.0, body_size.x * 0.25), Color.WHITE)
@@ -131,3 +181,19 @@ func _draw_vine(attachment_point: Vector2) -> void:
 		true
 	)
 	draw_circle(attachment_point, 4.0, Color.WHITE)
+
+
+func _draw_feedback_aura(body_size: Vector2, body_offset_y: float, body_color: Color) -> void:
+	var center := Vector2(0.0, -body_size.y * 0.55 + body_offset_y)
+	var base_strength := 0.05 + (100.0 - _stability) / 100.0 * 0.08
+	if _toxin_active:
+		base_strength += 0.08
+	var pulse_radius := maxf(body_size.x, body_size.y) * 0.55 + _feedback_pulse * 12.0
+	for layer: int in range(4, 0, -1):
+		var radius := pulse_radius + float(layer) * 5.0
+		var alpha := base_strength * (5.0 - float(layer)) + _feedback_pulse * 0.035
+		draw_circle(center, radius, Color(body_color, alpha))
+	if _feedback_pulse > 0.01:
+		draw_arc(center, pulse_radius + 14.0, -PI * 0.7, PI * 0.7, 24, Color(0.9, 1.0, 0.78, _feedback_pulse * 0.7), 2.0)
+	if _feedback_flash > 0.01:
+		draw_circle(center, pulse_radius + 4.0, Color(1.0, 0.32, 0.36, _feedback_flash * 0.2), false, 3.0)

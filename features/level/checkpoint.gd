@@ -1,6 +1,7 @@
 class_name Checkpoint
 extends Area2D
 
+const GlowFeedback = preload("res://features/ui/glow_feedback.gd")
 
 signal checkpoint_reached(position: Vector2)
 signal actor_checkpoint_reached(actor: Node2D, position: Vector2)
@@ -8,9 +9,13 @@ signal actor_checkpoint_reached(actor: Node2D, position: Vector2)
 
 var _is_activated := false
 
+@onready var glow: GlowFeedback = get_node_or_null("GlowFeedback") as GlowFeedback
+
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
+	if glow != null:
+		glow.set_active(false)
 
 
 func activate(actor: Node2D) -> bool:
@@ -18,6 +23,9 @@ func activate(actor: Node2D) -> bool:
 		return false
 
 	_is_activated = true
+	if glow != null:
+		glow.set_active(true)
+		glow.pulse(1.0)
 	checkpoint_reached.emit(get_checkpoint_position())
 	actor_checkpoint_reached.emit(actor, get_checkpoint_position())
 	queue_redraw()
@@ -34,6 +42,8 @@ func _on_body_entered(actor: Node2D) -> void:
 
 func reset_activation() -> void:
 	_is_activated = false
+	if glow != null:
+		glow.set_active(false)
 	queue_redraw()
 
 

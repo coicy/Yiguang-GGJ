@@ -1,10 +1,13 @@
 class_name ToxinZone
 extends Area2D
 
+const GlowFeedback = preload("res://features/ui/glow_feedback.gd")
+
 @export var zone_size: Vector2 = Vector2(128.0, 64.0)
 @export var show_whitebox_visual: bool = false
 
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var collision_shape: CollisionShape2D = get_node_or_null("CollisionShape2D") as CollisionShape2D
+@onready var glow: GlowFeedback = get_node_or_null("GlowFeedback") as GlowFeedback
 
 signal actor_entered(actor: Node2D)
 signal actor_exited(actor: Node2D)
@@ -14,11 +17,18 @@ var _actors_inside: Array[Node2D] = []
 
 
 func _ready() -> void:
+	if collision_shape == null:
+		body_entered.connect(_on_body_entered)
+		body_exited.connect(_on_body_exited)
+		return
 	var rectangle := collision_shape.shape as RectangleShape2D
 	if rectangle != null:
 		rectangle = rectangle.duplicate() as RectangleShape2D
 		collision_shape.shape = rectangle
 		rectangle.size = zone_size
+	if glow != null:
+		glow.field_size = zone_size
+		glow.set_glow_color(Color("#d653b7"))
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	queue_redraw()
