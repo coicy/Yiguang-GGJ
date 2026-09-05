@@ -1,5 +1,8 @@
 # 文档索引变更（WIP）
 
+- `docs/merge_main_20260906.md`：本次 main 选择性合并的保留范围、接入内容与本分支验证结果。
+- `docs/backup/main_20260906/INDEX.md`：本次获取的上游设计和验证历史索引，仅作按需查询。
+
 - `docs/handbuilt_level_building.md`：手工非 Tile 关卡的组件目录、搭建流程、组件接线方式与验证清单；手工关卡流程稳定后评估是否提升至 `AGENT.md`。
 
 - `docs/whitebox_acceptance_criteria.md`：本次 JSON 白盒落地的验收标准、操作步骤与证据要求；实施后逐项记录结果。

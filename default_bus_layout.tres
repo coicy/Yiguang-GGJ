@@ -1,0 +1,49 @@
+[gd_resource type="AudioBusLayout" format=3 uid="uid://b4tlt1bwutar7"]
+
+[sub_resource type="AudioEffectLimiter" id="Limiter"]
+resource_name = "Output ceiling"
+ceiling_db = -1.0
+threshold_db = -2.0
+
+[sub_resource type="AudioEffectCompressor" id="SfxCompressor"]
+resource_name = "Combat headroom"
+threshold = -12.0
+ratio = 3.0
+attack_us = 2500.0
+release_ms = 120.0
+
+[sub_resource type="AudioEffectLowPassFilter" id="AmbientFilter"]
+resource_name = "Keep ambience behind actions"
+cutoff_hz = 5200.0
+
+[resource]
+bus/0/effect/0/effect = SubResource("Limiter")
+bus/0/effect/0/enabled = true
+bus/1/name = &"SFX"
+bus/1/solo = false
+bus/1/mute = false
+bus/1/bypass_fx = false
+bus/1/volume_db = 0.0
+bus/1/send = &"Master"
+bus/1/effect/0/effect = SubResource("SfxCompressor")
+bus/1/effect/0/enabled = true
+bus/2/name = &"Music"
+bus/2/solo = false
+bus/2/mute = false
+bus/2/bypass_fx = false
+bus/2/volume_db = -3.0
+bus/2/send = &"Master"
+bus/3/name = &"Ambience"
+bus/3/solo = false
+bus/3/mute = false
+bus/3/bypass_fx = false
+bus/3/volume_db = 0.0
+bus/3/send = &"Master"
+bus/3/effect/0/effect = SubResource("AmbientFilter")
+bus/3/effect/0/enabled = true
+bus/4/name = &"UI"
+bus/4/solo = false
+bus/4/mute = false
+bus/4/bypass_fx = false
+bus/4/volume_db = 0.0
+bus/4/send = &"Master"

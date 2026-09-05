@@ -1,0 +1,43 @@
+{
+  "status": "SUPERSEDED_BY_LAYOUT_JSON",
+  "coordinates": "world x/y, y positive down",
+  "boundsX": [
+    7440,
+    8620
+  ],
+  "walkContour": [
+    [
+      7440,
+      130
+    ],
+    [
+      8620,
+      130
+    ]
+  ],
+  "battle": {
+    "x": 7440,
+    "width": 720,
+    "floorY": 130,
+    "clearHeight": 230,
+    "maxCeilingCollisionY": -100
+  },
+  "exit": [
+    8370,
+    130
+  ],
+  "shell": "one high arched greenhouse equipment chamber with connected upper side walls and one uninterrupted thick root foundation",
+  "backgroundCore": {
+    "center": [
+      7800,
+      -30
+    ],
+    "role": "soft low-contrast distant green-blue cultivation heart, attached overhead by infusion roots; never a central collision pillar"
+  },
+  "images": {
+    "foreground": null,
+    "background": null
+  },
+  "registrationStatus": "Legacy reference has baked background and old floor registration; not runtime-ready; do not reuse old y400 mapping",
+  "replacement": "layout.json"
+}

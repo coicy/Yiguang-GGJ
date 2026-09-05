@@ -1,0 +1,289 @@
+{
+  "schema": "authored-room-layout/v1",
+  "id": "core",
+  "status": "GEOMETRY_READY_ART_PENDING_ROOT_GENERATION",
+  "bounds": [
+    7440,
+    -250,
+    1180,
+    600
+  ],
+  "canvas": [
+    2360,
+    1200
+  ],
+  "artOrigin": [
+    7440,
+    -250
+  ],
+  "artScale": 0.5,
+  "coordinateSystem": "world coordinates; positive y down; pixel=(world-artOrigin)/artScale",
+  "walkContourWorld": [
+    [
+      7440,
+      130
+    ],
+    [
+      8620,
+      130
+    ]
+  ],
+  "foundationPolygonWorld": [
+    [
+      7440,
+      130
+    ],
+    [
+      8620,
+      130
+    ],
+    [
+      8620,
+      350
+    ],
+    [
+      7440,
+      350
+    ]
+  ],
+  "roofEdgeWorld": [
+    [
+      7440,
+      -115
+    ],
+    [
+      7470,
+      -140
+    ],
+    [
+      7510,
+      -170
+    ],
+    [
+      7560,
+      -195
+    ],
+    [
+      7620,
+      -210
+    ],
+    [
+      7700,
+      -226
+    ],
+    [
+      7780,
+      -230
+    ],
+    [
+      7860,
+      -225
+    ],
+    [
+      7940,
+      -209
+    ],
+    [
+      8020,
+      -184
+    ],
+    [
+      8090,
+      -153
+    ],
+    [
+      8130,
+      -125
+    ],
+    [
+      8160,
+      -105
+    ],
+    [
+      8220,
+      -75
+    ],
+    [
+      8320,
+      -30
+    ],
+    [
+      8450,
+      -18
+    ],
+    [
+      8560,
+      -12
+    ],
+    [
+      8620,
+      -12
+    ]
+  ],
+  "shells": [
+    {
+      "id": "Foundation",
+      "polygonWorld": [
+        [
+          7440,
+          130
+        ],
+        [
+          8620,
+          130
+        ],
+        [
+          8620,
+          350
+        ],
+        [
+          7440,
+          350
+        ]
+      ],
+      "collision": true,
+      "collisionLayer": 1
+    },
+    {
+      "id": "CoreVault",
+      "polygonWorld": [
+        [
+          7440,
+          -250
+        ],
+        [
+          8620,
+          -250
+        ],
+        [
+          8620,
+          -12
+        ],
+        [
+          8560,
+          -12
+        ],
+        [
+          8450,
+          -18
+        ],
+        [
+          8320,
+          -30
+        ],
+        [
+          8220,
+          -75
+        ],
+        [
+          8160,
+          -105
+        ],
+        [
+          8130,
+          -125
+        ],
+        [
+          8090,
+          -153
+        ],
+        [
+          8020,
+          -184
+        ],
+        [
+          7940,
+          -209
+        ],
+        [
+          7860,
+          -225
+        ],
+        [
+          7780,
+          -230
+        ],
+        [
+          7700,
+          -226
+        ],
+        [
+          7620,
+          -210
+        ],
+        [
+          7560,
+          -195
+        ],
+        [
+          7510,
+          -170
+        ],
+        [
+          7470,
+          -140
+        ],
+        [
+          7440,
+          -115
+        ]
+      ],
+      "collision": true,
+      "collisionLayer": 1
+    }
+  ],
+  "battle": {
+    "x": 7440,
+    "width": 720,
+    "floorY": 130,
+    "ceilingLimitY": -100,
+    "minimumClearHeight": 230,
+    "foregroundObstacles": []
+  },
+  "connections": {
+    "entrance": {
+      "x": 7440,
+      "floorY": 130,
+      "room": "courtyard"
+    },
+    "exitRoute": {
+      "x": 8160,
+      "floorY": 130
+    },
+    "exit": {
+      "x": 8370,
+      "y": 130
+    },
+    "rightRoomExtent": 8620
+  },
+  "background": {
+    "depth": "distant, no collision",
+    "coreCenter": [
+      7800,
+      -30
+    ],
+    "coreRadii": [
+      98,
+      132
+    ],
+    "feedRootStart": [
+      7800,
+      -230
+    ],
+    "motif": "soft green-blue botanical cultivation heart and old infusion machinery behind the wide chamber",
+    "contrast": "low; no white-yellow hotspot; core never competes with red slam warning",
+    "nearPedestal": false
+  },
+  "artConstraints": [
+    "whole high-arched equipment shell, not a tiled bridge",
+    "one uninterrupted 220-unit-deep foundation cross-section",
+    "foreground white empty air, background separate opaque low-contrast painting",
+    "no central collision pillar or platform inside 720-unit arena",
+    "no red, orange or sharp bright floor glows",
+    "entry and exit opening belong to same connected shell"
+  ],
+  "textures": {
+    "foreground": null,
+    "background": null
+  }
+}

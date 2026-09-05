@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2360" height="1200" viewBox="7440 -250 1180 600">
+<title>core complete foreground geometry target</title>
+<desc>Pure geometry guide. White is empty air. Same world transform as layout.json. No labels should appear in generated art.</desc>
+<rect x="7440" y="-250" width="1180" height="600" fill="#ffffff"/>
+<polygon id="Foundation" points="7440,130 8620,130 8620,350 7440,350" fill="#18281d"/>
+<polygon id="CoreVault" points="7440,-250 8620,-250 8620,-12 8560,-12 8450,-18 8320,-30 8220,-75 8160,-105 8130,-125 8090,-153 8020,-184 7940,-209 7860,-225 7780,-230 7700,-226 7620,-210 7560,-195 7510,-170 7470,-140 7440,-115" fill="#203326"/>
+<polyline points="7440,130 8620,130" fill="none" stroke="#536445" stroke-width="2"/>
+
+</svg>

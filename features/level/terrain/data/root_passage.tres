@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TerrainSurface" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/level/terrain/terrain_surface.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/branch_run.tres" id="wood"]
+
+[resource]
+script = ExtResource("script")
+material_id = &"root_passage"
+surfaces = Array[Texture2D]([ExtResource("wood")])
+surface_height = 16.0
+surface_width = 200.0
+surface_tint = Color(0.75,0.81,0.64,1)
+body_texture = ExtResource("wood")
+body_height = 35.0
+body_width = 260.0
+body_tint = Color(0.52,0.60,0.44,1)
+foundation_color = Color(0.16,0.22,0.12,1)
+fill_foundation = true
+top_edge = Color(0.36,0.43,0.26,1)

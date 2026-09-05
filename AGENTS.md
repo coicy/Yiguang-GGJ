@@ -16,6 +16,10 @@ Before adding or changing an addon, external tool, or asset pipeline, also read:
 
 Use the smallest relevant subset of these documents for small fixes, but do not bypass their rules silently.
 
+## Level development scope
+
+Per the user decision on 2026-09-06, develop gameplay only in the authoritative hand-built main level (`scenes/app/main.tscn` -> `scenes/levels/Level_main.tscn` -> `level_01.tscn`). Do not create or extend JSON whitebox, sandbox, or demo/test levels. Existing test levels are historical references. Keep automated verification scripts for production hand-built scenes and reusable components; they do not require separate playable test levels.
+
 ## Architecture rules
 
 - Organize by feature: `features/player`, `features/forms`, `features/abilities`, `features/combat`, `features/enemies`, `features/level`, and `features/ui`.

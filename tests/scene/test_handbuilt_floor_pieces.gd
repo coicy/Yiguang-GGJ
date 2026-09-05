@@ -12,6 +12,7 @@ func _run() -> void:
 	await _verify_root_texture_drives_both_artwork_modes()
 	await _verify_root_scale_expands_tiled_visual_and_collision()
 	await _verify_whole_texture_scales_with_collision()
+	await _verify_whole_texture_can_yield_artwork_to_terrain_skin()
 	await _verify_rect_polygon_layout_tracks_piece_size()
 	await _verify_polygon_repeat_offset_is_instance_local()
 	await _verify_polygon_collision_syncs_on_scene_load()
@@ -94,6 +95,56 @@ func _verify_whole_texture_scales_with_collision() -> void:
 	assert(whole_artwork.visible and whole_artwork.texture == terrain.art_texture)
 	assert(whole_artwork.global_transform.get_scale().is_equal_approx(Vector2(0.5, 0.5)))
 	assert(collision.global_transform.get_scale().is_equal_approx(Vector2(0.5, 0.5)))
+	terrain.queue_free()
+
+
+func _verify_whole_texture_can_yield_artwork_to_terrain_skin() -> void:
+	var terrain := TERRAIN_SCENE.instantiate() as TerrainPiece
+	var variant := LevelSpriteVariant.new()
+	variant.texture = _test_texture(32)
+	variant.left_cap_texture = _test_texture(12)
+	variant.right_cap_texture = _test_texture(12)
+	var variants := SpriteVariantSet.new()
+	variants.variants = [variant]
+	terrain.sprite_variants = variants
+	terrain.display_mode = TerrainPiece.DisplayMode.WHOLE_TEXTURE
+	terrain.collision_mode = TerrainPiece.CollisionMode.POLYGON
+	terrain.polygon_layout = TerrainPiece.PolygonLayout.CUSTOM_POLYGON
+	terrain.collision_follows_visual = false
+	terrain.scale = Vector2(0.5, 0.5)
+	var collision := terrain.get_node("CollisionPolygon2D") as CollisionPolygon2D
+	var authored_outline := _slope_polygon()
+	collision.polygon = authored_outline
+	var skin := preload("res://features/level/terrain/terrain_skin.tscn").instantiate() as TerrainSkin
+	terrain.add_child(skin)
+	root.add_child(terrain)
+	await process_frame
+	var whole_artwork := terrain.get_node("WholeArtwork") as Sprite2D
+	assert(whole_artwork.visible)
+	var original_transform := collision.global_transform
+
+	terrain.show_artwork = false
+	await process_frame
+	assert(not whole_artwork.visible)
+	assert(skin.is_visible_in_tree())
+	assert(not collision.disabled and collision.polygon == authored_outline)
+	assert(collision.global_transform == original_transform)
+	assert(terrain.scale == Vector2(0.5, 0.5))
+
+	# Switching a hidden owner to polygon mode must not resurrect finite caps.
+	terrain.display_mode = TerrainPiece.DisplayMode.POLYGON
+	await process_frame
+	for artwork_name in ["WholeArtwork", "TerrainVisual", "PolygonArtwork", "LeftCap", "RightCap"]:
+		assert(not (terrain.get_node(artwork_name) as CanvasItem).visible)
+	assert(skin.is_visible_in_tree())
+	assert(collision.polygon == authored_outline)
+
+	terrain.display_mode = TerrainPiece.DisplayMode.WHOLE_TEXTURE
+	terrain.show_artwork = true
+	await process_frame
+	assert(whole_artwork.visible and whole_artwork.texture == variant.texture)
+	assert(collision.global_transform == original_transform)
+	assert(collision.polygon == authored_outline)
 	terrain.queue_free()
 
 

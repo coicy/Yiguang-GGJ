@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2360" height="1200" viewBox="7440 -250 1180 600">
+<title>core distant background composition guide</title>
+<desc>Low-contrast whole-frame geometry guide only; all elements are distant and non-colliding.</desc>
+<rect x="7440" y="-250" width="1180" height="600" fill="#536e68"/><g fill="none" stroke="#5f7a72" stroke-width="5"><path d="M7470 240V-90Q7800 -225 8140 -85V235"/><path d="M7510 228V-75Q7800 -175 8095 -74V230"/><path d="M7800 -230V-162"/></g><ellipse cx="7800" cy="-30" rx="98" ry="132" fill="#6f8d7f" stroke="#728c7e" stroke-width="9"/><ellipse cx="7800" cy="-30" rx="49" ry="74" fill="#759480"/>
+</svg>

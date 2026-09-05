@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="TerrainSurface" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://features/level/terrain/terrain_surface.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0031_水泥板.png" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/culvert.tres" id="body"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/buttress.tres" id="support"]
+
+[sub_resource type="AtlasTexture" id="top_band"]
+atlas = ExtResource("surface")
+region = Rect2(12, 8, 489, 35)
+filter_clip = true
+
+[resource]
+script = ExtResource("script")
+material_id = &"courtyard"
+surfaces = Array[Texture2D]([SubResource("top_band")])
+surface_height = 8.0
+surface_width = 240.0
+surface_tint = Color(0.64, 0.71, 0.61, 1)
+body_texture = ExtResource("body")
+body_height = 102.0
+body_width = 240.0
+foundation_color = Color(0.16, 0.2, 0.16, 1)
+fill_foundation = false
+support_texture = ExtResource("support")
+support_size = Vector2(65, 112)
+support_spacing = 420.0
+support_tint = Color(0.70, 0.77, 0.66, 1)
+top_edge = Color(0.5, 0.53, 0.41, 1)
+joint_color = Color(0.08, 0.12, 0.10, 0.5)

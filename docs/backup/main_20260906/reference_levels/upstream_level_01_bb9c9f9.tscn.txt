@@ -1,0 +1,393 @@
+[gd_scene format=3 uid="uid://c3ecyvogpqagh"]
+
+[ext_resource type="Script" uid="uid://bmrw83r1jfdo" path="res://features/level/handbuilt/handbuilt_level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/glowing_flower.tscn" id="2_flower"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/decorative_scenery.tscn" id="2_t0hvh"]
+[ext_resource type="Resource" uid="uid://beekb7ob3irq1" path="res://assets/runtime/scenery/variants/grass_turf_variants.tres" id="3_kfebt"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/spawn_point.tscn" id="3_spawn"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="4_bounds"]
+[ext_resource type="Resource" uid="uid://c7n078btf0rvr" path="res://assets/runtime/scenery/variants/small_vine_variants.tres" id="4_gi8m4"]
+[ext_resource type="PackedScene" uid="uid://c65j2lesd56mx" path="res://features/level/handbuilt/terrain_piece.tscn" id="5_terrain"]
+[ext_resource type="PackedScene" uid="uid://de0u5xwpljsbi" path="res://features/level/branch_wall.tscn" id="6_jmes4"]
+[ext_resource type="PackedScene" uid="uid://cjyj11urlfue0" path="res://features/level/nutrition_tank.tscn" id="6_nutrition"]
+[ext_resource type="PackedScene" path="res://features/level/toxin_resource.tscn" id="7_toxin_resource"]
+[ext_resource type="Resource" uid="uid://banow4dqwuxmx" path="res://assets/runtime/scenery/variants/platform_variants.tres" id="8_cwffn"]
+[ext_resource type="PackedScene" path="res://features/abilities/vine_ring.tscn" id="8_vine_ring"]
+[ext_resource type="Texture2D" uid="uid://dcg5aepatmfvk" path="res://assets/runtime/scenery/_0037_已插入图像.png" id="9_cwffn"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/thorn_damage.tscn" id="11_e6lid"]
+[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="14_3g50r"]
+[ext_resource type="Texture2D" uid="uid://dkq0p7me8pn8x" path="res://assets/runtime/scenery/_0014_培养罐.png" id="31_broken_tank"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="32_phantom_host"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="33_phantom_camera"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_e6lid"]
+resource_local_to_scene = true
+radius = 12.0
+
+[node name="Level01" type="Node2D" unique_id=943232891]
+script = ExtResource("1_level")
+metadata/_edit_vertical_guides_ = [-8.0]
+
+[node name="Node" type="Node" parent="." unique_id=1887232084]
+
+[node name="DecorativeScenery" parent="Node" unique_id=819484407 instance=ExtResource("2_t0hvh")]
+position = Vector2(-258, 467)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(20, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="DecorativeScenery2" parent="Node" unique_id=1336819193 instance=ExtResource("2_t0hvh")]
+position = Vector2(-209, 474.99997)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(40, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="DecorativeScenery3" parent="Node" unique_id=1402646353 instance=ExtResource("2_t0hvh")]
+position = Vector2(54, 238)
+sprite_variants = ExtResource("4_gi8m4")
+
+[node name="DecorativeScenery4" parent="Node" unique_id=258388238 instance=ExtResource("2_t0hvh")]
+position = Vector2(127.99999, 178)
+rotation = -0.7586893
+sprite_variants = ExtResource("4_gi8m4")
+variant_index = 1
+
+[node name="FlowerDecorations" type="Node2D" parent="." unique_id=1250026949]
+
+[node name="FlowerStart" parent="FlowerDecorations" unique_id=121951564 instance=ExtResource("2_flower")]
+position = Vector2(88, 494)
+
+[node name="FlowerMiddle" parent="FlowerDecorations" unique_id=188238632 instance=ExtResource("2_flower")]
+position = Vector2(610, 495)
+
+[node name="FlowerBehindWall" parent="FlowerDecorations" unique_id=1092995025 instance=ExtResource("2_flower")]
+position = Vector2(1036.0001, 493)
+scale = Vector2(0.9, 0.9)
+
+[node name="FlowerUpper" parent="FlowerDecorations" unique_id=1850958193 instance=ExtResource("2_flower")]
+position = Vector2(589, 11.999999)
+scale = Vector2(0.85, 0.85)
+
+[node name="Background" type="Node2D" parent="." unique_id=1684300338]
+z_index = -20
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1633713359]
+color = Color(0.2, 0.24, 0.28, 1)
+
+[node name="Geometry" type="Node2D" parent="." unique_id=1772310243]
+
+[node name="Terrain" type="Node2D" parent="Geometry" unique_id=1030929769]
+
+[node name="StartFloor" parent="Geometry/Terrain" unique_id=373654360 instance=ExtResource("5_terrain")]
+position = Vector2(-256, 469)
+piece_size = Vector2(1344, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
+
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor" index="1" unique_id=1185384908]
+offset_right = 3360.0
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor" index="2" unique_id=1905841275]
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
+
+[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor" index="3" unique_id=1905841276]
+scale = Vector2(0.4, 0.4)
+
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor" index="4" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
+
+[node name="RightCap" parent="Geometry/Terrain/StartFloor" index="5" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
+
+[node name="BranchWall" parent="Geometry/Terrain" unique_id=168909206 instance=ExtResource("6_jmes4")]
+position = Vector2(220, 346)
+rotation = 2.5920396
+scale = Vector2(0.9, 0.9)
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/BranchWall" index="1" unique_id=331758531]
+position = Vector2(2.958107, 4.743433)
+polygon = PackedVector2Array(-27.648926, -141.5304, -15.377289, -147.2066, -3.505066, -109.15253, 0.66567993, -72.88385, 12, -50, 5, -10, 27, 41, 10, 54, 14, 138, -6, 138, -11, 87, -6, 33, -6, 15, -25, -22, -17, -79, -18.494919, -111.00452)
+
+[node name="LightOccluder2D" parent="Geometry/Terrain/BranchWall" index="2"]
+position = Vector2(2.958107, 4.743433)
+
+[node name="StartFloor2" parent="Geometry/Terrain" unique_id=1291361382 instance=ExtResource("5_terrain")]
+position = Vector2(-262, -3)
+piece_size = Vector2(1344, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor2" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
+
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor2" index="1" unique_id=1185384908]
+offset_right = 3360.0
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor2" index="2" unique_id=1905841275]
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
+
+[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor2" index="3" unique_id=1905841276]
+scale = Vector2(0.4, 0.4)
+
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor2" index="4" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
+
+[node name="RightCap" parent="Geometry/Terrain/StartFloor2" index="5" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
+
+[node name="Node2" type="Node" parent="Geometry/Terrain/StartFloor2" unique_id=43964354]
+
+[node name="DecorativeScenery" parent="Geometry/Terrain/StartFloor2/Node2" unique_id=736504682 instance=ExtResource("2_t0hvh")]
+position = Vector2(-258, -4.9999847)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(20, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="DecorativeScenery2" parent="Geometry/Terrain/StartFloor2/Node2" unique_id=192915609 instance=ExtResource("2_t0hvh")]
+position = Vector2(-204, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(40, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="StartFloor3" parent="Geometry/Terrain" unique_id=1062924864 instance=ExtResource("5_terrain")]
+position = Vector2(-262, 210)
+piece_size = Vector2(420, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor3" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 420, 6.5, 420, 40, 0, 40)
+
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor3" index="1" unique_id=1185384908]
+offset_right = 1050.0
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor3" index="2" unique_id=1905841275]
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 420, 0, 420, 40, 0, 40)
+
+[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor3" index="3" unique_id=1905841276]
+scale = Vector2(0.4, 0.4)
+
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor3" index="4" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
+
+[node name="RightCap" parent="Geometry/Terrain/StartFloor3" index="5" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
+
+[node name="Node2" type="Node" parent="Geometry/Terrain/StartFloor3" unique_id=1891376500]
+
+[node name="DecorativeScenery" parent="Geometry/Terrain/StartFloor3/Node2" unique_id=709672287 instance=ExtResource("2_t0hvh")]
+position = Vector2(-258, -4.9999847)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(20, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="DecorativeScenery2" parent="Geometry/Terrain/StartFloor3/Node2" unique_id=1508855872 instance=ExtResource("2_t0hvh")]
+position = Vector2(-204, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(40, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="BranchWall2" parent="Geometry/Terrain" unique_id=1358648627 instance=ExtResource("6_jmes4")]
+position = Vector2(250, 135.99997)
+rotation = 0.86986727
+
+[node name="TerrainPiece" parent="Geometry/Terrain" unique_id=1706165700 instance=ExtResource("5_terrain")]
+position = Vector2(345, 316)
+scale = Vector2(0.5, 0.5)
+piece_size = Vector2(320, 200)
+display_mode = 2
+collision_mode = 1
+sprite_variants = ExtResource("8_cwffn")
+variant_index = 2
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/TerrainPiece" index="0" unique_id=1031688781]
+position = Vector2(0, -1)
+polygon = PackedVector2Array(85, 24, 287, 26, 316, 35, 318, 53, 235, 177, 235, 213, 222, 217, 174, 162, 146, 176, 130, 166, 122, 124, 47, 105, 7, 65, 6, 27)
+
+[node name="TerrainVisual" parent="Geometry/Terrain/TerrainPiece" index="1" unique_id=1185384908]
+visible = false
+offset_right = 320.0
+offset_bottom = 200.0
+texture = ExtResource("9_cwffn")
+patch_margin_left = 9
+patch_margin_top = 5
+patch_margin_right = 9
+patch_margin_bottom = 5
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/TerrainPiece" index="2" unique_id=1905841275]
+texture = ExtResource("9_cwffn")
+polygon = PackedVector2Array(0, 0, 320, 0, 320, 200, 0, 200)
+
+[node name="WholeArtwork" parent="Geometry/Terrain/TerrainPiece" index="3" unique_id=1905841276]
+visible = true
+texture = ExtResource("9_cwffn")
+
+[node name="TerrainPiece2" parent="Geometry/Terrain" unique_id=307304784 instance=ExtResource("5_terrain")]
+position = Vector2(588, 327)
+scale = Vector2(0.25, 0.25)
+piece_size = Vector2(320, 200)
+display_mode = 2
+collision_mode = 1
+sprite_variants = ExtResource("8_cwffn")
+variant_index = 2
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/TerrainPiece2" index="0" unique_id=1031688781]
+position = Vector2(0, -1)
+polygon = PackedVector2Array(316, 41, 284, 25, 24, 25, 8, 33, 4, 65, 52, 105, 112, 113, 140, 169, 180, 165, 220, 213, 224, 217, 320, 53, 312, 37)
+
+[node name="TerrainVisual" parent="Geometry/Terrain/TerrainPiece2" index="1" unique_id=1185384908]
+visible = false
+offset_right = 320.0
+offset_bottom = 200.0
+texture = ExtResource("9_cwffn")
+patch_margin_left = 9
+patch_margin_top = 5
+patch_margin_right = 9
+patch_margin_bottom = 5
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/TerrainPiece2" index="2" unique_id=1905841275]
+texture = ExtResource("9_cwffn")
+polygon = PackedVector2Array(0, 0, 320, 0, 320, 200, 0, 200)
+
+[node name="WholeArtwork" parent="Geometry/Terrain/TerrainPiece2" index="3" unique_id=1905841276]
+visible = true
+texture = ExtResource("9_cwffn")
+
+[node name="Mechanisms" type="Node2D" parent="Geometry" unique_id=558713796]
+
+[node name="VineRing" parent="Geometry/Mechanisms" unique_id=22483420 instance=ExtResource("8_vine_ring")]
+position = Vector2(1626, 721)
+vine_length = 128.0
+
+[node name="ThornDamage" parent="Geometry/Mechanisms" unique_id=507255010 instance=ExtResource("11_e6lid")]
+position = Vector2(473, 391)
+collision_points = PackedVector2Array(0.03, 0.55, 0.15, 0.42, 0.29, 0.45, 0.43, 0.32, 0.58, 0.42, 0.72, 0.31, 0.97, 0.49, 0.97, 0.94, 0.03, 0.94)
+
+[node name="Areas" type="Node2D" parent="." unique_id=1858714879]
+
+[node name="GrowDrug" parent="Areas" unique_id=1480241049 instance=ExtResource("6_nutrition")]
+position = Vector2(-98, 456.00003)
+scale = Vector2(1.5, 1.5)
+
+[node name="UnGrowDrug" parent="Areas" unique_id=2028605519 instance=ExtResource("7_toxin_resource")]
+position = Vector2(6, 457)
+scale = Vector2(1.5, 1.5)
+
+[node name="GrowDrug2" parent="Areas" unique_id=225277071 instance=ExtResource("6_nutrition")]
+position = Vector2(347.00003, 451)
+scale = Vector2(2.25, 2.25)
+
+[node name="UnGrowDrug2" parent="Areas" unique_id=385952438 instance=ExtResource("7_toxin_resource")]
+position = Vector2(762, 440)
+scale = Vector2(2.25, 2.25)
+
+[node name="Checkpoints" type="Node2D" parent="." unique_id=422565820]
+
+[node name="Checkpoint" parent="Checkpoints" unique_id=758390787 instance=ExtResource("14_3g50r")]
+position = Vector2(329, 438)
+
+[node name="Actors" type="Node2D" parent="." unique_id=25705282]
+
+[node name="Player" parent="Actors" unique_id=1995216275 instance=ExtResource("2_player")]
+unique_name_in_owner = true
+position = Vector2(96, 464)
+
+[node name="CollisionShape2D" parent="Actors/Player" index="0"]
+shape = SubResource("CircleShape2D_e6lid")
+
+[node name="Camera2D" type="Camera2D" parent="Actors/Player" unique_id=1453819068]
+unique_name_in_owner = true
+limit_smoothed = true
+
+[node name="PhantomCameraHost" type="Node" parent="Actors/Player/Camera2D"]
+script = ExtResource("32_phantom_host")
+interpolation_mode = 2
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1453819069 node_paths=PackedStringArray("follow_target")]
+unique_name_in_owner = true
+script = ExtResource("33_phantom_camera")
+priority = 1
+follow_mode = 5
+follow_target = NodePath("Actors/Player")
+zoom = Vector2(3, 3)
+follow_offset = Vector2(0, -80)
+follow_damping = true
+follow_damping_value = Vector2(0.12, 0.18)
+dead_zone_width = 0.6
+dead_zone_height = 0.52
+lookahead = true
+lookahead_time = Vector2(0.2, 0)
+lookahead_max = true
+lookahead_max_value = Vector2(300, 0)
+
+[node name="SpawnPoint" parent="." unique_id=943232892 instance=ExtResource("3_spawn")]
+unique_name_in_owner = true
+position = Vector2(-229, 465)
+scale = Vector2(2, 2)
+
+[node name="BrokenTankIcon" type="Sprite2D" parent="SpawnPoint" unique_id=1622603824]
+z_index = -1
+position = Vector2(-1, -15)
+scale = Vector2(0.07, 0.07)
+texture = ExtResource("31_broken_tank")
+
+[node name="CameraBounds" parent="." unique_id=943232893 instance=ExtResource("4_bounds")]
+unique_name_in_owner = true
+position = Vector2(-414, 190)
+scale = Vector2(1.16, 0.9200003)
+bounds_size = Vector2(1500, 500)
+
+[node name="Foreground" type="Node2D" parent="." unique_id=943232894]
+z_index = 10
+
+[node name="Effects" type="Node2D" parent="." unique_id=943232895]
+z_index = 20
+
+[editable path="Geometry/Terrain/StartFloor"]
+[editable path="Geometry/Terrain/BranchWall"]
+[editable path="Geometry/Terrain/StartFloor2"]
+[editable path="Geometry/Terrain/StartFloor3"]
+[editable path="Geometry/Terrain/TerrainPiece"]
+[editable path="Geometry/Terrain/TerrainPiece2"]
+[editable path="Geometry/Mechanisms/VineRing"]
+[editable path="Actors/Player"]

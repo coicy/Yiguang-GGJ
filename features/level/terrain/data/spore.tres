@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="TerrainSurface" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/level/terrain/terrain_surface.gd" id="script"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0031_水泥板.png" id="surface"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0033_底面地板.png" id="body"]
+
+[sub_resource type="AtlasTexture" id="top_band"]
+atlas = ExtResource("surface")
+region = Rect2(12, 8, 489, 35)
+filter_clip = true
+
+[resource]
+script = ExtResource("script")
+material_id = &"spore"
+surfaces = Array[Texture2D]([SubResource("top_band")])
+surface_height = 10.0
+surface_width = 195.0
+surface_tint = Color(0.52, 0.63, 0.56, 1)
+body_texture = ExtResource("body")
+body_height = 74.0
+body_width = 260.0
+foundation_color = Color(0.12, 0.18, 0.17, 1)
+fill_foundation = true
+top_edge = Color(0.45, 0.49, 0.4, 1)
+joint_color = Color(0.08, 0.12, 0.10, 0.5)
+body_tint = Color(0.52, 0.63, 0.56, 1)

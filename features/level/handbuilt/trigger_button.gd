@@ -30,6 +30,10 @@ signal pressed(button: TriggerButton, actor: Node2D)
 	set(value):
 		variant_index = max(value, 0)
 		_request_sync()
+@export_range(-1, 255, 1) var pressed_variant_index: int = -1:
+	set(value):
+		pressed_variant_index = value
+		_request_sync()
 @export var art_texture: Texture2D:
 	set(value):
 		art_texture = value
@@ -64,14 +68,14 @@ func press(actor: Node2D = null) -> bool:
 		var target := get_node_or_null(target_path)
 		if target != null and target.has_method(&"activate"):
 			target.call(&"activate")
+	_sync_layout()
 	pressed.emit(self, actor)
-	queue_redraw()
 	return true
 
 
 func reset_button() -> void:
 	_is_pressed = false
-	queue_redraw()
+	_sync_layout()
 
 
 func is_pressed() -> bool:
@@ -117,7 +121,8 @@ func _sync_layout() -> void:
 func _selected_variant() -> LevelSpriteVariant:
 	if sprite_variants == null or sprite_variants.variants.is_empty():
 		return null
-	return sprite_variants.variants[clampi(variant_index, 0, sprite_variants.variants.size() - 1)]
+	var index := pressed_variant_index if _is_pressed and pressed_variant_index >= 0 else variant_index
+	return sprite_variants.variants[clampi(index, 0, sprite_variants.variants.size() - 1)]
 
 
 func _make_collision_shape_unique() -> void:

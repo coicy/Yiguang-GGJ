@@ -1,0 +1,351 @@
+{
+  "schema": "authored-room-layout/v1",
+  "id": "courtyard",
+  "status": "GEOMETRY_READY_ART_PENDING_ROOT_GENERATION",
+  "bounds": [
+    6480,
+    -250,
+    960,
+    600
+  ],
+  "canvas": [
+    1920,
+    1200
+  ],
+  "artOrigin": [
+    6480,
+    -250
+  ],
+  "artScale": 0.5,
+  "coordinateSystem": "world coordinates; positive y down; pixel=(world-artOrigin)/artScale",
+  "walkContourWorld": [
+    [
+      6480,
+      210
+    ],
+    [
+      7040,
+      210
+    ],
+    [
+      7040,
+      170
+    ],
+    [
+      7160,
+      170
+    ],
+    [
+      7160,
+      130
+    ],
+    [
+      7440,
+      130
+    ]
+  ],
+  "foundationPolygonWorld": [
+    [
+      6480,
+      210
+    ],
+    [
+      7040,
+      210
+    ],
+    [
+      7040,
+      170
+    ],
+    [
+      7160,
+      170
+    ],
+    [
+      7160,
+      130
+    ],
+    [
+      7440,
+      130
+    ],
+    [
+      7440,
+      350
+    ],
+    [
+      6480,
+      350
+    ]
+  ],
+  "shells": [
+    {
+      "id": "Foundation",
+      "polygonWorld": [
+        [
+          6480,
+          210
+        ],
+        [
+          7040,
+          210
+        ],
+        [
+          7040,
+          170
+        ],
+        [
+          7160,
+          170
+        ],
+        [
+          7160,
+          130
+        ],
+        [
+          7440,
+          130
+        ],
+        [
+          7440,
+          350
+        ],
+        [
+          6480,
+          350
+        ]
+      ],
+      "collision": true,
+      "collisionLayer": 1
+    },
+    {
+      "id": "BrokenWestVault",
+      "polygonWorld": [
+        [
+          6480,
+          -250
+        ],
+        [
+          6670,
+          -250
+        ],
+        [
+          6670,
+          -195
+        ],
+        [
+          6630,
+          -148
+        ],
+        [
+          6600,
+          -91
+        ],
+        [
+          6572,
+          -45
+        ],
+        [
+          6534,
+          -13
+        ],
+        [
+          6503,
+          0
+        ],
+        [
+          6480,
+          0
+        ]
+      ],
+      "collision": true,
+      "collisionLayer": 1
+    },
+    {
+      "id": "PreparationVault",
+      "polygonWorld": [
+        [
+          6940,
+          -250
+        ],
+        [
+          7440,
+          -250
+        ],
+        [
+          7440,
+          -75
+        ],
+        [
+          7350,
+          -75
+        ],
+        [
+          7250,
+          -78
+        ],
+        [
+          7160,
+          -89
+        ],
+        [
+          7080,
+          -115
+        ],
+        [
+          7022,
+          -150
+        ],
+        [
+          6970,
+          -192
+        ],
+        [
+          6940,
+          -218
+        ]
+      ],
+      "collision": true,
+      "collisionLayer": 1
+    }
+  ],
+  "battle": {
+    "x": 6480,
+    "width": 560,
+    "floorY": 210,
+    "ceilingLimitY": 0,
+    "maximumEnemies": 3
+  },
+  "connections": {
+    "entrance": {
+      "x": 6480,
+      "incomingFloorY": 170,
+      "outgoingFloorY": 210,
+      "mode": "40-unit downward step at left room seam; preceding room owns raised approach"
+    },
+    "exit": {
+      "x": 7440,
+      "floorY": 130,
+      "room": "core"
+    }
+  },
+  "steps": [
+    {
+      "x": 7040,
+      "bottomY": 210,
+      "topY": 170,
+      "landingWidth": 120
+    },
+    {
+      "x": 7160,
+      "bottomY": 170,
+      "topY": 130,
+      "landingWidth": 280
+    }
+  ],
+  "preparation": {
+    "startX": 7160,
+    "endX": 7440,
+    "floorY": 130,
+    "combat": false,
+    "sproutRecoveryRoute": [
+      [
+        7370,
+        130
+      ],
+      [
+        7240,
+        130
+      ]
+    ],
+    "recoveryRequiresJump": false
+  },
+  "embeddedSources": [
+    {
+      "id": "CoreGrowth",
+      "type": "nutrition",
+      "visualCenter": [
+        7240,
+        162
+      ],
+      "visualSize": [
+        48,
+        52
+      ],
+      "wallSocketRect": [
+        7214,
+        132,
+        52,
+        62
+      ],
+      "sourceAnchor": [
+        7240,
+        158
+      ],
+      "suggestedAbsorbRadius": 78,
+      "standingAnchor": [
+        7240,
+        130
+      ],
+      "baseSurface": "Foundation",
+      "collision": false,
+      "appearance": "round luminous green living membrane and branching feeder veins embedded in foundation, no freestanding vessel"
+    },
+    {
+      "id": "CoreWither",
+      "type": "toxin",
+      "visualCenter": [
+        7370,
+        166
+      ],
+      "visualSize": [
+        62,
+        30
+      ],
+      "wallSocketRect": [
+        7335,
+        144,
+        70,
+        42
+      ],
+      "sourceAnchor": [
+        7370,
+        163
+      ],
+      "suggestedAbsorbRadius": 70,
+      "standingAnchor": [
+        7370,
+        130
+      ],
+      "baseSurface": "Foundation",
+      "collision": false,
+      "appearance": "horizontal cracked dark metal pollution outlet with restrained violet runoff and dead fronds, distinct from round green infusion membrane"
+    }
+  ],
+  "background": {
+    "depth": "distant, no collision",
+    "motif": "asymmetrical ruined greenhouse courtyard with a broken central skylight",
+    "openSkyWorldRange": [
+      6670,
+      6940
+    ],
+    "contrast": "lower than foreground and enemies",
+    "forbidden": [
+      "near standing platforms",
+      "freestanding bottles",
+      "red warning-like accents"
+    ]
+  },
+  "artConstraints": [
+    "one complete foundation, no repeated tiles",
+    "clear 560-unit arena and visible two-step rise",
+    "foreground pure white empty air for existing cutout shader",
+    "roots may fringe solids but never span the open court",
+    "CoreGrowth and CoreWither remain outside both combat intervals",
+    "same-height clear route between preparation sources"
+  ],
+  "textures": {
+    "foreground": null,
+    "background": null
+  }
+}

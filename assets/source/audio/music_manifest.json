@@ -1,0 +1,55 @@
+[
+  {
+    "id": "explore",
+    "title": "Dark Forest Theme",
+    "author": "The Cynic Project / cynicmusic",
+    "page": "https://opengameart.org/content/dark-forest-theme",
+    "file": "explore.mp3",
+    "loop": false,
+    "license": "CC0-1.0"
+  },
+  {
+    "id": "battle_roots",
+    "title": "Battle Theme",
+    "author": "Wolfgang_",
+    "page": "https://opengameart.org/node/16611",
+    "match": "Battle.mp3",
+    "loop": false,
+    "url": "https://opengameart.org/sites/default/files/Battle.mp3",
+    "file": "battle_roots.mp3",
+    "license": "CC0-1.0"
+  },
+  {
+    "id": "battle_pursuit",
+    "title": "Ghosts & Heroes (2025 loop)",
+    "author": "Bobjt",
+    "page": "https://opengameart.org/content/ghosts-heroes",
+    "match": "ghosts_n_heroes_2025_loop.ogg",
+    "loop": true,
+    "url": "https://opengameart.org/sites/default/files/ghosts_n_heroes_2025_loop.ogg",
+    "file": "battle_pursuit.ogg",
+    "license": "CC0-1.0"
+  },
+  {
+    "id": "battle_resolve",
+    "title": "Heartfelt Battle (loop)",
+    "author": "request",
+    "page": "https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn",
+    "match": "heartfelt-battle_loop.ogg",
+    "loop": true,
+    "url": "https://opengameart.org/sites/default/files/heartfelt-battle_loop.ogg",
+    "file": "battle_resolve.ogg",
+    "license": "CC0-1.0"
+  },
+  {
+    "id": "boss",
+    "title": "Epic Boss Battle [Seamlessly Looping]",
+    "author": "Juhani Junkala / SubspaceAudio",
+    "page": "https://opengameart.org/content/boss-battle-music",
+    "match": ".wav",
+    "loop": true,
+    "url": "https://opengameart.org/sites/default/files/Juhani%20Junkala%20-%20Epic%20Boss%20Battle%20%5BSeamlessly%20Looping%5D.wav",
+    "file": "boss.wav",
+    "license": "CC0-1.0"
+  }
+]

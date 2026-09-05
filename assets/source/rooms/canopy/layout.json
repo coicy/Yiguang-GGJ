@@ -1,0 +1,1249 @@
+{
+  "schema": "greenhouse.room.layout/v1",
+  "status": "construction_design_not_installed_not_physics_tested",
+  "coordinate_system": "world units, +Y down; route points are player feet; polygons are closed implicitly",
+  "room_id": "canopy",
+  "title": "树冠通路",
+  "world_bounds": [
+    5080,
+    -180,
+    1400,
+    830
+  ],
+  "entry": [
+    5080,
+    330
+  ],
+  "exit": [
+    6480,
+    170
+  ],
+  "movement_basis": {
+    "sprout": {
+      "speed": 240,
+      "collision": [
+        24,
+        24
+      ],
+      "offset": [
+        2,
+        0
+      ],
+      "can_jump": false
+    },
+    "humanoid": {
+      "speed": 240,
+      "collision": [
+        16,
+        34
+      ],
+      "offset": [
+        2,
+        0
+      ],
+      "jump_velocity": -400
+    },
+    "mature": {
+      "speed": 240,
+      "collision": [
+        18,
+        46
+      ],
+      "jump_velocity": -400,
+      "glide_fall_speed": 140
+    },
+    "gravity": 1200,
+    "acceleration": 2400,
+    "coyote_seconds": 0.1,
+    "jump_buffer_seconds": 0.15,
+    "ideal_jump_apex": 66.6667,
+    "mandatory_rise_limit": 50,
+    "vine_max_range": 300,
+    "vine_design_budget": 260,
+    "vine_climb_clearance": 14,
+    "vine_route_search": 128
+  },
+  "art_direction": {
+    "foreground": "One registered foreground includes the crown, connected thick branches, hanging root-bridge, roots filling the foundations, all foliage and embedded nutrition/toxin organs. No freestanding containers or repeated plant cutouts.",
+    "background": "Visible trunk depth and distant greenhouse crown remain lower contrast than playable lips. Main upper turn and lower root tunnel can be recognized in the same larger chamber.",
+    "structure": "Top path rises right, folds left over the entry, then crosses the crown rightward. The root bridge under the east descent is a true solid body with a low passage underneath and a six-step return above.",
+    "registration": "JSON coordinates are authoritative collision targets before painting. Register the delivered mother image to them, then revalidate any contour changes."
+  },
+  "ports": [
+    {
+      "id": "from_workshop",
+      "feet": [
+        5080,
+        330
+      ]
+    },
+    {
+      "id": "to_courtyard",
+      "feet": [
+        6480,
+        170
+      ]
+    }
+  ],
+  "collisions": [
+    {
+      "id": "entry_and_catch_foundation",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5080,
+          330
+        ],
+        [
+          5260,
+          330
+        ],
+        [
+          5260,
+          378
+        ],
+        [
+          5330,
+          378
+        ],
+        [
+          5330,
+          426
+        ],
+        [
+          5400,
+          426
+        ],
+        [
+          5400,
+          475
+        ],
+        [
+          6480,
+          475
+        ],
+        [
+          6480,
+          650
+        ],
+        [
+          5080,
+          650
+        ]
+      ],
+      "support": "Entry merges into the left-side recovery steps and the continuous lower catch floor. There is no lethal gap."
+    },
+    {
+      "id": "branch_1",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5340,
+          285
+        ],
+        [
+          5460,
+          285
+        ],
+        [
+          5460,
+          301
+        ],
+        [
+          5420,
+          309
+        ],
+        [
+          5370,
+          307
+        ],
+        [
+          5340,
+          299
+        ]
+      ],
+      "support": "Thick lower bough; its root continuation is part of the same painted foreground, routed outside the protected jump lane."
+    },
+    {
+      "id": "branch_2",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5480,
+          240
+        ],
+        [
+          5580,
+          240
+        ],
+        [
+          5580,
+          254
+        ],
+        [
+          5480,
+          254
+        ]
+      ],
+      "support": "Forked trunk ledge. No tall pillar through the lower catch corridor."
+    },
+    {
+      "id": "return_left_branch_3",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5340,
+          195
+        ],
+        [
+          5440,
+          195
+        ],
+        [
+          5440,
+          209
+        ],
+        [
+          5340,
+          209
+        ]
+      ],
+      "support": "Visible overhead bough makes the turn left meaningful. Ends at5440 so the lower branch's right takeoff is open."
+    },
+    {
+      "id": "high_left_branch_4",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5200,
+          150
+        ],
+        [
+          5320,
+          150
+        ],
+        [
+          5320,
+          168
+        ],
+        [
+          5260,
+          176
+        ],
+        [
+          5200,
+          170
+        ]
+      ],
+      "support": "Joins the left roof/trunk silhouette; this is the upper reversal point, not a collectible dead end."
+    },
+    {
+      "id": "crossing_branch_5",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5360,
+          100
+        ],
+        [
+          5500,
+          100
+        ],
+        [
+          5500,
+          114
+        ],
+        [
+          5360,
+          114
+        ]
+      ],
+      "support": "Keep underside at114 over branch2's return jump; do not thicken this collision with foliage."
+    },
+    {
+      "id": "crown_branch_6",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5560,
+          60
+        ],
+        [
+          5720,
+          60
+        ],
+        [
+          5720,
+          80
+        ],
+        [
+          5560,
+          80
+        ]
+      ],
+      "support": "Crown-facing bough. Its left edge stays5560, preserving the 60-wide ring-climb shaft after branch5."
+    },
+    {
+      "id": "crown_descent",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5740,
+          110
+        ],
+        [
+          5860,
+          110
+        ],
+        [
+          5860,
+          128
+        ],
+        [
+          5740,
+          128
+        ]
+      ],
+      "support": "Overlaps ReturnRootBridge at5840..5860; together they form the supported upper-to-lower root mass."
+    },
+    {
+      "id": "return_root_bridge",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5840,
+          110
+        ],
+        [
+          5860,
+          110
+        ],
+        [
+          5860,
+          160
+        ],
+        [
+          5880,
+          215
+        ],
+        [
+          5980,
+          215
+        ],
+        [
+          5980,
+          260
+        ],
+        [
+          6060,
+          260
+        ],
+        [
+          6060,
+          305
+        ],
+        [
+          6140,
+          305
+        ],
+        [
+          6140,
+          340
+        ],
+        [
+          6220,
+          340
+        ],
+        [
+          6220,
+          385
+        ],
+        [
+          6300,
+          385
+        ],
+        [
+          6300,
+          430
+        ],
+        [
+          6380,
+          430
+        ],
+        [
+          6380,
+          443
+        ],
+        [
+          5900,
+          443
+        ],
+        [
+          5860,
+          300
+        ],
+        [
+          5840,
+          300
+        ]
+      ],
+      "support": "Continuous solid root mass connects crown descent, shared landing and six return stairs; its underside makes the sprout passage. No stair is a detached strip."
+    },
+    {
+      "id": "exit_branch",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          6020,
+          170
+        ],
+        [
+          6480,
+          170
+        ],
+        [
+          6480,
+          178
+        ],
+        [
+          6020,
+          178
+        ]
+      ],
+      "support": "Keep the collision underside at178 above return stairs; paint it as a load-bearing crown-root bridge connected to the courtyard wall. Extra thickness must stay outside the protected climb corridor."
+    },
+    {
+      "id": "canopy_vault",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          5080,
+          -180
+        ],
+        [
+          6480,
+          -180
+        ],
+        [
+          6480,
+          40
+        ],
+        [
+          6380,
+          10
+        ],
+        [
+          6260,
+          -20
+        ],
+        [
+          6120,
+          -55
+        ],
+        [
+          5950,
+          -95
+        ],
+        [
+          5780,
+          -130
+        ],
+        [
+          5620,
+          -135
+        ],
+        [
+          5460,
+          -125
+        ],
+        [
+          5320,
+          -90
+        ],
+        [
+          5200,
+          -20
+        ],
+        [
+          5080,
+          150
+        ]
+      ],
+      "support": "One roof/root shell. Leaves may enter the silhouette but cannot occupy the authored upper ring travel volumes."
+    },
+    {
+      "id": "lower_east_seal",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          6460,
+          178
+        ],
+        [
+          6480,
+          178
+        ],
+        [
+          6480,
+          650
+        ],
+        [
+          6460,
+          650
+        ]
+      ],
+      "support": "Closes the catch chamber below the courtyard port; does not close the y170 exit."
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "entry",
+      "x": [
+        5080,
+        5260
+      ],
+      "y": 330
+    },
+    {
+      "id": "left_recovery_step_high",
+      "x": [
+        5260,
+        5330
+      ],
+      "y": 378
+    },
+    {
+      "id": "left_recovery_step_low",
+      "x": [
+        5330,
+        5400
+      ],
+      "y": 426
+    },
+    {
+      "id": "catch_floor",
+      "x": [
+        5400,
+        6480
+      ],
+      "y": 475
+    },
+    {
+      "id": "B1",
+      "x": [
+        5340,
+        5460
+      ],
+      "y": 285
+    },
+    {
+      "id": "B2",
+      "x": [
+        5480,
+        5580
+      ],
+      "y": 240
+    },
+    {
+      "id": "B3",
+      "x": [
+        5340,
+        5440
+      ],
+      "y": 195
+    },
+    {
+      "id": "B4",
+      "x": [
+        5200,
+        5320
+      ],
+      "y": 150
+    },
+    {
+      "id": "B5",
+      "x": [
+        5360,
+        5500
+      ],
+      "y": 100
+    },
+    {
+      "id": "B6",
+      "x": [
+        5560,
+        5720
+      ],
+      "y": 60
+    },
+    {
+      "id": "B7",
+      "x": [
+        5740,
+        5860
+      ],
+      "y": 110
+    },
+    {
+      "id": "B8_shared",
+      "x": [
+        5880,
+        5980
+      ],
+      "y": 215
+    },
+    {
+      "id": "return_1",
+      "x": [
+        6300,
+        6380
+      ],
+      "y": 430
+    },
+    {
+      "id": "return_2",
+      "x": [
+        6220,
+        6300
+      ],
+      "y": 385
+    },
+    {
+      "id": "return_3",
+      "x": [
+        6140,
+        6220
+      ],
+      "y": 340
+    },
+    {
+      "id": "return_4",
+      "x": [
+        6060,
+        6140
+      ],
+      "y": 305
+    },
+    {
+      "id": "return_5",
+      "x": [
+        5980,
+        6060
+      ],
+      "y": 260
+    },
+    {
+      "id": "return_6_shared",
+      "x": [
+        5880,
+        5980
+      ],
+      "y": 215
+    },
+    {
+      "id": "exit",
+      "x": [
+        6020,
+        6480
+      ],
+      "y": 170
+    }
+  ],
+  "main_route": [
+    {
+      "action": "prepare_optional_mature",
+      "point": [
+        5160,
+        330
+      ]
+    },
+    {
+      "action": "held_jump",
+      "from_surface": "entry",
+      "launch": [
+        5250,
+        330
+      ],
+      "landing": [
+        5370,
+        285
+      ],
+      "rise": 45,
+      "note": "Run to the right lip; do not require dash."
+    },
+    {
+      "action": "held_jump",
+      "from_surface": "B1",
+      "launch": [
+        5450,
+        285
+      ],
+      "landing": [
+        5520,
+        240
+      ],
+      "rise": 45,
+      "note": "Takeoff is beyond upper B3's right edge5440; jumping in the middle is not the intended lane."
+    },
+    {
+      "action": "held_jump_left",
+      "from_surface": "B2",
+      "launch": [
+        5495,
+        240
+      ],
+      "landing": [
+        5390,
+        195
+      ],
+      "rise": 45
+    },
+    {
+      "action": "held_jump_left",
+      "from_surface": "B3",
+      "launch": [
+        5350,
+        195
+      ],
+      "landing": [
+        5265,
+        150
+      ],
+      "rise": 45,
+      "note": "Turn at the left bough and leave the low ceiling of B5 before ascending."
+    },
+    {
+      "action": "held_jump_right",
+      "from_surface": "B4",
+      "launch": [
+        5310,
+        150
+      ],
+      "landing": [
+        5400,
+        100
+      ],
+      "rise": 50
+    },
+    {
+      "action": "held_jump_right",
+      "from_surface": "B5",
+      "launch": [
+        5490,
+        100
+      ],
+      "landing": [
+        5610,
+        60
+      ],
+      "rise": 40
+    },
+    {
+      "action": "jump_or_drop_right",
+      "from_surface": "B6",
+      "launch": [
+        5700,
+        60
+      ],
+      "landing": [
+        5780,
+        110
+      ],
+      "rise": -50
+    },
+    {
+      "action": "controlled_jump_or_drop",
+      "from_surface": "B7",
+      "launch": [
+        5840,
+        110
+      ],
+      "landing": [
+        5930,
+        215
+      ],
+      "rise": -105,
+      "note": "Continuous root shoulder joins the lower landing; camera shows its landing before commitment. No fall damage here."
+    },
+    {
+      "action": "held_jump_right",
+      "from_surface": "B8_shared",
+      "launch": [
+        5970,
+        215
+      ],
+      "landing": [
+        6070,
+        170
+      ],
+      "rise": 45
+    },
+    {
+      "action": "walk",
+      "to": [
+        6480,
+        170
+      ]
+    }
+  ],
+  "recovery_route": [
+    {
+      "action": "fall_to_safe_catch",
+      "landing_range": [
+        5400,
+        5900
+      ],
+      "floor_y": 475,
+      "note": "Falls onto the east root stair body already land on a return tread; falls at the western entry hit the two left recovery steps."
+    },
+    {
+      "action": "walk",
+      "to": [
+        5810,
+        475
+      ]
+    },
+    {
+      "action": "absorb_toxin_one_stage_per_E_press",
+      "until_form": "sprout",
+      "source": "lower_wither",
+      "note": "Human uses one stage, mature two. No ambient toxin field."
+    },
+    {
+      "action": "walk_sprout",
+      "from": [
+        5860,
+        475
+      ],
+      "to": [
+        6410,
+        475
+      ],
+      "required_passage": [
+        5900,
+        443,
+        480,
+        32
+      ]
+    },
+    {
+      "action": "absorb_nutrition_one_stage_per_E_press",
+      "source": "lower_recovery",
+      "until_form": "human_or_mature",
+      "safe_feet": [
+        6440,
+        475
+      ]
+    },
+    {
+      "action": "held_jump_left",
+      "launch": [
+        6404,
+        475
+      ],
+      "landing": [
+        6340,
+        430
+      ],
+      "rise": 45
+    },
+    {
+      "action": "held_jump_left",
+      "launch": [
+        6324,
+        430
+      ],
+      "landing": [
+        6260,
+        385
+      ],
+      "rise": 45
+    },
+    {
+      "action": "held_jump_left",
+      "launch": [
+        6244,
+        385
+      ],
+      "landing": [
+        6180,
+        340
+      ],
+      "rise": 45
+    },
+    {
+      "action": "held_jump_left",
+      "launch": [
+        6164,
+        340
+      ],
+      "landing": [
+        6100,
+        305
+      ],
+      "rise": 35
+    },
+    {
+      "action": "held_jump_left",
+      "launch": [
+        6084,
+        305
+      ],
+      "landing": [
+        6020,
+        260
+      ],
+      "rise": 45,
+      "note": "Exit bridge underside is178; full-jump mature head from y305 reaches192.3, leaving14.3. The next takeoff moves west of bridge edge6020."
+    },
+    {
+      "action": "held_jump_left",
+      "launch": [
+        6000,
+        260
+      ],
+      "landing": [
+        5930,
+        215
+      ],
+      "rise": 45,
+      "note": "Player is west of exit bridge before jumping; avoids ceiling contact."
+    },
+    {
+      "action": "rejoin_main_route",
+      "surface": "B8_shared",
+      "next_landing": [
+        6070,
+        170
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "canopy_preparation",
+      "kind": "nutrition",
+      "position": [
+        5160,
+        315
+      ],
+      "trigger_size": [
+        96,
+        48
+      ],
+      "accepted_form_id": "",
+      "visual": "Nutrient organ embedded in the entry root. Artwork and surrounding foliage belong to the single foreground.",
+      "safety": "Flat330 approach; all forms fit and sprout can reach without jumping."
+    },
+    {
+      "id": "lower_wither",
+      "kind": "toxin_resource",
+      "position": [
+        5810,
+        460
+      ],
+      "trigger_size": [
+        48,
+        48
+      ],
+      "visual": "Purple vein recessed into the west face of the same hanging root bridge, not a pot.",
+      "safety": "At least90 horizontal units before the 32-high mouth; no trigger covers the combat or mandatory upper route."
+    },
+    {
+      "id": "lower_recovery",
+      "kind": "nutrition",
+      "position": [
+        6440,
+        460
+      ],
+      "trigger_size": [
+        48,
+        48
+      ],
+      "accepted_form_id": "",
+      "visual": "Green growth seam in the east wall, drawn as part of the foreground.",
+      "safety": "Earliest sprout overlap approx6402, more than22 beyond tunnel exit6380. Mature body can stand fully outside before growth. Infinite restorative capacity, release E between stages."
+    }
+  ],
+  "anchors": [
+    {
+      "id": "Ring0",
+      "position": [
+        5520,
+        130
+      ],
+      "launch": [
+        5450,
+        285
+      ],
+      "release_feet": [
+        5520,
+        116
+      ],
+      "landing": [
+        5520,
+        240
+      ],
+      "distance": 170.0735,
+      "mount": "Visible vine from the crown; no collision in the 5500..5560 shaft."
+    },
+    {
+      "id": "Ring1",
+      "position": [
+        5400,
+        15
+      ],
+      "launch": [
+        5520,
+        240
+      ],
+      "release_feet": [
+        5400,
+        1
+      ],
+      "landing": [
+        5400,
+        100
+      ],
+      "distance": 255,
+      "mount": "Vine just above B5; use existing multi-segment E detour through the shaft east of B5.",
+      "required_detour": "From B2 move within its floor to x5512..5524, rise through the open shaft, then move left above B5. Current128-unit route search permits this; must be physics-tested."
+    },
+    {
+      "id": "Ring2",
+      "position": [
+        5610,
+        -30
+      ],
+      "launch": [
+        5400,
+        100
+      ],
+      "release_feet": [
+        5610,
+        -44
+      ],
+      "landing": [
+        5610,
+        60
+      ],
+      "distance": 246.9818,
+      "mount": "Crown attachment with full mature head clearance to the vault. Landing stays on B6."
+    }
+  ],
+  "required_air_volumes": [
+    {
+      "id": "ring1_detour_shaft",
+      "rect": [
+        5509,
+        -74,
+        42,
+        314
+      ],
+      "note": "No solid art, trunks, equipment or branch collision may bridge this shaft; leave capsule width18 plus route margin."
+    },
+    {
+      "id": "ring2_release",
+      "rect": [
+        5588,
+        -104,
+        44,
+        164
+      ],
+      "note": "Mature climbing body including head must remain clear."
+    },
+    {
+      "id": "lower_growth_standing",
+      "rect": [
+        6390,
+        405,
+        60,
+        70
+      ],
+      "note": "No low arch or decorative collision encroaches on east nutrition/first-jump setup."
+    },
+    {
+      "id": "B1_takeoff",
+      "rect": [
+        5442,
+        170,
+        38,
+        115
+      ],
+      "note": "Upper branch B3 ends5440; preserve the outgoing right jump lane."
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "canopy_entry",
+      "node_position": [
+        5160,
+        310
+      ],
+      "feet_after_settle": [
+        5160,
+        330
+      ]
+    },
+    {
+      "id": "canopy_exit",
+      "node_position": [
+        6360,
+        150
+      ],
+      "feet_after_settle": [
+        6360,
+        170
+      ],
+      "note": "Do not put a checkpoint inside the low tunnel. Leaving it after growth must never respawn a large form there."
+    }
+  ],
+  "views": [
+    {
+      "id": "canopy_entry",
+      "region": [
+        5080,
+        210,
+        330,
+        340
+      ],
+      "center": [
+        5290,
+        365
+      ],
+      "zoom": 2.25,
+      "priority": 10,
+      "objective": "可以在树根营养处成长；向右上枝干前进"
+    },
+    {
+      "id": "canopy_middle",
+      "region": [
+        5340,
+        210,
+        540,
+        150
+      ],
+      "center": [
+        5520,
+        250
+      ],
+      "zoom": 2.25,
+      "priority": 20,
+      "objective": "沿枝干向左上折返；成熟形态可用 Q / E 上环"
+    },
+    {
+      "id": "canopy_upper_turn",
+      "region": [
+        5160,
+        115,
+        680,
+        95
+      ],
+      "center": [
+        5500,
+        85
+      ],
+      "zoom": 2,
+      "priority": 30,
+      "objective": "沿左上树枝折返，再登上右侧树冠"
+    },
+    {
+      "id": "canopy_crown",
+      "region": [
+        5160,
+        -150,
+        680,
+        265
+      ],
+      "center": [
+        5500,
+        15
+      ],
+      "zoom": 2,
+      "priority": 30,
+      "objective": "越过树冠后向右下出口前进"
+    },
+    {
+      "id": "canopy_east",
+      "region": [
+        5840,
+        0,
+        570,
+        360
+      ],
+      "center": [
+        6110,
+        140
+      ],
+      "zoom": 2,
+      "priority": 25,
+      "objective": "落到根桥肩部，再跳向右侧出口"
+    },
+    {
+      "id": "canopy_catch_west",
+      "region": [
+        5410,
+        360,
+        490,
+        200
+      ],
+      "center": [
+        5650,
+        395
+      ],
+      "zoom": 2.25,
+      "priority": 30,
+      "objective": "用嵌墙毒脉回到幼芽，穿过根桥下的窄道"
+    },
+    {
+      "id": "canopy_catch_east",
+      "region": [
+        5900,
+        360,
+        580,
+        200
+      ],
+      "center": [
+        6195,
+        395
+      ],
+      "zoom": 2.25,
+      "priority": 30,
+      "objective": "穿出窄道再吸收营养，沿根桥实阶返回"
+    },
+    {
+      "id": "canopy_handoff",
+      "region": [
+        6410,
+        0,
+        70,
+        360
+      ],
+      "mode": "framed_follow",
+      "objective": "前往隔离庭院"
+    }
+  ],
+  "encounters": [],
+  "hazards": [],
+  "implementation_notes": [
+    "All absolute points are construction proposals. No Godot run or physical route pass is claimed.",
+    "No enemies, forced ambient toxin or lethal catch pit in this room.",
+    "Old fixed Ring0/1/2 coordinates and previous test routes are replaced only when this design is built. Existing combat code is not changed.",
+    "Vine max range read from the current AbilityController is300, not the older260; the proposed first-to-last source distances stay below260.",
+    "The low route has a purpose: sprout crossing plus regrowth returns to the shared main exit landing. It can be chosen deliberately and is not a secret dead-end.",
+    "Camera regions require actual movement review. Region selection is two-dimensional; current fallback X-section logic is not a spatial boundary.",
+    "Support roots/vegetation belong to one foreground. Branch collision silhouettes are data, not an instruction to assemble independent platform PNGs.",
+    "Upper-turn and crown views are separate so B3 feet at195 stay above the bottom HUD while ring2 release head at-90 stays in frame. Transition thresholds must be checked with real Q/E movement."
+  ]
+}

@@ -4,6 +4,10 @@ var cues: Array[StringName] = []
 func _init() -> void:
 	call_deferred("_run")
 func _run() -> void:
+	create_timer(15.0).timeout.connect(func() -> void:
+		push_error("Player audio regression timed out before completion.")
+		quit(1)
+	)
 	var floor_body := StaticBody2D.new()
 	var collider := CollisionShape2D.new()
 	var shape := RectangleShape2D.new()
@@ -23,6 +27,9 @@ func _run() -> void:
 		await physics_frame
 	Input.action_release("move_right")
 	assert(cues.has(&"step_grass"), "Grounded movement must produce footsteps.")
+	# The local sprout deliberately cannot jump; grow before testing the jump cue.
+	player.absorb_nutrition(100.0)
+	assert(cues.count(&"grow") == 1)
 	Input.action_press("jump")
 	for step: int in range(4):
 		await physics_frame
@@ -34,16 +41,29 @@ func _run() -> void:
 	for step: int in range(25):
 		await physics_frame
 	assert(cues.count(&"step_grass") == idle_steps, "Idle must not produce footsteps.")
-	player.absorb_nutrition(100.0)
-	assert(cues.count(&"grow") == 1)
+	var skin := TerrainSkin.new()
+	skin.profile = TerrainSurface.new()
+	skin.profile.material_id = &"workshop"
+	floor_body.add_child(skin)
+	assert(player.audio._footstep_cue() == &"step_metal", "Surface art selects metal footsteps without changing collision.")
+	skin.profile.material_id = &"canopy"
+	assert(player.audio._footstep_cue() == &"step_wood")
+	skin.queue_free()
+	player.movement.landed.emit(700.0)
+	assert(cues.count(&"land_heavy") == 1, "Fast falls use heavy landing feedback.")
 	assert(player.abilities.try_root())
 	assert(cues.count(&"root") == 1)
+	player.abilities.stop_primary()
+	assert(cues.count(&"unroot") == 1)
+	await create_timer(0.12).timeout
+	assert(player.abilities.try_root())
 	Input.action_press("move_up")
 	for step: int in range(5):
 		await physics_frame
 	assert(cues.count(&"extend") == 1)
 	Input.action_release("move_up")
 	player.abilities.stop_primary()
+	assert(cues.has(&"retract"), "Ending extended legs produces retraction feedback.")
 	for step: int in range(25):
 		await physics_frame
 	player.absorb_nutrition(120.0)
@@ -51,17 +71,26 @@ func _run() -> void:
 	anchor.position = player.global_position + Vector2(0.0, -80.0)
 	root.add_child(anchor)
 	await physics_frame
+	player.abilities.set_vine_aim_global_position(anchor.global_position)
 	assert(player.abilities.try_attach_vine())
 	assert(cues.count(&"vine") == 1)
 	player.abilities.stop_primary()
+	assert(cues.count(&"vine_release") == 1)
 	await physics_frame
+	player.state_machine.state_changed.emit(&"fall", &"glide")
+	player.state_machine.state_changed.emit(&"glide", &"fall")
+	assert(cues.count(&"glide") == 1 and cues.count(&"glide_end") == 1)
+	await create_timer(player.audio.absorption_interval + 0.1).timeout
+	player.absorb_toxin(0.1)
+	assert(cues.count(&"absorb_toxin") == 1, "Toxin absorption has distinct feedback.")
 	player.absorb_toxin(120.0)
 	assert(cues.count(&"wither") == 1)
+	await create_timer(player.audio.absorption_interval + 0.1).timeout
 	var absorption_count := cues.count(&"absorb")
 	for step: int in range(20):
 		player.absorb_nutrition(0.1)
 		await physics_frame
-	assert(cues.count(&"absorb") - absorption_count <= 1, "Absorption feedback must not restart every physics tick.")
+	assert(cues.count(&"absorb") - absorption_count == 1, "Absorption must sound once after cooldown and not restart every physics tick.")
 	assert(player.audio.sounds.get_child_count() == 6, "Sound voices stay bounded.")
 	for voice: Node in player.audio.sounds.get_children():
 		var sound := voice as AudioStreamPlayer

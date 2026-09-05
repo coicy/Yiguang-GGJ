@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1200" viewBox="6480 -250 960 600">
+<title>courtyard distant background composition guide</title>
+<desc>Low-contrast whole-frame geometry guide only; all elements are distant and non-colliding.</desc>
+<rect x="6480" y="-250" width="960" height="600" fill="#536e68"/><g fill="none" stroke="#607a71" stroke-width="6"><path d="M6520 290V-130L6680 -240M6680 300V-100M6890 300V-145L7010 -215M7130 250V-150L7360 -210M7370 245V-145"/><path d="M6500 -80L6660 -110M6890 -120L7140 -118L7370 -80"/></g><path d="M6480 310Q6630 250 6760 290T7040 270T7440 260V350H6480Z" fill="#4e6b5c"/>
+</svg>

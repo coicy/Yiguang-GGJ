@@ -33,11 +33,13 @@ The default main scene loads the hand-built level in `scenes/levels/Level_main.t
 - `R`: restart the complete course from the beginning.
 - `F3`: toggle the existing debug overlay.
 
+Player attacks are disabled: the `attack` action has no bindings and the player has no combat controller or attack hitbox. Left Mouse remains the form ability.
+
 Forms are earned through gameplay. `E` absorbs resources or climbs an attached ring; it does not cycle forms.
 
 ## Gameplay audio
 
-Existing Kenney sounds from the `lan` asset branch now accompany footsteps, jumping/landing, growth/withering, absorption, rooting/leg extension, vine attachment, gliding, buttons, moving cubes, checkpoints, and death. Sources and event tuning are recorded in [credits](docs/credits.md).
+The main branch audio palette and bounded voice pools accompany footsteps, jumping/landing, growth/withering, absorption, rooting/leg extension, vine attachment, gliding, buttons, moving cubes, checkpoints, and death. Playback uses separate audio buses, cooldowns and nonrepeating variants. Player audio adds surface/speed feedback without changing movement or abilities. Sources are recorded in [credits](docs/credits.md).
 
 ## Button-operated door
 

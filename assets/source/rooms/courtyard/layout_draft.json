@@ -1,0 +1,77 @@
+{
+  "status": "SUPERSEDED_BY_LAYOUT_JSON",
+  "coordinates": "world x/y, y positive down",
+  "boundsX": [
+    6480,
+    7440
+  ],
+  "entry": {
+    "x": 6480,
+    "y": 170,
+    "dropToY": 210
+  },
+  "walkContour": [
+    [
+      6480,
+      210
+    ],
+    [
+      7040,
+      210
+    ],
+    [
+      7040,
+      170
+    ],
+    [
+      7160,
+      170
+    ],
+    [
+      7160,
+      130
+    ],
+    [
+      7440,
+      130
+    ]
+  ],
+  "battle": {
+    "x": 6480,
+    "width": 560,
+    "floorY": 210
+  },
+  "preparation": {
+    "x": 7160,
+    "width": 280,
+    "floorY": 130
+  },
+  "embeddedSources": [
+    {
+      "name": "CoreGrowth",
+      "center": [
+        7240,
+        162
+      ],
+      "role": "bright green nourishing infusion chamber embedded into the continuous front foundation immediately below the safe walk edge",
+      "silhouette": "rounded living membrane surrounded by feeding roots",
+      "interaction": "source radius must reach standing player; no freestanding pot, no new obstruction"
+    },
+    {
+      "name": "CoreWither",
+      "center": [
+        7370,
+        166
+      ],
+      "role": "purple pollution exhaust mouth embedded into the same foundation, separate from growth chamber",
+      "silhouette": "horizontal metal grille with cracked drain lip, dead leaves and restrained purple ooze",
+      "interaction": "source radius must reach standing player; purple emission confined to wall mouth, not arena"
+    }
+  ],
+  "images": {
+    "foreground": null,
+    "background": null
+  },
+  "registrationStatus": "Await generated image dimensions and traced silhouettes; do not bind this layout to legacy pixels",
+  "replacement": "layout.json"
+}

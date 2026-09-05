@@ -1,0 +1,536 @@
+{
+  "schema": "greenhouse.room.art-registration/v1",
+  "status": "generated_and_inspected_not_runtime_verified",
+  "layout": "layout.json",
+  "world_bounds": [
+    3640,
+    -60,
+    1440,
+    710
+  ],
+  "foreground": {
+    "source": "foreground_onepass.png",
+    "runtime": "assets/runtime/rooms/workshop_foreground.png",
+    "size": [
+      1788,
+      880
+    ],
+    "channels": "RGB, no alpha; near-white matte",
+    "art_origin": [
+      3640,
+      -60.134228187919405
+    ],
+    "art_scale": 0.8053691275167785,
+    "nominal_right_edge": 5080,
+    "nominal_lower_floor_y": 440,
+    "nominal_upper_floor_y": 330.4697986577182,
+    "source_floor_pixels": [
+      [
+        0,
+        621
+      ],
+      [
+        850,
+        621
+      ],
+      [
+        850,
+        569
+      ],
+      [
+        940,
+        569
+      ],
+      [
+        940,
+        523
+      ],
+      [
+        1033,
+        523
+      ],
+      [
+        1033,
+        485
+      ],
+      [
+        1788,
+        485
+      ],
+      [
+        1788,
+        880
+      ],
+      [
+        0,
+        880
+      ]
+    ],
+    "foundation_uv_correspondence": {
+      "note": "Suggested UV registration to preserve existing layout polygon exactly; this is not applied runtime code.",
+      "world": [
+        [
+          3640,
+          440
+        ],
+        [
+          4336,
+          440
+        ],
+        [
+          4336,
+          400
+        ],
+        [
+          4404,
+          400
+        ],
+        [
+          4404,
+          360
+        ],
+        [
+          4472,
+          360
+        ],
+        [
+          4472,
+          330
+        ],
+        [
+          5080,
+          330
+        ],
+        [
+          5080,
+          650
+        ],
+        [
+          3640,
+          650
+        ]
+      ],
+      "uv": [
+        [
+          0,
+          621
+        ],
+        [
+          850,
+          621
+        ],
+        [
+          850,
+          569
+        ],
+        [
+          940,
+          569
+        ],
+        [
+          940,
+          523
+        ],
+        [
+          1033,
+          523
+        ],
+        [
+          1033,
+          485
+        ],
+        [
+          1788,
+          485
+        ],
+        [
+          1788,
+          880
+        ],
+        [
+          0,
+          880
+        ]
+      ]
+    },
+    "source_vault_edge_pixels": [
+      [
+        0,
+        445
+      ],
+      [
+        24,
+        447
+      ],
+      [
+        48,
+        454
+      ],
+      [
+        72,
+        455
+      ],
+      [
+        96,
+        453
+      ],
+      [
+        120,
+        437
+      ],
+      [
+        144,
+        420
+      ],
+      [
+        168,
+        411
+      ],
+      [
+        192,
+        392
+      ],
+      [
+        216,
+        380
+      ],
+      [
+        240,
+        373
+      ],
+      [
+        264,
+        367
+      ],
+      [
+        288,
+        363
+      ],
+      [
+        312,
+        358
+      ],
+      [
+        336,
+        354
+      ],
+      [
+        360,
+        347
+      ],
+      [
+        384,
+        337
+      ],
+      [
+        408,
+        322
+      ],
+      [
+        432,
+        312
+      ],
+      [
+        456,
+        317
+      ],
+      [
+        480,
+        323
+      ],
+      [
+        504,
+        323
+      ],
+      [
+        528,
+        329
+      ],
+      [
+        552,
+        328
+      ],
+      [
+        576,
+        324
+      ],
+      [
+        600,
+        333
+      ],
+      [
+        624,
+        344
+      ],
+      [
+        648,
+        354
+      ],
+      [
+        672,
+        362
+      ],
+      [
+        696,
+        379
+      ],
+      [
+        720,
+        398
+      ],
+      [
+        744,
+        342
+      ],
+      [
+        768,
+        341
+      ],
+      [
+        792,
+        325
+      ],
+      [
+        816,
+        322
+      ],
+      [
+        840,
+        318
+      ],
+      [
+        864,
+        295
+      ],
+      [
+        888,
+        280
+      ],
+      [
+        912,
+        255
+      ],
+      [
+        936,
+        245
+      ],
+      [
+        960,
+        247
+      ],
+      [
+        984,
+        249
+      ],
+      [
+        1008,
+        257
+      ],
+      [
+        1032,
+        254
+      ],
+      [
+        1056,
+        255
+      ],
+      [
+        1080,
+        279
+      ],
+      [
+        1104,
+        307
+      ],
+      [
+        1128,
+        305
+      ],
+      [
+        1152,
+        294
+      ],
+      [
+        1176,
+        281
+      ],
+      [
+        1200,
+        268
+      ],
+      [
+        1224,
+        254
+      ],
+      [
+        1248,
+        239
+      ],
+      [
+        1272,
+        224
+      ],
+      [
+        1296,
+        212
+      ],
+      [
+        1320,
+        209
+      ],
+      [
+        1344,
+        206
+      ],
+      [
+        1368,
+        202
+      ],
+      [
+        1392,
+        199
+      ],
+      [
+        1416,
+        197
+      ],
+      [
+        1440,
+        192
+      ],
+      [
+        1464,
+        200
+      ],
+      [
+        1488,
+        205
+      ],
+      [
+        1512,
+        212
+      ],
+      [
+        1536,
+        219
+      ],
+      [
+        1560,
+        226
+      ],
+      [
+        1584,
+        231
+      ],
+      [
+        1608,
+        240
+      ],
+      [
+        1632,
+        253
+      ],
+      [
+        1656,
+        261
+      ],
+      [
+        1680,
+        268
+      ],
+      [
+        1704,
+        279
+      ],
+      [
+        1728,
+        290
+      ],
+      [
+        1752,
+        299
+      ],
+      [
+        1776,
+        320
+      ],
+      [
+        1787,
+        327
+      ]
+    ],
+    "matte_shader": "features/level/rooms/foreground_cutout.gdshader",
+    "material_parameters": {
+      "highlight_center_px": [
+        34,
+        618
+      ],
+      "highlight_radius_px": [
+        26,
+        30
+      ],
+      "highlight_preservation": 1,
+      "opaque_floor": 0.28
+    },
+    "material_note": "Use separate material values: do not reuse nursery resource highlight center 1012,688 unchanged.",
+    "edge_alignment_note": "Uniform scale keeps base/upper floors within 0.48 world units; first stair x850 maps to4324.564 (target4336), secondx940 maps4397.047(target4404). Use UV correspondence before claiming <=3-world-unit alignment. Roof silhouette also differs from guide and needs silhouette registration or explicit integration decision.",
+    "resource_visual_center_world": [
+      3667.3825503355706,
+      437.5838926174497
+    ],
+    "resource_trigger_position_world": [
+      3665,
+      425
+    ]
+  },
+  "background": {
+    "source": "distant_layer.png",
+    "runtime": "assets/runtime/rooms/workshop_distant.png",
+    "size": [
+      1789,
+      879
+    ],
+    "channels": "RGB opaque",
+    "art_origin": [
+      3640,
+      -60
+    ],
+    "art_scale": 0.8049189491335942,
+    "note": "Generated by editing the foreground canvas into a complete background; near/far canvas differ by1px, not pixel-identical. Keep it behind foreground; its scene depth is illustrative and it owns no collision."
+  },
+  "generation": {
+    "tool": "built-in image_gen.imagegen",
+    "foreground_prompt": "foreground_prompt.txt",
+    "background_prompt": "background_prompt.txt",
+    "calls": 2,
+    "foreground_generated_file": "exec-fe7f6f14-e230-491f-a667-a7ae554476ad.png",
+    "background_generated_file": "exec-c75922ec-5b6a-408b-8531-4729fc6b926a.png",
+    "reference_roles": {
+      "geometry_guide": "exact design composition from workshop/layout.json",
+      "nursery_foreground": "style reference only; not room geometry"
+    }
+  },
+  "validation": {
+    "image_viewed": true,
+    "godot_started": false,
+    "real_input_playtest": false,
+    "white_field_rgb_samples": [
+      [
+        254,
+        254,
+        254
+      ],
+      [
+        254,
+        253,
+        253
+      ],
+      [
+        255,
+        254,
+        254
+      ]
+    ],
+    "source_files_copied_without_pixel_changes": true
+  }
+}

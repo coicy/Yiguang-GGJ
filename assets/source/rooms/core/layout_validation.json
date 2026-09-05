@@ -1,0 +1,99 @@
+{
+  "kind": "static layout validation; not a gameplay test",
+  "passed": 23,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "courtyard canvas/world mapping",
+      "passed": true
+    },
+    {
+      "name": "courtyard uniform ground and no battle steps",
+      "passed": true
+    },
+    {
+      "name": "courtyard/Foundation finite points in bounds",
+      "passed": true
+    },
+    {
+      "name": "courtyard/Foundation non-self-intersecting",
+      "passed": true
+    },
+    {
+      "name": "courtyard/BrokenWestVault finite points in bounds",
+      "passed": true
+    },
+    {
+      "name": "courtyard/BrokenWestVault non-self-intersecting",
+      "passed": true
+    },
+    {
+      "name": "courtyard/PreparationVault finite points in bounds",
+      "passed": true
+    },
+    {
+      "name": "courtyard/PreparationVault non-self-intersecting",
+      "passed": true
+    },
+    {
+      "name": "core canvas/world mapping",
+      "passed": true
+    },
+    {
+      "name": "core uniform ground and no battle steps",
+      "passed": true
+    },
+    {
+      "name": "core/Foundation finite points in bounds",
+      "passed": true
+    },
+    {
+      "name": "core/Foundation non-self-intersecting",
+      "passed": true
+    },
+    {
+      "name": "core/CoreVault finite points in bounds",
+      "passed": true
+    },
+    {
+      "name": "core/CoreVault non-self-intersecting",
+      "passed": true
+    },
+    {
+      "name": "courtyard/core seam y130",
+      "passed": true
+    },
+    {
+      "name": "two rises of 40 units",
+      "passed": true
+    },
+    {
+      "name": "preparation sources outside both battle rooms",
+      "passed": true
+    },
+    {
+      "name": "source standing points share continuous y130 gallery",
+      "passed": true
+    },
+    {
+      "name": "source mouths embedded below standing edge",
+      "passed": true
+    },
+    {
+      "name": "source volumes do not extend into core battle",
+      "passed": true
+    },
+    {
+      "name": "humanoid-height player within suggested absorb distance",
+      "passed": true
+    },
+    {
+      "name": "sprout within suggested absorb distance",
+      "passed": true
+    },
+    {
+      "name": "core minimum 230-unit overhead clearance",
+      "passed": true
+    }
+  ]
+}

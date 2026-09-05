@@ -17,14 +17,18 @@
 [ext_resource type="Texture2D" uid="uid://dcg5aepatmfvk" path="res://assets/runtime/scenery/_0037_已插入图像.png" id="9_cwffn"]
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/thorn_damage.tscn" id="11_e6lid"]
 [ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="14_3g50r"]
+[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="19_svp4f"]
 [ext_resource type="Texture2D" uid="uid://dkq0p7me8pn8x" path="res://assets/runtime/scenery/_0014_培养罐.png" id="31_broken_tank"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="32_phantom_host"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="33_phantom_camera"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="32_phantom_host"]
+[ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="33_phantom_camera"]
 [ext_resource type="PackedScene" path="res://features/level/backgrounds/four_layer_backdrop.tscn" id="34_backdrop"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_e6lid"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_1b0o8"]
 resource_local_to_scene = true
 radius = 12.0
+
+[sub_resource type="Resource" id="Resource_w4kkx"]
+script = ExtResource("19_svp4f")
 
 [node name="Level01" type="Node2D" unique_id=943232891]
 script = ExtResource("1_level")
@@ -79,7 +83,7 @@ scale = Vector2(0.85, 0.85)
 [node name="Background" type="Node2D" parent="." unique_id=1684300338]
 z_index = -20
 
-[node name="FourLayerBackdrop" parent="Background" instance=ExtResource("34_backdrop")]
+[node name="FourLayerBackdrop" parent="Background" unique_id=365484754 instance=ExtResource("34_backdrop")]
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1633713359]
 color = Color(0.2, 0.24, 0.28, 1)
@@ -245,7 +249,7 @@ variant_index = 2
 
 [node name="CollisionPolygon2D" parent="Geometry/Terrain/TerrainPiece" index="0" unique_id=1031688781]
 position = Vector2(0, -1)
-polygon = PackedVector2Array(85, 24, 287, 26, 316, 35, 318, 53, 235, 177, 235, 213, 222, 217, 174, 162, 146, 176, 130, 166, 122, 124, 47, 105, 7, 65, 6, 27)
+polygon = PackedVector2Array(0, 0, 320, 0, 320, 200, 0, 200)
 
 [node name="TerrainVisual" parent="Geometry/Terrain/TerrainPiece" index="1" unique_id=1185384908]
 visible = false
@@ -276,7 +280,7 @@ variant_index = 2
 
 [node name="CollisionPolygon2D" parent="Geometry/Terrain/TerrainPiece2" index="0" unique_id=1031688781]
 position = Vector2(0, -1)
-polygon = PackedVector2Array(316, 41, 284, 25, 24, 25, 8, 33, 4, 65, 52, 105, 112, 113, 140, 169, 180, 165, 220, 213, 224, 217, 320, 53, 312, 37)
+polygon = PackedVector2Array(0, 0, 320, 0, 320, 200, 0, 200)
 
 [node name="TerrainVisual" parent="Geometry/Terrain/TerrainPiece2" index="1" unique_id=1185384908]
 visible = false
@@ -336,32 +340,35 @@ unique_name_in_owner = true
 position = Vector2(96, 464)
 
 [node name="CollisionShape2D" parent="Actors/Player" index="0"]
-shape = SubResource("CircleShape2D_e6lid")
+shape = SubResource("CircleShape2D_1b0o8")
 
 [node name="Camera2D" type="Camera2D" parent="Actors/Player" unique_id=1453819068]
 unique_name_in_owner = true
 limit_smoothed = true
 
-[node name="PhantomCameraHost" type="Node" parent="Actors/Player/Camera2D"]
+[node name="PhantomCameraHost" type="Node" parent="Actors/Player/Camera2D" unique_id=5398409]
+process_priority = 300
+process_physics_priority = 300
 script = ExtResource("32_phantom_host")
 interpolation_mode = 2
 
-[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1453819069 node_paths=PackedStringArray("follow_target")]
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1453819069]
 unique_name_in_owner = true
+top_level = true
 script = ExtResource("33_phantom_camera")
 priority = 1
 follow_mode = 5
-follow_target = NodePath("Actors/Player")
 zoom = Vector2(3, 3)
+tween_resource = SubResource("Resource_w4kkx")
 follow_offset = Vector2(0, -80)
 follow_damping = true
 follow_damping_value = Vector2(0.12, 0.18)
-dead_zone_width = 0.6
-dead_zone_height = 0.52
 lookahead = true
 lookahead_time = Vector2(0.2, 0)
 lookahead_max = true
 lookahead_max_value = Vector2(300, 0)
+dead_zone_width = 0.6
+dead_zone_height = 0.52
 
 [node name="SpawnPoint" parent="." unique_id=943232892 instance=ExtResource("3_spawn")]
 unique_name_in_owner = true
