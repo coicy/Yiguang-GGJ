@@ -1,0 +1,126 @@
+[gd_scene format=3 uid="uid://c3ecyvogpqagh"]
+
+[ext_resource type="Script" uid="uid://bmrw83r1jfdo" path="res://features/level/handbuilt/handbuilt_level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/decorative_scenery.tscn" id="2_t0hvh"]
+[ext_resource type="Resource" uid="uid://beekb7ob3irq1" path="res://assets/runtime/scenery/variants/grass_turf_variants.tres" id="3_kfebt"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/spawn_point.tscn" id="3_spawn"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="4_bounds"]
+[ext_resource type="PackedScene" uid="uid://c65j2lesd56mx" path="res://features/level/handbuilt/terrain_piece.tscn" id="5_terrain"]
+[ext_resource type="Texture2D" uid="uid://cieqmw4uun2hu" path="res://assets/runtime/scenery/_0036_苔藓地1.png" id="30_moss"]
+[ext_resource type="Texture2D" uid="uid://dkq0p7me8pn8x" path="res://assets/runtime/scenery/_0014_培养罐.png" id="31_broken_tank"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kfebt"]
+resource_local_to_scene = true
+radius = 12.0
+
+[node name="Level01" type="Node2D" unique_id=943232891]
+script = ExtResource("1_level")
+metadata/_edit_vertical_guides_ = [-8.0]
+
+[node name="Node" type="Node" parent="." unique_id=1887232084]
+
+[node name="DecorativeScenery" parent="Node" unique_id=819484407 instance=ExtResource("2_t0hvh")]
+position = Vector2(-258, 467)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(20, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="DecorativeScenery2" parent="Node" unique_id=1336819193 instance=ExtResource("2_t0hvh")]
+position = Vector2(-209, 474.99997)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("3_kfebt")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(40, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Background" type="Node2D" parent="." unique_id=1684300338]
+z_index = -20
+
+[node name="Geometry" type="Node2D" parent="." unique_id=1772310243]
+
+[node name="Terrain" type="Node2D" parent="Geometry" unique_id=1030929769]
+
+[node name="StartFloor" parent="Geometry/Terrain" unique_id=373654360 instance=ExtResource("5_terrain")]
+position = Vector2(-256, 469)
+piece_size = Vector2(1344, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
+disabled = false
+
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor" index="1" unique_id=1185384908]
+visible = true
+offset_right = 3360.0
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("30_moss")
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor" index="2" unique_id=1905841275]
+texture = ExtResource("30_moss")
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
+
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor" index="3" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
+
+[node name="RightCap" parent="Geometry/Terrain/StartFloor" index="4" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
+
+[node name="Mechanisms" type="Node2D" parent="Geometry" unique_id=558713796]
+
+[node name="Areas" type="Node2D" parent="." unique_id=1858714879]
+
+[node name="Checkpoints" type="Node2D" parent="." unique_id=422565820]
+
+[node name="Actors" type="Node2D" parent="." unique_id=25705282]
+
+[node name="Player" parent="Actors" unique_id=1995216275 instance=ExtResource("2_player")]
+unique_name_in_owner = true
+position = Vector2(96, 464)
+
+[node name="CollisionShape2D" parent="Actors/Player" index="0"]
+shape = SubResource("CircleShape2D_kfebt")
+
+[node name="Camera2D" type="Camera2D" parent="Actors/Player" unique_id=1453819068]
+unique_name_in_owner = true
+scale = Vector2(1.0025464, 0.8497827)
+offset = Vector2(0, -60)
+zoom = Vector2(4, 4)
+limit_smoothed = true
+position_smoothing_enabled = true
+position_smoothing_speed = 7.0
+
+[node name="SpawnPoint" parent="." unique_id=943232892 instance=ExtResource("3_spawn")]
+unique_name_in_owner = true
+position = Vector2(-229, 465)
+scale = Vector2(2, 2)
+
+[node name="BrokenTankIcon" type="Sprite2D" parent="SpawnPoint" unique_id=1622603824]
+z_index = -1
+position = Vector2(-1, -15)
+scale = Vector2(0.07, 0.07)
+texture = ExtResource("31_broken_tank")
+
+[node name="CameraBounds" parent="." unique_id=943232893 instance=ExtResource("4_bounds")]
+unique_name_in_owner = true
+position = Vector2(-256, -128)
+bounds_size = Vector2(1344, 768)
+
+[node name="Foreground" type="Node2D" parent="." unique_id=943232894]
+z_index = 10
+
+[node name="Effects" type="Node2D" parent="." unique_id=943232895]
+z_index = 20
+
+[editable path="Geometry/Terrain/StartFloor"]
+[editable path="Actors/Player"]

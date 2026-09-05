@@ -27,6 +27,8 @@ signal landed(impact_speed: float)
 @export var vine_tangent_acceleration: float = 900.0
 @export var vine_max_speed: float = 700.0
 @export_range(30.0, 89.0, 1.0) var vine_max_swing_angle_degrees: float = 80.0
+@export var vine_climb_speed: float = 320.0
+@export var vine_climb_arrival_distance: float = 1.0
 
 var body: CharacterBody2D
 var form: FormDefinition
@@ -41,6 +43,10 @@ var _leg_push_direction := Vector2.ZERO
 var _leg_push_target_speed: float = 0.0
 var _vine_anchor: Node2D
 var _vine_length: float = 0.0
+var _vine_climb_active: bool = false
+var _vine_climb_target := Vector2.ZERO
+var _vine_climb_route: Array[Vector2] = []
+var _vine_climb_exceptions: Array[CollisionObject2D] = []
 
 
 func setup(
@@ -49,23 +55,25 @@ func setup(
 	p_resources: ResourceController = null
 ) -> void:
 	body = p_body
-	form = p_form
 	resources = p_resources
+	set_form(p_form)
 
 
 func set_form(p_form: FormDefinition) -> void:
 	form = p_form
+	if form == null or not form.can_jump:
+		_jump_buffer_timer = 0.0
 
 
 func request_jump() -> void:
-	if _rooted or _movement_locked or is_vine_attached():
+	if form == null or not form.can_jump or _rooted or _movement_locked or is_vine_attached():
 		_jump_buffer_timer = 0.0
 		return
 	_jump_buffer_timer = jump_buffer
 
 
 func release_jump() -> void:
-	if body == null or form == null:
+	if body == null or form == null or not form.can_jump:
 		return
 	if is_vine_attached():
 		return
@@ -76,6 +84,9 @@ func release_jump() -> void:
 func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 	if body == null or form == null:
 		return
+	if _vine_climb_active:
+		_tick_vine_climb(delta)
+		return
 
 	_coyote_timer -= delta
 	_jump_buffer_timer -= delta
@@ -84,14 +95,17 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 		_coyote_timer = coyote_time
 
 	var vine_attached := is_vine_attached()
-	if vine_attached or not body.is_on_floor():
+	# A rooted, extended leg is a load-bearing tether. Gravity would otherwise
+	# shorten the final segment every physics tick after it reaches its limit.
+	var leg_supports_body := _rooted and _leg_extended
+	if (vine_attached or not body.is_on_floor()) and not leg_supports_body:
 		body.velocity.y += gravity * form.gravity_scale * delta
 		body.velocity.y = minf(body.velocity.y, form.max_fall_speed)
 
 	if not vine_attached and jump_held and form.can_glide and body.velocity.y > 0.0:
 		body.velocity.y = minf(body.velocity.y, form.glide_fall_speed)
 
-	if not vine_attached and not _rooted and not _movement_locked and _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
+	if not vine_attached and form.can_jump and not _rooted and not _movement_locked and _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
 		_perform_jump()
 
 	var speed_scale := resources.speed_multiplier() if resources != null else 1.0
@@ -121,6 +135,9 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 
 
 func _perform_jump() -> void:
+	if body == null or form == null or not form.can_jump:
+		_jump_buffer_timer = 0.0
+		return
 	body.velocity.y = form.jump_force
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
@@ -175,13 +192,88 @@ func attach_vine(anchor: Node2D, length: float) -> void:
 	_jump_buffer_timer = 0.0
 
 
+func request_vine_climb(route: Array[Vector2], exceptions: Array[CollisionObject2D] = []) -> void:
+	_clear_vine_climb_exceptions()
+	_vine_climb_route = route.duplicate()
+	_vine_climb_exceptions = exceptions.duplicate()
+	if body != null:
+		for exception: CollisionObject2D in _vine_climb_exceptions:
+			body.add_collision_exception_with(exception)
+	_vine_climb_active = is_vine_attached() and not _vine_climb_route.is_empty()
+	if _vine_climb_active and body != null:
+		_vine_climb_target = _vine_climb_route.pop_front()
+		body.velocity = Vector2.ZERO
+
+
 func detach_vine() -> void:
+	_vine_climb_active = false
+	_vine_climb_route.clear()
+	_clear_vine_climb_exceptions()
 	_vine_anchor = null
 	_vine_length = 0.0
+	if body != null:
+		body.velocity = Vector2.ZERO
 
 
 func is_vine_attached() -> bool:
 	return _vine_anchor != null and is_instance_valid(_vine_anchor)
+
+
+func is_vine_climbing() -> bool:
+	return _vine_climb_active
+
+
+func _tick_vine_climb(delta: float) -> void:
+	if not is_vine_attached() or delta <= 0.0:
+		_vine_climb_active = false
+		return
+	var remaining := _vine_climb_target - body.global_position
+	if remaining.length() <= vine_climb_arrival_distance:
+		_advance_vine_climb_route()
+		return
+	var motion := remaining.limit_length(vine_climb_speed * delta)
+	if body.test_move(body.global_transform, motion):
+		_cancel_vine_climb()
+		return
+	var position_before := body.global_position
+	body.velocity = motion / delta
+	body.move_and_slide()
+	body.velocity = Vector2.ZERO
+	var actual_motion := body.global_position - position_before
+	if actual_motion.distance_to(motion) > vine_climb_arrival_distance:
+		_cancel_vine_climb()
+		return
+	if body.global_position.distance_to(_vine_climb_target) <= vine_climb_arrival_distance:
+		_advance_vine_climb_route()
+
+
+func _advance_vine_climb_route() -> void:
+	if _vine_climb_route.is_empty():
+		_finish_vine_climb()
+		return
+	_vine_climb_target = _vine_climb_route.pop_front()
+
+
+func _finish_vine_climb() -> void:
+	var final_motion := _vine_climb_target - body.global_position
+	if not final_motion.is_zero_approx() and not body.test_move(body.global_transform, final_motion):
+		body.move_and_collide(final_motion)
+	detach_vine()
+
+
+func _cancel_vine_climb() -> void:
+	_vine_climb_active = false
+	_vine_climb_route.clear()
+	_clear_vine_climb_exceptions()
+	body.velocity = Vector2.ZERO
+
+
+func _clear_vine_climb_exceptions() -> void:
+	if body != null:
+		for exception: CollisionObject2D in _vine_climb_exceptions:
+			if is_instance_valid(exception):
+				body.remove_collision_exception_with(exception)
+	_vine_climb_exceptions.clear()
 
 
 func _try_leg_step(delta: float) -> void:

@@ -1,6 +1,6 @@
 extends SceneTree
 
-const MAIN_SCENE: PackedScene = preload("res://scenes/app/main.tscn")
+const LEVEL_SCENE: PackedScene = preload("res://scenes/levels/json_whitebox_level.tscn")
 const B1 := "0f859c40-96d0-11f1-9ec0-a7f50fdb1f9d"
 const DOOR := "e1e9a7b0-96d0-11f1-be70-0dbca0ba9a32"
 
@@ -10,7 +10,7 @@ func _init() -> void:
 
 
 func _run() -> void:
-	assert(change_scene_to_packed(MAIN_SCENE) == OK)
+	assert(change_scene_to_packed(LEVEL_SCENE) == OK)
 	await scene_changed
 	await _frames(6)
 	var level := _level()
@@ -20,6 +20,7 @@ func _run() -> void:
 	player.set_physics_process(false)
 	assert(hud.visible and hud.form_label.text == "幼芽期")
 	assert("E" in hud.controls_label.text, "Sprouts need the absorption instruction too.")
+	assert("跳跃" not in hud.controls_label.text and "不可跳跃" in hud.ability_hint.text)
 	_assert_mouse_passthrough(hud)
 	assert(hud.objective_icon.texture.resource_path.ends_with("lever_off.png"))
 	assert(not exit_goal.is_unlocked() and not level.is_completed())
@@ -36,7 +37,7 @@ func _run() -> void:
 	Input.action_release(&"absorb_resource")
 	player.form_controller.restore_form(&"mature")
 	await _frames(3)
-	assert(hud.form_label.text == "成熟期" and "滑翔" in hud.ability_hint.text)
+	assert(hud.form_label.text == "成熟期" and "滑翔" in hud.ability_hint.text and "E 上环" in hud.ability_hint.text)
 	assert("已成熟" in hud.growth_label.text and is_equal_approx(hud.growth_bar.value, hud.growth_bar.max_value))
 	player.resources.stability = 22.0
 	player.resources.values_changed.emit(0.0, 0.0, 22.0)
@@ -149,7 +150,7 @@ func _wait_for_completion(level: JsonWhiteboxLevel) -> void:
 
 
 func _level() -> JsonWhiteboxLevel:
-	return current_scene.get_node("LevelHost/JsonWhiteboxLevel") as JsonWhiteboxLevel
+	return current_scene as JsonWhiteboxLevel
 
 
 func _frames(count: int) -> void:

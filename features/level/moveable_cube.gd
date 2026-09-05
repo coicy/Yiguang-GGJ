@@ -1,3 +1,4 @@
+@tool
 class_name MoveableCube
 extends AnimatableBody2D
 ## A physics-synchronised whitebox block that moves to a data-defined footprint.
@@ -16,6 +17,24 @@ signal motion_completed(cube: MoveableCube)
 @export_range(0.0, 0.5, 0.01) var startup_shake_duration: float = 0.14
 @export_range(0.0, 8.0, 0.25) var startup_shake_distance: float = 2.0
 
+@export_category("Artwork")
+@export var art_texture: Texture2D:
+	set(value):
+		art_texture = value
+		_sync_artwork()
+@export_range(0.01, 8.0, 0.01) var art_scale_multiplier: float = 1.0:
+	set(value):
+		art_scale_multiplier = maxf(value, 0.01)
+		_sync_artwork()
+@export var art_offset := Vector2.ZERO:
+	set(value):
+		art_offset = value
+		_sync_artwork()
+@export_range(-360.0, 360.0, 1.0) var art_rotation_degrees: float = 0.0:
+	set(value):
+		art_rotation_degrees = value
+		_sync_artwork()
+
 enum MotionPhase { IDLE, STARTUP_SHAKE, MOVING }
 
 var _start_transform := Transform2D.IDENTITY
@@ -27,15 +46,21 @@ var _motion_elapsed := 0.0
 var _startup_elapsed := 0.0
 var _motion_phase := MotionPhase.IDLE
 var _visual_offset := Vector2.ZERO
+var _initial_transform := Transform2D.IDENTITY
+var _initial_size := Vector2.ONE
 var _bottom_attachments: Dictionary = {}
 
 @onready var _collision_shape: CollisionShape2D = %CollisionShape2D
+@onready var _artwork: Sprite2D = %Artwork
 
 
 func _ready() -> void:
 	sync_to_physics = true
 	_make_collision_shape_unique()
 	_update_shape()
+	_initial_transform = global_transform
+	_initial_size = cube_size
+	_sync_artwork()
 	queue_redraw()
 
 
@@ -112,6 +137,15 @@ func stop_at_target() -> void:
 	_visual_offset = Vector2.ZERO
 	_motion_phase = MotionPhase.IDLE
 	motion_completed.emit(self)
+
+
+func reset_platform() -> void:
+	_motion_phase = MotionPhase.IDLE
+	_visual_offset = Vector2.ZERO
+	global_transform = _initial_transform
+	cube_size = _initial_size
+	_sync_artwork()
+	queue_redraw()
 
 
 func get_world_rect() -> Rect2:
@@ -211,6 +245,18 @@ func _update_shape() -> void:
 		_collision_shape.shape = shape
 	shape.size = cube_size
 	_collision_shape.position = cube_size * 0.5
+	_sync_artwork()
+
+
+func _sync_artwork() -> void:
+	if not is_instance_valid(_artwork):
+		return
+	_artwork.texture = art_texture
+	_artwork.centered = false
+	_artwork.position = art_offset + _visual_offset
+	_artwork.scale = Vector2.ONE * art_scale_multiplier
+	_artwork.rotation = deg_to_rad(art_rotation_degrees)
+	_artwork.visible = art_texture != null
 
 
 func _make_collision_shape_unique() -> void:
@@ -219,6 +265,8 @@ func _make_collision_shape_unique() -> void:
 
 
 func _draw() -> void:
+	if art_texture != null:
+		return
 	draw_set_transform(_visual_offset)
 	draw_rect(Rect2(Vector2.ZERO, cube_size), Color("#567f64"))
 	draw_rect(Rect2(Vector2.ZERO, cube_size), Color("#d5f0cf"), false, 2.0)

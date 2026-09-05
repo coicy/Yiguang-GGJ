@@ -62,7 +62,7 @@ func _process(delta: float) -> void:
 	elif _player.abilities.is_rooted():
 		activity = "扎根抗风"
 	elif _player.abilities.is_vine_attached():
-		activity = "藤蔓摆荡"
+		activity = "翻越圆环" if _player.movement.is_vine_climbing() else "藤蔓摆荡"
 	state_label.text = activity
 	if _player.requires_absorption_release():
 		context_label.text = "本轮吸收已完成 · 松开 E，再按住继续吸收"
@@ -103,18 +103,20 @@ func _on_values_changed(growth: float, threshold: float, stability: float) -> vo
 
 func _on_form_changed(form_id: StringName) -> void:
 	var display := "幼芽期"
-	var hint := "幼芽：可以穿过狭窄通道，吸收营养液后成长"
+	var hint := "幼芽：不可跳跃 · 可以穿过狭窄通道，吸收营养液后成长"
 	match form_id:
 		&"humanoid":
 			display = "人形期"
 			hint = "人形：左键 扎根 / 拔根 · 扎根后 WASD 伸腿推进"
 		&"mature":
 			display = "成熟期"
-			hint = "成熟：左键 连接 / 断开藤蔓 · 下落时按住空格滑翔"
+			hint = "成熟：左键沿鼠标方向接 / 断藤蔓 · 连环后 E 上环 · 下落按住空格滑翔"
 	form_label.text = display
 	ability_hint.text = hint
-	controls_label.text = "A / D 移动    空格 跳跃    按住 E 吸收液体    R 重开"
 	var form := _player.form_controller.get_current()
+	controls_label.text = "A / D 移动    按住 E 吸收液体    R 重开"
+	if form.can_jump:
+		controls_label.text = "A / D 移动    空格 跳跃    按住 E 吸收液体    R 重开"
 	_on_values_changed(_player.resources.growth_progress, form.growth_threshold, _player.resources.stability)
 
 

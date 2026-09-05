@@ -20,6 +20,30 @@
 
 ## 可选第三方工具
 
+### 已筹备运行时：spine-godot GDExtension
+
+版本锁定：Spine runtime 4.3，Godot 4.7-stable，官方包 `spine-godot-extension-4.3-4.7-stable.zip`。
+
+来源/所有者：Esoteric Software；下载地址：<https://spine-godot.s3.eu-central-1.amazonaws.com/4.3/4.7-stable/spine-godot-extension-4.3-4.7-stable.zip>。
+
+用途：加载本仓库 `part1/m10067`、`part2/p0003` 与 `part3/p0003` 的 Spine 4.3.23 JSON/Atlas 数据。当前素材来自用户提供的替换包 `part1(1).zip`、`part2(1).zip`、`part3(2).zip`。GDExtension 已解包至项目根目录 `bin/`；运行时通过 `.spine-json`、共享 `SpineSkeletonDataResource` 和 `SpineSprite` 接入，不使用 GDExtension 未提供的 `SpineAnimationTrack`。
+
+已导入动画：
+
+| 资源 | 动画（时长，秒） | 默认循环 |
+|---|---|---|
+| `part1/m10067` | `death` 0.40、`idle` 1.00、`move` 0.53 | `idle`、`move` |
+| `part2/p0003` | `death` 0.40、`idle` 1.00、`jump_down` 0.50、`jump_end` 0.50、`jump_start` 0.50、`jump_up` 0.50、`move` 0.67、`skill` 2.17 | `idle`、`move` |
+| `part3` | `death` 0.40、`idle` 1.00、`jump_down` 0.13、`jump_end` 0.23、`jump_start` 0.07、`jump_up` 0.10、`move` 0.67、`skill` 2.17 | `idle`、`move` |
+
+`part2/skill` 在动画约 1.17 秒处包含 `skill` 事件，`part3/skill` 在约 1.10 秒处包含同名事件。三份替换 Atlas 的图片引用均与实际文件名一致，且不再声明 `pma:true`。
+
+玩家表现层使用 `PlayerAnimationMachine` 映射玩法状态，不让动画反向驱动物理：`idle -> idle`、`run -> move`、`jump -> jump_start/jump_up`、`fall/glide -> jump_down`，从空中回到地面时先播 `jump_end`；能力开始时用 `skill` 临时覆盖并在完成后返回最新移动状态，`death` 为最高优先级直到显式复活。幼芽期素材不含跳跃和技能片段，缺失动画会回退至 `idle` 或 `move`。形态与视觉对应关系为 `sprout -> part1`、`humanoid -> part2`、`mature -> part3`。
+
+兼容性：当前项目为 Godot 4.7.2、GDScript、GL Compatibility；已准备 Windows x86_64 编辑器与导出库，同时保留包内其他平台库。运行时集成与最终发布必须确认 Spine 编辑器/运行时授权。
+
+移除路径：删除项目根目录 `bin/` 下的 `spine_godot_extension.gdextension` 与 `libspine_godot.*` 文件，移除 `assets/runtime/characters/part1/`、`assets/runtime/characters/part2/`、`assets/runtime/characters/part3/` 和 `features/player/visuals/*spine*`；不影响核心白盒玩法。
+
 ### GdUnit4：只用于测试
 
 建议版本：使用与 Godot 4.7 兼容的最新稳定版，并从官方仓库/release 安装到 `addons/gdUnit4/`。它是编辑器/测试期依赖，不进入游戏运行时。

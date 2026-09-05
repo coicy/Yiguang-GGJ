@@ -2,7 +2,16 @@
 
 制定日期：2026-09-05。状态：已开始实施并持续按本表记录；未测项不能视为完成。
 
-## 2026-09-06 出口、胜利与 HUD 验收（当前增量）
+## 2026-09-06 推送前 main 合并复验
+
+合并远端 `bf00cef`（含手工关卡和 Spine 美术更新）后，保留其 `scenes/app/main.tscn → Level_main.tscn` 默认入口。本次出口/胜利/HUD 仍接在 `json_whitebox_level.tscn`，用 F6 单独运行；新手工关卡尚未接入此流程。HUD 合并保留 E 上环提示与状态，并移除幼芽跳跃提示。
+
+- `test_json_exit_hud.gd` 现直接加载 JSON 场景，避免把默认主入口绑定到旧白盒；出口、结算、鼠标/R 重开及 HUD 提示通过。
+- `test_button_door.gd`、`test_json_whitebox_level.gd`、`test_whitebox_sandbox.gd` 与远端 `test_level_main.gd` 均通过，退出码 0，无运行错误或警告；新的默认主入口 OpenGL 启动通过。
+- 新 GDExtension 首次导入后需要再次启动编辑器完成 Spine JSON/Atlas 导入；本机已完成，骨骼空值错误随之消失，未改动远端角色实现。`2.0/` 是嵌套旧工程，导入器按既有项目结构提示忽略它。
+- 合并复验日志位于 `build/exit-hud-verification/merge-*.log`，以下图形和历史验收记录保留原测试上下文；当前结果以上述完成导入后的复验为准。
+
+## 2026-09-06 出口、胜利与 HUD 验收（合并前）
 
 基于下述按钮开门增量接入主 JSON 关卡；本轮未修改 `Yiguang.json`。运行版本为官方 Godot 4.7.2（ed1daf0bf）。
 
