@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://features/player/movement_controller.gd" id="2_movement"]
@@ -20,6 +20,18 @@ radius = 12.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_legs"]
 size = Vector2(24, 24)
+
+[sub_resource type="Gradient" id="Gradient_flower_light"]
+colors = PackedColorArray(1, 1, 1, 0.95, 1, 1, 1, 0)
+offsets = PackedFloat32Array(0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_flower_light"]
+gradient = SubResource("Gradient_flower_light")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
@@ -53,6 +65,15 @@ shape = SubResource("RectangleShape2D_legs")
 [node name="Visuals" type="Node2D" parent="."]
 unique_name_in_owner = true
 script = ExtResource("10_visuals")
+
+[node name="FlowerLight" type="PointLight2D" parent="Visuals"]
+unique_name_in_owner = true
+position = Vector2(0, -34)
+texture = SubResource("GradientTexture2D_flower_light")
+energy = 1.8
+color = Color(1, 0.78, 0.38, 1)
+texture_scale = 1.05
+shadow_enabled = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
 unique_name_in_owner = true

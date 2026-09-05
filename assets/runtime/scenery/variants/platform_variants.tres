@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="SpriteVariantSet" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="SpriteVariantSet" format=3 uid="uid://banow4dqwuxmx"]
 
-[ext_resource type="Script" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
-[ext_resource type="Script" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0026_树枝平台（延申）.png" id="3_branch"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0028_石板3.png" id="4_stone"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0037_已插入图像.png" id="5_island_small"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0038_图层-53.png" id="6_island_wide"]
+[ext_resource type="Script" uid="uid://csn4mpi2ulpwq" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
+[ext_resource type="Script" uid="uid://dg2stga1rf3vc" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
+[ext_resource type="Texture2D" uid="uid://bvey8p5docyyt" path="res://assets/runtime/scenery/_0026_树枝平台（延申）.png" id="3_branch"]
+[ext_resource type="Texture2D" uid="uid://ep6xij8k7k3m" path="res://assets/runtime/scenery/_0028_石板3.png" id="4_stone"]
+[ext_resource type="Texture2D" uid="uid://dcg5aepatmfvk" path="res://assets/runtime/scenery/_0037_已插入图像.png" id="5_island_small"]
+[ext_resource type="Texture2D" uid="uid://dndjac26i7qyx" path="res://assets/runtime/scenery/_0038_图层-53.png" id="6_island_wide"]
 
 [sub_resource type="Resource" id="Branch"]
 script = ExtResource("2_variant")

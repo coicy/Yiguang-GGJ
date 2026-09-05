@@ -23,8 +23,18 @@ func _run() -> void:
 
 	for layer_name: String in LAYER_NAMES:
 		assert(level.get_node_or_null(layer_name) != null, "Missing level layer: %s" % layer_name)
+	var canvas_modulate := level.get_node("CanvasModulate") as CanvasModulate
+	assert(canvas_modulate != null)
+	assert(canvas_modulate.color.is_equal_approx(Color(0.2, 0.24, 0.28, 1.0)))
 	assert(level.get_node_or_null("Geometry/Terrain") != null)
 	assert(level.get_node_or_null("Geometry/Mechanisms") != null)
+	var flower_decorations := level.get_node("FlowerDecorations") as Node2D
+	assert(flower_decorations != null)
+	assert(flower_decorations.get_child_count() == 4, "The level should have several glowing flower decorations.")
+	for child: Node in flower_decorations.get_children():
+		var flower_light := child.get_node("FlowerLight") as PointLight2D
+		assert(flower_light != null)
+		assert(flower_light.shadow_enabled)
 
 	var floor_piece := level.get_node("Geometry/Terrain/StartFloor") as TerrainPiece
 	assert(floor_piece != null, "The baseline level needs one terrain floor piece.")
@@ -39,7 +49,7 @@ func _run() -> void:
 	assert(not collision.disabled)
 
 	var bounds := level.get_node("CameraBounds") as CameraBounds
-	assert(bounds.get_world_rect().is_equal_approx(Rect2(-256.0, -128.0, 1344.0, 768.0)))
+	assert(bounds.get_world_rect().is_equal_approx(Rect2(-414.0, 190.0, 1500.0, 500.0)))
 	var spawn_icon := level.get_node("SpawnPoint/BrokenTankIcon") as Sprite2D
 	assert(spawn_icon != null, "The current spawn point must display the broken tank icon.")
 	assert(spawn_icon.texture != null)
@@ -67,13 +77,21 @@ func _run() -> void:
 	assert(ungrow_drug.collision_mask == grow_drug.collision_mask)
 
 	var player := level.get_node("Actors/Player") as Player
+	var flower_light := player.get_node("Visuals/FlowerLight") as PointLight2D
+	assert(flower_light != null, "The player flower needs a local 2D light in the dark level.")
+	assert(flower_light.position.is_equal_approx(Vector2(0.0, -34.0)))
+	assert(flower_light.energy > 1.0)
+	assert(flower_light.shadow_enabled)
 	var camera := player.get_node("Camera2D") as Camera2D
-	assert(camera.zoom.is_equal_approx(Vector2(3.0, 3.0)))
 	assert(camera.limit_smoothed)
-	assert(camera.position_smoothing_enabled)
-	assert(is_equal_approx(camera.position_smoothing_speed, 7.0))
-	assert(camera.limit_left == -256 and camera.limit_top == -128)
-	assert(camera.limit_right == 1088 and camera.limit_bottom == 640)
+	assert(camera.limit_left == -414 and camera.limit_top == 190)
+	assert(camera.limit_right == 1086 and camera.limit_bottom == 690)
+	var phantom := level.get_node("PhantomCamera2D") as PhantomCamera2D
+	assert(phantom != null)
+	assert(phantom.follow_mode == PhantomCamera2D.FollowMode.FRAMED)
+	assert(phantom.zoom.is_equal_approx(Vector2(3.0, 3.0)))
+	assert(is_equal_approx(phantom.dead_zone_width, 0.6))
+	assert(is_equal_approx(phantom.dead_zone_height, 0.52))
 
 	level.queue_free()
 	quit()

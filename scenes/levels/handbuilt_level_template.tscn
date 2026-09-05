@@ -8,9 +8,11 @@
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/hard_floor_piece.tscn" id="6_hard_floor"]
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/moving_platform.tscn" id="7_platform"]
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/trigger_button.tscn" id="8_button"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/hazard_area.tscn" id="9_hazard"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/thorn_damage.tscn" id="9_thorn_damage"]
 [ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="10_checkpoint"]
 [ext_resource type="PackedScene" path="res://features/abilities/vine_anchor.tscn" id="11_anchor"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="12_phantom_host"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="13_phantom_camera"]
 
 [node name="HandbuiltLevel" type="Node2D"]
 script = ExtResource("1_level")
@@ -43,9 +45,8 @@ targets = [NodePath("../MovingPlatform")]
 
 [node name="Areas" type="Node2D" parent="."]
 
-[node name="PitHazard" parent="Areas" instance=ExtResource("9_hazard")]
+[node name="ThornDamage" parent="Areas" instance=ExtResource("9_thorn_damage")]
 position = Vector2(1024, 528)
-area_size = Vector2(160, 32)
 
 [node name="Checkpoints" type="Node2D" parent="."]
 
@@ -60,9 +61,28 @@ position = Vector2(96, 560)
 
 [node name="Camera2D" type="Camera2D" parent="Actors/Player"]
 unique_name_in_owner = true
-position = Vector2(180, -160)
-position_smoothing_enabled = true
-position_smoothing_speed = 7.0
+limit_smoothed = true
+
+[node name="PhantomCameraHost" type="Node" parent="Actors/Player/Camera2D"]
+script = ExtResource("12_phantom_host")
+interpolation_mode = 2
+
+[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1453819070 node_paths=PackedStringArray("follow_target")]
+unique_name_in_owner = true
+script = ExtResource("13_phantom_camera")
+priority = 1
+follow_mode = 5
+follow_target = NodePath("Actors/Player")
+zoom = Vector2(4, 4)
+follow_offset = Vector2(180, -160)
+follow_damping = true
+follow_damping_value = Vector2(0.12, 0.18)
+dead_zone_width = 0.6
+dead_zone_height = 0.52
+lookahead = true
+lookahead_time = Vector2(0.2, 0)
+lookahead_max = true
+lookahead_max_value = Vector2(300, 0)
 
 [node name="SpawnPoint" parent="." instance=ExtResource("3_spawn")]
 unique_name_in_owner = true

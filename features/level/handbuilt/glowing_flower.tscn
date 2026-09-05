@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/decorative_scenery.tscn" id="1_decoration"]
+[ext_resource type="Resource" path="res://assets/runtime/scenery/variants/foliage_variants.tres" id="2_foliage"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0002_红花1.png" id="3_flower"]
+
+[sub_resource type="Gradient" id="Gradient_flower_light"]
+colors = PackedColorArray(1, 1, 1, 0.95, 1, 1, 1, 0)
+offsets = PackedFloat32Array(0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_flower_light"]
+gradient = SubResource("Gradient_flower_light")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="GlowingFlower" type="Node2D"]
+
+[node name="GlowEdge" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(0, -32)
+scale = Vector2(0.23, 0.23)
+texture = ExtResource("3_flower")
+modulate = Color(1, 0.32, 0.08, 0.8)
+
+[node name="Decoration" parent="." instance=ExtResource("1_decoration")]
+position = Vector2(-11, -64)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("2_foliage")
+variant_index = 1
+
+[node name="FlowerLight" type="PointLight2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -36)
+texture = SubResource("GradientTexture2D_flower_light")
+energy = 1.65
+color = Color(1, 0.48, 0.28, 1)
+texture_scale = 0.9
+shadow_enabled = true

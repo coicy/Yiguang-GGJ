@@ -5,6 +5,7 @@ extends Node2D
 @onready var _player: Player = %Player
 @onready var _spawn_point: SpawnPoint = %SpawnPoint
 @onready var _camera: Camera2D = %Camera2D
+@onready var _phantom_camera: PhantomCamera2D = %PhantomCamera2D
 @onready var _camera_bounds: CameraBounds = %CameraBounds
 
 var _respawn_position := Vector2.ZERO
@@ -26,10 +27,15 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _configure_camera() -> void:
 	var bounds := _camera_bounds.get_world_rect()
+	_phantom_camera.set_follow_target(_player)
 	_camera.limit_left = int(bounds.position.x)
 	_camera.limit_top = int(bounds.position.y)
 	_camera.limit_right = int(bounds.end.x)
 	_camera.limit_bottom = int(bounds.end.y)
+	_phantom_camera.limit_left = int(bounds.position.x)
+	_phantom_camera.limit_top = int(bounds.position.y)
+	_phantom_camera.limit_right = int(bounds.end.x)
+	_phantom_camera.limit_bottom = int(bounds.end.y)
 
 
 func _connect_hazards() -> void:
