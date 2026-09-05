@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://features/combat/attack_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = &"air"
+damage = 2
+poise_damage = 20.0
+windup = 0.1
+active = 0.1
+recovery = 0.2
+reach = 62.0
+height = 56.0
+knockback = 150.0
+breaks_guard = false

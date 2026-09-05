@@ -7,6 +7,8 @@ signal resource_absorbed(actor: Node2D, amount: float)
 @export var nutrition_per_second: float = 40.0
 @export var accepted_form_id: StringName = &""
 
+@export var show_world_prompt: bool = true
+
 var _actors: Array[Node] = []
 var _absorbing_actor: Node2D
 var _effect_time := 0.0
@@ -80,8 +82,9 @@ func _draw() -> void:
 	var prompt_color := Color.WHITE
 	if _absorbing_actor != null:
 		prompt = "吸收中"
-		_draw_absorption_stream(center, Color.WHITE)
-	draw_string(ThemeDB.fallback_font, Vector2(rect.position.x - 8.0, rect.position.y - 6.0), prompt, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 12, prompt_color)
+		_draw_absorption_stream(center, Color("#c4dda4"))
+	if show_world_prompt:
+		draw_string(ThemeDB.fallback_font, Vector2(rect.position.x - 8.0, rect.position.y - 6.0), prompt, HORIZONTAL_ALIGNMENT_LEFT, -1.0, 12, prompt_color)
 
 
 func _resource_rect() -> Rect2:
@@ -95,10 +98,10 @@ func _resource_rect() -> Rect2:
 func _draw_absorption_stream(center: Vector2, color: Color) -> void:
 	if _absorbing_actor == null:
 		return
-	var target := to_local(_absorbing_actor.global_position)
+	var target := to_local(_absorbing_actor.global_position + Vector2(0.0, -8.0))
 	var stream_color := color
 	stream_color.a = 0.45
-	draw_line(center, target, stream_color, 1.5)
 	for index: int in range(3):
 		var progress := fposmod(_effect_time * 2.5 + float(index) / 3.0, 1.0)
-		draw_circle(center.lerp(target, progress), 2.0, color)
+		var point := center.lerp(target, progress) + Vector2(0.0, -sin(progress * PI) * 3.0)
+		draw_circle(point, 1.2 + progress * 0.5, color)

@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="PrunerTuning" load_steps=6 format=3]
+[ext_resource type="Script" path="res://features/enemies/pruner_tuning.gd" id="1"]
+[ext_resource type="Script" path="res://features/enemies/pruner_move.gd" id="2"]
+[sub_resource type="Resource" id="Shear"]
+script = ExtResource("2")
+kind = &"shear"
+[sub_resource type="Resource" id="Lunge"]
+script = ExtResource("2")
+kind = &"lunge"
+windup = 0.7
+duration = 0.42
+active_start = 0.18
+active_end = 0.29
+recovery = 0.88
+reach = 116.0
+hit_size = Vector2(48, 32)
+hit_offset = Vector2(38, -28)
+step_speed = 225.0
+step_end = 0.31
+knockback = Vector2(245, -110)
+[sub_resource type="Resource" id="Cleave"]
+script = ExtResource("2")
+kind = &"slam"
+windup = 0.96
+duration = 0.42
+active_start = 0.17
+active_end = 0.25
+recovery = 1.12
+reach = 72.0
+hit_size = Vector2(46, 42)
+hit_offset = Vector2(33, -21)
+step_speed = 28.0
+step_end = 0.2
+damage = 2
+parryable = false
+knockback = Vector2(230, -145)
+[resource]
+script = ExtResource("1")
+shear = SubResource("Shear")
+lunge = SubResource("Lunge")
+cleave = SubResource("Cleave")

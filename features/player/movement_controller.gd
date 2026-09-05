@@ -6,14 +6,10 @@ extends Node
 signal jumped
 signal landed(impact_speed: float)
 
-@export_group("Ground Movement")
+@export_group("Horizontal Movement")
 @export var acceleration: float = 2400.0
 @export var friction: float = 3600.0
 @export var turn_acceleration: float = 4800.0
-
-@export_group("Air Movement")
-@export var air_acceleration: float = 1200.0
-@export var air_friction: float = 800.0
 
 @export_group("Wind")
 @export var max_wind_speed: float = 480.0
@@ -35,6 +31,16 @@ signal landed(impact_speed: float)
 @export var vine_climb_speed: float = 320.0
 @export var vine_climb_arrival_distance: float = 1.0
 
+var control_scale: float = 1.0
+var ground_brake_acceleration: float = 0.0
+var air_steering_scale: float = 1.0
+var preserve_air_momentum: bool = false
+var allow_jump: bool = true
+var allow_glide: bool = true
+var _motion_override: bool = false
+var _override_x: float = 0.0
+var _override_y: float = NAN
+
 var body: CharacterBody2D
 var form: FormDefinition
 var resources: ResourceController
@@ -46,6 +52,7 @@ var _movement_locked: bool = false
 var _leg_extended: bool = false
 var _leg_push_direction := Vector2.ZERO
 var _leg_push_target_speed: float = 0.0
+var _leg_push_max_distance: float = INF
 var _vine_anchor: Node2D
 var _vine_length: float = 0.0
 var _vine_climb_active: bool = false
@@ -75,6 +82,10 @@ func request_jump() -> void:
 		_jump_buffer_timer = 0.0
 		return
 	_jump_buffer_timer = jump_buffer
+
+
+func has_buffered_jump() -> bool:
+	return _jump_buffer_timer > 0.0 and form != null and form.can_jump and not _rooted and not _movement_locked and not is_vine_attached()
 
 
 func release_jump() -> void:
@@ -107,28 +118,36 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 		body.velocity.y += gravity * form.gravity_scale * delta
 		body.velocity.y = minf(body.velocity.y, form.max_fall_speed)
 
-	if not vine_attached and jump_held and form.can_glide and body.velocity.y > 0.0:
+	if allow_glide and not vine_attached and jump_held and form.can_glide and body.velocity.y > 0.0:
 		body.velocity.y = minf(body.velocity.y, form.glide_fall_speed)
 
-	if not vine_attached and form.can_jump and not _rooted and not _movement_locked and _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
+	if allow_jump and not vine_attached and form.can_jump and not _rooted and not _movement_locked and _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
 		_perform_jump()
 
 	var speed_scale := resources.speed_multiplier() if resources != null else 1.0
-	# A jump has already set upward velocity, even before move_and_slide clears the floor flag.
-	var ground_control := body.is_on_floor() and body.velocity.y >= 0.0
 	if _rooted:
-		body.velocity.x = 0.0
-		_apply_leg_push(delta)
+		if _leg_extended:
+			_apply_leg_push(delta)
+		else:
+			body.velocity.x = 0.0
 	elif vine_attached:
 		_apply_vine_motion(move_dir, delta)
+	elif body.is_on_floor() and ground_brake_acceleration > 0.0:
+		body.velocity.x = move_toward(body.velocity.x, 0.0, ground_brake_acceleration * delta)
 	elif not _movement_locked and move_dir != 0.0:
-		var steering_acceleration := acceleration if ground_control else air_acceleration
-		if ground_control and move_dir * body.velocity.x < 0.0:
+		# Walking, jumping and changing form share the same horizontal response.
+		var steering_acceleration := acceleration
+		if move_dir * body.velocity.x < 0.0:
 			steering_acceleration = turn_acceleration
-		body.velocity.x = move_toward(body.velocity.x, move_dir * form.move_speed * speed_scale, steering_acceleration * delta)
-	else:
-		var braking := friction if ground_control else air_friction
-		body.velocity.x = move_toward(body.velocity.x, 0.0, braking * delta)
+		if not body.is_on_floor():
+			steering_acceleration *= air_steering_scale
+		body.velocity.x = move_toward(body.velocity.x, move_dir * form.move_speed * speed_scale * control_scale, steering_acceleration * delta)
+	elif not (preserve_air_momentum and not body.is_on_floor() and not _movement_locked):
+		body.velocity.x = move_toward(body.velocity.x, 0.0, friction * delta)
+	if _motion_override:
+		body.velocity.x = _override_x
+		if not is_nan(_override_y):
+			body.velocity.y = _override_y
 	_try_leg_step(delta)
 
 	var was_grounded := body.is_on_floor()
@@ -171,19 +190,29 @@ func set_movement_locked(locked: bool) -> void:
 
 
 func set_leg_extended(extended: bool) -> void:
+	if _leg_extended and not extended and body != null:
+		# Leg motion belongs to the tether, not to walking or the next form.
+		body.velocity = Vector2.ZERO
 	_leg_extended = extended
 
 
-func set_leg_push(direction: Vector2, speed: float) -> void:
+func set_leg_push(direction: Vector2, speed: float, max_distance: float = INF) -> void:
 	_leg_push_direction = direction.normalized() if not direction.is_zero_approx() else Vector2.ZERO
 	_leg_push_target_speed = maxf(speed, 0.0)
+	_leg_push_max_distance = maxf(max_distance, 0.0)
 
 
 func _apply_leg_push(delta: float) -> void:
-	if _leg_push_direction.is_zero_approx() or _leg_push_target_speed <= 0.0:
+	if _leg_push_direction.is_zero_approx() or _leg_push_target_speed <= 0.0 or delta <= 0.0:
+		body.velocity = Vector2.ZERO
 		return
-	var target_velocity := _leg_push_direction * _leg_push_target_speed
-	body.velocity = body.velocity.move_toward(target_velocity, leg_push_acceleration * delta)
+	# Keep speed along the active segment, but never carry sideways or outward
+	# momentum through a right-angle turn or the switch from extending to retracting.
+	var along_speed := maxf(0.0, body.velocity.dot(_leg_push_direction))
+	along_speed = move_toward(along_speed, _leg_push_target_speed, leg_push_acceleration * delta)
+	# Stop at the length limit / next corner before collision movement, without overshooting.
+	along_speed = minf(along_speed, _leg_push_max_distance / delta)
+	body.velocity = _leg_push_direction * along_speed
 
 
 func apply_wind(force: float, delta: float) -> void:
@@ -388,3 +417,13 @@ func coyote_remaining() -> float:
 
 func jump_buffer_remaining() -> float:
 	return maxf(_jump_buffer_timer, 0.0)
+
+
+func set_motion_override(horizontal: float, vertical: float = NAN) -> void:
+	_motion_override = true
+	_override_x = horizontal
+	_override_y = vertical
+
+
+func clear_motion_override() -> void:
+	_motion_override = false

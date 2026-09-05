@@ -12,6 +12,7 @@ const VINE_MAX_RANGE := 300.0
 signal ability_state_changed(label: StringName)
 signal feedback_requested(message: String)
 signal primary_ability_requested(ability_id: StringName)
+signal vine_fired(target_position: Vector2, will_attach: bool)
 
 @export_group("Vine")
 @export var vine_climb_clearance: float = 14.0
@@ -43,7 +44,6 @@ var _leg_anchor_global_position := Vector2.ZERO
 var _leg_corners_world: Array[Vector2] = []
 var _retracting: bool = false
 var _retraction_target := Vector2.ZERO
-var _retraction_vector_before_move := Vector2.ZERO
 var _standalone_form: FormDefinition
 
 
@@ -88,6 +88,8 @@ func post_movement_update() -> void:
 		return
 	if _retracting:
 		_finish_retraction_waypoint_if_reached()
+		if not _leg_extended:
+			return
 	else:
 		_enforce_max_leg_length()
 	_update_leg_length()
@@ -199,11 +201,13 @@ func try_attach_vine() -> bool:
 		return false
 	var aimed_anchor := _aimed_visible_anchor(VINE_MAX_RANGE)
 	if aimed_anchor == null:
+		vine_fired.emit(_missed_vine_endpoint(), false)
 		feedback_requested.emit("鼠标方向没有可连接的藤蔓锚点")
 		return false
 	_vine_anchor = aimed_anchor
 	_movement.attach_vine(aimed_anchor, _player.global_position.distance_to(aimed_anchor.global_position))
 	ability_state_changed.emit(&"vine")
+	vine_fired.emit(aimed_anchor.global_position, true)
 	return true
 
 
@@ -424,10 +428,11 @@ func leg_area() -> Area2D:
 func _extend_leg(delta: float) -> void:
 	_retracting = false
 	_update_leg_length()
-	if _leg_length < get_max_leg_length():
+	var remaining_length := maxf(0.0, get_max_leg_length() - _leg_length)
+	if remaining_length > 0.01:
 		_start_leg_if_needed()
 		var extension_speed := minf(leg_push_speed, leg_extension_speed)
-		_movement.set_leg_push(_leg_direction, extension_speed)
+		_movement.set_leg_push(_leg_direction, extension_speed, remaining_length)
 	else:
 		_movement.set_leg_push(Vector2.ZERO, 0.0)
 	_update_leg_area()
@@ -444,11 +449,10 @@ func _retract_leg(delta: float) -> void:
 		if not _leg_corners_world.is_empty()
 		else _leg_anchor_global_position
 	)
-	_retraction_vector_before_move = _retraction_target - _player.global_position
-	if _retraction_vector_before_move.length() <= LEG_WAYPOINT_TOLERANCE:
-		_finish_retraction_waypoint_if_reached()
-		return
-	_movement.set_leg_push(_retraction_vector_before_move.normalized(), leg_retraction_speed)
+	var remaining := _retraction_target - _player.global_position
+	# Only consume a waypoint after movement. Consuming one here as well can
+	# pop the next corner against the stale target in post_movement_update.
+	_movement.set_leg_push(remaining, leg_retraction_speed, remaining.length())
 
 
 func _start_leg_if_needed() -> void:
@@ -509,23 +513,22 @@ func _enforce_max_leg_length() -> void:
 	var segment_direction := segment.normalized()
 	var target := segment_origin + segment_direction * allowed_segment
 	_player.move_and_collide(target - _player.global_position)
-	# Remove only the velocity pushing away from the anchor. Tangential velocity
-	# remains available for future path shapes and collision responses.
-	var outward_speed := _player.velocity.dot(segment_direction)
-	if outward_speed > 0.0:
-		_player.velocity -= segment_direction * outward_speed
+	# This is a fixed polyline, so a length correction must not leave tangential drift.
+	_player.velocity = Vector2.ZERO
 	_movement.set_leg_push(Vector2.ZERO, 0.0)
 
 
 func _finish_retraction_waypoint_if_reached() -> void:
 	var remaining := _retraction_target - _player.global_position
-	var reached := remaining.length() <= LEG_WAYPOINT_TOLERANCE
-	if not reached and not _retraction_vector_before_move.is_zero_approx():
-		reached = _retraction_vector_before_move.dot(remaining) <= 0.0
-	if not reached:
+	if remaining.length() > LEG_WAYPOINT_TOLERANCE:
 		return
 	if not remaining.is_zero_approx():
 		_player.move_and_collide(remaining)
+	# A collision can prevent arrival: keep the corner instead of cutting a
+	# diagonal through the obstacle or collapsing the rest of the path.
+	if _player.global_position.distance_to(_retraction_target) > 0.01:
+		return
+	_movement.set_leg_push(Vector2.ZERO, 0.0)
 	if not _leg_corners_world.is_empty():
 		_leg_corners_world.pop_back()
 		_update_leg_length()
@@ -604,3 +607,16 @@ func _has_clear_path(candidate: Node2D) -> bool:
 		return true
 	var hit_position: Vector2 = hit.get("position", Vector2.INF)
 	return hit_position.distance_to(candidate.global_position) <= VINE_ENDPOINT_TOLERANCE
+
+
+func _missed_vine_endpoint() -> Vector2:
+	var form := _current_form()
+	var origin := _player.global_position + Vector2(0.0, -form.collision_size.y * 0.5)
+	var aim := _vine_aim_global_position if _has_vine_aim_position else _player.get_global_mouse_position()
+	var direction := (aim - origin).normalized()
+	if direction.is_zero_approx():
+		direction = Vector2.UP
+	var target := origin + direction * VINE_MAX_RANGE
+	var query := PhysicsRayQueryParameters2D.create(origin, target, 1, [_player.get_rid()])
+	var hit := _player.get_world_2d().direct_space_state.intersect_ray(query)
+	return hit.get("position", target)

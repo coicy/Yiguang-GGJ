@@ -1,0 +1,373 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://features/ui/handbuilt_hud.gd" id="1_script"]
+[ext_resource type="Theme" path="res://features/ui/botanical_theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/botanical/portrait_sprout.png" id="3_portrait"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/botanical/round_brown_dark.png" id="4_frame"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/botanical/keyboard_a.png" id="5_a"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/botanical/keyboard_d.png" id="6_d"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/botanical/keyboard_e.png" id="7_e"]
+[ext_resource type="Texture2D" path="res://assets/runtime/ui/botanical/keyboard_r.png" id="8_r"]
+
+[node name="HandbuiltHud" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture_filter = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="Status" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 24.0
+offset_top = 22.0
+offset_right = 334.0
+theme_type_variation = &"StatusPanel"
+
+[node name="Rows" type="VBoxContainer" parent="Status"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Identity" type="HBoxContainer" parent="Status/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Badge" type="Control" parent="Status/Rows/Identity"]
+layout_mode = 2
+custom_minimum_size = Vector2(68, 68)
+
+[node name="Frame" type="TextureRect" parent="Status/Rows/Identity/Badge"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_frame")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Portrait" type="TextureRect" parent="Status/Rows/Identity/Badge"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 3.0
+offset_top = 1.0
+offset_right = -3.0
+offset_bottom = -1.0
+texture = ExtResource("3_portrait")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Names" type="VBoxContainer" parent="Status/Rows/Identity"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 0
+
+[node name="Stage" type="Label" parent="Status/Rows/Identity/Names"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+text = "01  /  03"
+
+
+[node name="FormName" type="Label" parent="Status/Rows/Identity/Names"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Title"
+text = "幼芽期"
+
+
+[node name="Activity" type="Label" parent="Status/Rows/Identity/Names"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Muted"
+text = "穿过狭缝，寻找营养"
+
+
+[node name="Growth" type="VBoxContainer" parent="Status/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Heading" type="HBoxContainer" parent="Status/Rows/Growth"]
+layout_mode = 2
+
+[node name="GrowthLabel" type="Label" parent="Status/Rows/Growth/Heading"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Small"
+text = "成长"
+size_flags_horizontal = 3
+
+[node name="GrowthValue" type="Label" parent="Status/Rows/Growth/Heading"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Small"
+text = "0%"
+
+
+[node name="GrowthBar" type="ProgressBar" parent="Status/Rows/Growth"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+show_percentage = false
+
+[node name="Stability" type="VBoxContainer" parent="Status/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Heading" type="HBoxContainer" parent="Status/Rows/Stability"]
+layout_mode = 2
+
+[node name="StabilityLabel" type="Label" parent="Status/Rows/Stability/Heading"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Small"
+text = "稳定度"
+size_flags_horizontal = 3
+
+[node name="StabilityValue" type="Label" parent="Status/Rows/Stability/Heading"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Small"
+text = "100%"
+
+
+[node name="StabilityBar" type="ProgressBar" parent="Status/Rows/Stability"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+theme_type_variation = &"StabilityBar"
+value = 100.0
+show_percentage = false
+
+[node name="ControlsAnchor" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+anchor_top = 1.0
+offset_left = 24.0
+offset_top = -70.0
+offset_right = -24.0
+offset_bottom = -18.0
+grow_vertical = 0
+
+[node name="ControlsPanel" type="PanelContainer" parent="ControlsAnchor"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"DarkPanel"
+
+[node name="ControlsRow" type="HBoxContainer" parent="ControlsAnchor/ControlsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MoveHint" type="HBoxContainer" parent="ControlsAnchor/ControlsPanel/ControlsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="MoveIcon0" type="TextureRect" parent="ControlsAnchor/ControlsPanel/ControlsRow/MoveHint"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(30, 30)
+size_flags_vertical = 4
+texture = ExtResource("5_a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MoveIcon1" type="TextureRect" parent="ControlsAnchor/ControlsPanel/ControlsRow/MoveHint"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(30, 30)
+size_flags_vertical = 4
+texture = ExtResource("6_d")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MoveText" type="Label" parent="ControlsAnchor/ControlsPanel/ControlsRow/MoveHint"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+text = "移动"
+
+
+[node name="JumpHint" type="HBoxContainer" parent="ControlsAnchor/ControlsPanel/ControlsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="JumpIcon0" type="PanelContainer" parent="ControlsAnchor/ControlsPanel/ControlsRow/JumpHint"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(42, 24)
+size_flags_vertical = 4
+theme_type_variation = &"KeyCap"
+
+[node name="SpaceKey" type="Label" parent="ControlsAnchor/ControlsPanel/ControlsRow/JumpHint/JumpIcon0"]
+layout_mode = 2
+theme_type_variation = &"KeyLabel"
+text = "空格"
+horizontal_alignment = 1
+
+[node name="JumpText" type="Label" parent="ControlsAnchor/ControlsPanel/ControlsRow/JumpHint"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+text = "跳跃"
+
+
+[node name="AbilityHint" type="HBoxContainer" parent="ControlsAnchor/ControlsPanel/ControlsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="AbilityIcon0" type="PanelContainer" parent="ControlsAnchor/ControlsPanel/ControlsRow/AbilityHint"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(28, 26)
+size_flags_vertical = 4
+theme_type_variation = &"KeyCap"
+
+[node name="QKey" type="Label" parent="ControlsAnchor/ControlsPanel/ControlsRow/AbilityHint/AbilityIcon0"]
+layout_mode = 2
+theme_type_variation = &"KeyLabel"
+text = "Q"
+horizontal_alignment = 1
+
+[node name="AbilityText" type="Label" parent="ControlsAnchor/ControlsPanel/ControlsRow/AbilityHint"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+text = "扎根"
+
+
+[node name="AbsorbHint" type="HBoxContainer" parent="ControlsAnchor/ControlsPanel/ControlsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="AbsorbIcon0" type="TextureRect" parent="ControlsAnchor/ControlsPanel/ControlsRow/AbsorbHint"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(30, 30)
+size_flags_vertical = 4
+texture = ExtResource("7_e")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="AbsorbText" type="Label" parent="ControlsAnchor/ControlsPanel/ControlsRow/AbsorbHint"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+text = "吸收"
+
+
+[node name="RestartHint" type="HBoxContainer" parent="ControlsAnchor/ControlsPanel/ControlsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="RestartIcon0" type="TextureRect" parent="ControlsAnchor/ControlsPanel/ControlsRow/RestartHint"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(30, 30)
+size_flags_vertical = 4
+texture = ExtResource("8_r")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RestartText" type="Label" parent="ControlsAnchor/ControlsPanel/ControlsRow/RestartHint"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+text = "重来"
+
+
+[node name="Interaction" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+custom_minimum_size = Vector2(304, 0)
+theme_type_variation = &"DarkPanel"
+
+[node name="Rows" type="VBoxContainer" parent="Interaction"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="Interaction/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="InteractionKey" type="TextureRect" parent="Interaction/Rows/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(40, 30)
+size_flags_vertical = 4
+texture = ExtResource("7_e")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Labels" type="VBoxContainer" parent="Interaction/Rows/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="InteractionTitle" type="Label" parent="Interaction/Rows/Header/Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptTitle"
+text = "吸收营养液"
+
+
+[node name="InteractionDetail" type="Label" parent="Interaction/Rows/Header/Labels"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+text = "按住 E · 成长为人形"
+
+
+[node name="InteractionBar" type="ProgressBar" parent="Interaction/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 5)
+theme_type_variation = &"NutritionBar"
+show_percentage = false
+
+[node name="ToastAnchor" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+anchor_bottom = 0.0
+offset_left = 350.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 66.0
+grow_vertical = 1
+
+[node name="Toast" type="PanelContainer" parent="ToastAnchor"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"DarkPanel"
+
+[node name="ToastText" type="Label" parent="ToastAnchor/Toast"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+text = "已成长为人形"

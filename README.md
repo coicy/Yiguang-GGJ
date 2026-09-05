@@ -1,56 +1,61 @@
 # Yiguang-GGJ
 
-## GGJ ShapeShift Platformer
+## 失控温室 · 植物形态动作游戏
 
-Godot 4.7.2 2D platformer whitebox for a 48-hour Game Jam project.
+基于 Godot 4.7.2 的 Windows 单机横版动作游戏。玩家通过营养液成长、通过毒素枯萎，在三形态探索与藤鞭战斗之间穿过温室。正式主关卡包含七个区段、三种普通敌人、守圃者精英战，以及暂停、局部重试和通关结算。
 
-The default main scene loads the hand-built level in `scenes/levels/Level_main.tscn`. The JSON whitebox course remains available separately with its button-operated door, exit completion, and HUD.
+首次通关 **10–15 分钟是设计目标**，仍需真实玩家试玩校准。当前验证结果与未完成项以 [战斗验证记录](docs/combat_validation.md) 为准。
 
-## Start
+## 启动
 
-1. Open `project.godot` with Godot 4.7.2 or a compatible 4.7 build.
-2. Press F5 for the hand-built main level. To try the JSON door/exit/HUD flow, open `scenes/levels/json_whitebox_level.tscn` and press F6.
-3. Read [`docs/architecture.md`](docs/architecture.md) before creating gameplay scenes.
-4. Read [`docs/toolkit.md`](docs/toolkit.md) before adding an external addon.
+1. 使用 Godot 4.7.2 打开 `project.godot`，等待资源导入。
+2. 按 F5 启动正式手工主关卡：`scenes/app/main.tscn → scenes/levels/Level_main.tscn → level_01.tscn`。
+3. 从培养室幼芽开始，按画面提示通过低位通路，吸收营养成为人形后进入战斗区域。
+4. 修改玩法前阅读 [架构](docs/architecture.md)、[开发规范](docs/development_guidelines.md) 与 [战斗设计](docs/combat_design.md)。
 
-## Current scope
+旧 JSON 白盒及测试场景仅作历史参考。新增玩法与关卡验收均围绕正式主关卡开展，不把旧白盒作为默认游戏入口。
 
-- Single-player 2D platforming.
-- A shared player controller with data-driven forms and abilities.
-- Nutrition-driven growth from sprout to humanoid to mature form.
-- Toxin stability, staged withering, checkpoints, gates, hazards, and a timed exit.
-- Combat is an optional feature module, not a dependency of movement.
-- Desktop keyboard baseline, with gamepad bindings added when hardware is available.
+战斗功能单独测试：打开 `scenes/levels/combat_test.tscn` 后按 **F6**。5000 像素长平台上依次放置甲虫、孢子、修枝机兵和守圃者；人形开场，靠近激活，**R** 重置玩家与全部怪物，**Esc** 暂停。
 
-## Controls
+## 操作
 
-- `A` / `D`: move.
-- `Space`: jump in humanoid/mature form; hold while falling in mature form to glide. Sprouts cannot jump.
-- Left Mouse: toggle root in humanoid form, or attach/detach from a visible vine anchor in the mouse direction in mature form.
-- `W/A/S/D`: while rooted in humanoid form, slowly extend the leg in cardinal directions and push the player; release to retract.
-- Hold `E` inside nutrition or toxin liquid to absorb it; without `E`, neither liquid is absorbed. Each stage change ends that absorption session: release and press `E` again to continue.
-- While attached to a vine ring, press `E` to move above it if the player fits and the path is clear; reaching the top releases the vine.
-- `R`: restart the complete course from the beginning.
-- `F3`: toggle the existing debug overlay.
+| 输入 | 行为 |
+| --- | --- |
+| A / D | 左右移动 |
+| 空格 | 人形／成熟形态跳跃；成熟形态下落时按住滑翔。幼芽不能跳跃 |
+| 左键 | 幼芽在地面短距离前顶；人形／成熟地面三段轻击，空中执行一次斜向下挥击 |
+| 右键 | 地面重击，破除普通敌人正面防护 |
+| Shift | 朝起手朝向水平闪避；空中每次腾空限一次，落地恢复 |
+| F | 短窗口弹反角色前方的攻击；可反射孢子，红叉重砸不可弹反 |
+| Q | 人形扎根／拔根；成熟形态朝鼠标位置连接／解除可见藤蔓锚点 |
+| W / A / S / D | 人形扎根时伸腿；松手沿原路收回 |
+| 按住 E | 在营养液／毒液中吸收；每次形态变化后松开再按住，才能继续下一阶段 |
+| E | 挂藤时上环；空间和路径允许时到达上方并释放藤蔓 |
+| Esc | 暂停／继续；暂停菜单提供完整操作提示 |
+| R | 从头重新开始整关 |
 
-Forms are earned through gameplay. `E` absorbs resources or climbs an attached ring; it does not cycle forms.
+攻击和弹反起手时按鼠标左右位置确定朝向，动作过程中方向锁定。人形与成熟都能独立战斗：成熟藤鞭更长、收招较慢，伤害相同。幼芽用于通行与探索，可用短距离前顶自卫：先缩身，再顶出约半个身位，造成一次轻伤害后回弹。
 
-## Gameplay audio
+小怪头顶浅黄色条为生命，青色条为韧性。轻击逐步削韧，重击削韧更多；韧性耗尽才打断敌人的出招，失衡期间追打不延长硬直。正面重击破盾和成功弹反仍能制造反击窗口。
 
-Existing Kenney sounds from the `lan` asset branch now accompany footsteps, jumping/landing, growth/withering, absorption, rooting/leg extension, vine attachment, gliding, buttons, moving cubes, checkpoints, and death. Sources and event tuning are recorded in [credits](docs/credits.md).
+开始攻击、闪避或弹反会结束扎根、伸腿与挂藤。战斗生命与成长资源分离，普通受伤不改变形态；闪避不能抵消坠落或关卡即死危险。
 
-## Button-operated door
+## 关卡与重试
 
-Touch B1 at world position `(448, 304)` to move the door at `(624, 432)` upward by 48 pixels. B1 still drives its original C1 platform. The door remains solid as it moves, stays open, and resets when the course reloads with `R`.
+路线为 **培养室 → 苔藓步道 → 孢子廊 → 修枝车间 → 树冠通路 → 隔离庭院 → 温室核心**。先分别学习应对甲虫、孢子和机兵，再应对组合遭遇与两阶段精英。
 
-Reuse `features/level/whitebox_door.tscn` for other doors. Choose `SLIDE` with `open_offset`, or `ROTATE` with `hinge_offset` and `opening_degrees` in the Inspector. The level parent connects a button's `pressed` signal to a call to `door.open()`. The existing map uses the button's `Entity_ref` list for this connection. See [entity rules](docs/whitebox_entity_rules.md) for configuration and verification.
+进入遭遇时记录安全快照。死亡菜单的“重试当前遭遇”恢复最近安全点、战前形态和资源并补满生命；已完成的遭遇在本次运行中保留。菜单中的“重新开始整关”或 R 会清除本次运行进度。击败守圃者仅打开出口，进入出口后才显示通关结果。
 
-## Exit, completion, and HUD
+左上显示形态、成长与稳定度；右上显示五格生命、闪避恢复和弹反状态；上中显示当前区域目标，精英战另外显示生命与阶段。游戏中的 HUD 不阻挡攻击鼠标输入，只有菜单接收按钮点击。
 
-This flow is connected in `scenes/levels/json_whitebox_level.tscn`. The newer hand-built main entry from upstream is preserved; its `HandbuiltLevel` has not yet been connected to this exit/HUD flow.
+## 设计、制作与验证
 
-The JSON whitebox course includes a pixel-art exit at world position `(704, 464)`. Touch the button marked “出口按钮” (B1), wait for its door to finish opening, and enter the lit exit beyond it. Opening the door alone does not win. Completing the course freezes gameplay and shows elapsed time, retry count, a victory sound, and a restart button; click it or press `R` to reset the course.
+- [GDD](docs/GDD.md)：三形态、资源、战斗与关卡核心规则。
+- [战斗设计与制作记录](docs/combat_design.md)：招式参数、敌人、七区内容、资产清单及 M0–M6 状态。
+- [战斗验证记录](docs/combat_validation.md)：测试证据、测量条件及仍需完成的人类试玩／实机验收。
+- [素材来源](docs/credits.md)与[战斗资产制作说明](assets/source/combat/production_notes.md)：已有素材许可、新 AI 图集、源文件和可编辑关键帧边界。
+- [工具包](docs/toolkit.md)：添加外部插件或工具前的约定。
 
-The HUD shows the current form, growth, stability, timer, retries, and exit objective. Controls update with the form, including the release-and-press-`E` requirement after each growth/withering stage, checkpoint feedback, and toxin warnings. The HUD leaves gameplay mouse input available.
+战斗参数保存在 `features/combat/data/`，敌人参数保存在 `features/enemies/data/`。运行时每个角色的生命和计时独立，共享配置保持只读。新增的玩家攻击动作使用已有 Spine 骨骼与可编辑姿势资源；敌人使用 PNG 图集分部件动画。
 
-Exit art, sign, prompt/lever icons, numeric font, UI palette, and victory sound reuse the existing asset branch; see [credits](docs/credits.md). A full manual playthrough and a refreshed Windows export remain to be verified. Automated checks and rendered previews are recorded in [acceptance criteria](docs/whitebox_acceptance_criteria.md).
+当前自动化测试和截图不替代三轮完整人类试玩，也不自动证明导出包的完整性或稳定帧率。旧角色、场景等用户提供素材的原作者与发布许可尚待确认，见来源登记。

@@ -20,9 +20,11 @@ func _run() -> void:
 	root.add_child(aimed_anchor)
 	aimed_anchor.global_position = player.global_position + Vector2(180.0, 0.0)
 
-	var event := InputEventMouseButton.new()
-	event.button_index = MOUSE_BUTTON_LEFT
-	event.position = aimed_anchor.global_position
+	var aim := InputEventMouseMotion.new()
+	aim.position = aimed_anchor.global_position
+	player._unhandled_input(aim)
+	var event := InputEventKey.new()
+	event.physical_keycode = KEY_Q
 	event.pressed = true
 	player._unhandled_input(event)
 	assert(player.abilities.get_vine_anchor() == aimed_anchor, "Vine must attach to the anchor in the mouse direction.")

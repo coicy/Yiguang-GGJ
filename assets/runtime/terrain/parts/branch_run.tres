@@ -1,0 +1,8 @@
+[gd_resource type="AtlasTexture" load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0026_树枝平台（延申）.png" id="branch"]
+
+[resource]
+atlas = ExtResource("branch")
+region = Rect2(270, 42, 166, 23)
+filter_clip = true

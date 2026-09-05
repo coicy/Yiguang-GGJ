@@ -1,0 +1,11 @@
+Sound effects: rubberduck (OpenGameArt.org), Kenney.nl.
+Exploration music: Dark Forest Theme - The Cynic Project / cynicmusic.com / pixelsphere.org.
+Battle music:
+- Battle Theme - Wolfgang_ https://opengameart.org/node/16611
+- Ghosts & Heroes (2025 loop) - Bobjt https://opengameart.org/content/ghosts-heroes
+- Heartfelt Battle (loop) - request https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn
+Boss music:
+- Epic Boss Battle [Seamlessly Looping] - Juhani Junkala / SubspaceAudio https://opengameart.org/content/boss-battle-music
+All source audio used in this folder is CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/
+Sources, modifications and layer mapping: docs/credits.md, assets/source/audio/music_manifest.json and recipes.json.
+No commercial game recordings are included. These assets are licensed recordings/compositions, not generative AI output.

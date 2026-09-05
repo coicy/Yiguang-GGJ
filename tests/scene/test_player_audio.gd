@@ -15,6 +15,8 @@ func _run() -> void:
 	var player := PLAYER.instantiate() as Player
 	player.position = Vector2(0.0, 20.0)
 	root.add_child(player)
+	# Jump audio is exercised with a form that can jump.
+	assert(player.form_controller.restore_form(&"humanoid"))
 	player.audio.sounds.cue_played.connect(func(cue: StringName) -> void: cues.append(cue))
 	for step: int in range(20):
 		await physics_frame
@@ -34,8 +36,6 @@ func _run() -> void:
 	for step: int in range(25):
 		await physics_frame
 	assert(cues.count(&"step_grass") == idle_steps, "Idle must not produce footsteps.")
-	player.absorb_nutrition(100.0)
-	assert(cues.count(&"grow") == 1)
 	assert(player.abilities.try_root())
 	assert(cues.count(&"root") == 1)
 	Input.action_press("move_up")
@@ -47,12 +47,16 @@ func _run() -> void:
 	for step: int in range(25):
 		await physics_frame
 	player.absorb_nutrition(120.0)
+	assert(cues.count(&"grow") == 1)
 	var anchor := VineAnchor.new()
 	anchor.position = player.global_position + Vector2(0.0, -80.0)
 	root.add_child(anchor)
+	player.abilities.set_vine_aim_global_position(anchor.global_position)
 	await physics_frame
 	assert(player.abilities.try_attach_vine())
-	assert(cues.count(&"vine") == 1)
+	assert(cues.count(&"vine_launch") == 1 and not cues.has(&"vine"))
+	await create_timer(0.3).timeout
+	assert(cues.count(&"vine") == 1, "Latch audio must follow visible vine arrival.")
 	player.abilities.stop_primary()
 	await physics_frame
 	player.absorb_toxin(120.0)

@@ -86,6 +86,14 @@ func is_activated() -> bool:
 	return _is_activated
 
 
+func is_moving() -> bool:
+	return _is_moving
+
+
+func has_completed_motion() -> bool:
+	return _is_activated and not _is_moving
+
+
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint() or not _is_moving:
 		return

@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="VineWhipProfile" load_steps=10 format=3]
+[ext_resource type="Script" path="res://features/combat/visuals/vine_whip_profile.gd" id="1"]
+[ext_resource type="AnimationLibrary" path="res://features/combat/data/vine_attack/mature_animations.tres" id="2"]
+
+[ext_resource type="Texture2D" path="res://assets/runtime/combat/vine_attack/stem.tres" id="3"]
+[ext_resource type="Texture2D" path="res://assets/runtime/combat/vine_attack/leaf_a.tres" id="4"]
+[ext_resource type="Texture2D" path="res://assets/runtime/combat/vine_attack/leaf_b.tres" id="5"]
+[ext_resource type="Texture2D" path="res://assets/runtime/combat/vine_attack/node.tres" id="6"]
+[ext_resource type="Texture2D" path="res://assets/runtime/combat/vine_attack/sheath_mature.tres" id="7"]
+[ext_resource type="Texture2D" path="res://assets/runtime/combat/vine_attack/tip_mature.tres" id="8"]
+[ext_resource type="Material" path="res://features/combat/visuals/vine_cutout.tres" id="9"]
+
+[resource]
+script = ExtResource("1")
+form_id = &"mature"
+animation_library = ExtResource("2")
+root_width = 8.2
+tip_width = 1.6
+leaf_a_size = Vector2(16, 11)
+leaf_b_size = Vector2(14, 10)
+sheath_size = Vector2(17, 14)
+tip_size = Vector2(18, 11)
+node_size = Vector2(6.6, 8)
+leaf_count = 4
+hand_rotation_follow = 0.25
+
+stem_texture = ExtResource("3")
+leaf_a_texture = ExtResource("4")
+leaf_b_texture = ExtResource("5")
+node_texture = ExtResource("6")
+sheath_texture = ExtResource("7")
+tip_texture = ExtResource("8")
+texture_material = ExtResource("9")
+leaf_a_pivot = Vector2(0.038, 0.91)
+leaf_b_pivot = Vector2(0.022, 0.57)
+sheath_pivot = Vector2(0.055, 0.52)
+tip_pivot = Vector2(0.038, 0.39)

@@ -5,7 +5,7 @@ extends Node2D
 @onready var _player: Player = %Player
 @onready var _spawn_point: SpawnPoint = %SpawnPoint
 @onready var _camera: Camera2D = %Camera2D
-@onready var _phantom_camera: PhantomCamera2D = %PhantomCamera2D
+@onready var _phantom_camera: PhantomCamera2D = get_node_or_null("%PhantomCamera2D") as PhantomCamera2D
 @onready var _camera_bounds: CameraBounds = %CameraBounds
 
 var _respawn_position := Vector2.ZERO
@@ -18,6 +18,7 @@ func _ready() -> void:
 	_connect_hazards()
 	_connect_checkpoints()
 	_connect_toxin_zones()
+	_bind_hud()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -27,15 +28,21 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _configure_camera() -> void:
 	var bounds := _camera_bounds.get_world_rect()
-	_phantom_camera.set_follow_target(_player)
 	_camera.limit_left = int(bounds.position.x)
 	_camera.limit_top = int(bounds.position.y)
 	_camera.limit_right = int(bounds.end.x)
 	_camera.limit_bottom = int(bounds.end.y)
-	_phantom_camera.limit_left = int(bounds.position.x)
-	_phantom_camera.limit_top = int(bounds.position.y)
-	_phantom_camera.limit_right = int(bounds.end.x)
-	_phantom_camera.limit_bottom = int(bounds.end.y)
+	if _phantom_camera != null:
+		_phantom_camera.set_follow_target(_player)
+		_configure_phantom_bounds(_phantom_camera)
+
+
+func _configure_phantom_bounds(phantom: PhantomCamera2D) -> void:
+	var bounds := _camera_bounds.get_world_rect()
+	phantom.limit_left = int(bounds.position.x)
+	phantom.limit_top = int(bounds.position.y)
+	phantom.limit_right = int(bounds.end.x)
+	phantom.limit_bottom = int(bounds.end.y)
 
 
 func _connect_hazards() -> void:
@@ -84,3 +91,14 @@ func _on_toxin_zone_entered(actor: Node2D, zone: ToxinZone) -> void:
 func _on_toxin_zone_exited(actor: Node2D, zone: ToxinZone) -> void:
 	if actor == _player:
 		_player.exit_toxin(zone)
+
+
+func _bind_hud() -> void:
+	var hud := get_node_or_null("%HandbuiltHud") as HandbuiltHud
+	if hud == null:
+		return
+	var points: Array[Area2D] = []
+	for node: Node in find_children("*", "Area2D", true, false):
+		if node is NutritionTank or node is ToxinResource:
+			points.append(node as Area2D)
+	hud.bind_player(_player, points)

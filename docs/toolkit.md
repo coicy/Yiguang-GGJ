@@ -102,3 +102,14 @@ Kenney 等素材包、Aseprite、Blender、Audacity 可以作为制作工具或�
 
 - Godot 4.7 文档：<https://docs.godotengine.org/en/4.7/>
 - Godot Asset Library：<https://godotengine.org/asset-library/asset>
+
+
+## 音频离线制作工具（2026-09-06）
+
+维护归属 features/audio 与 tools/build_audio.py。游戏只使用 Godot 4.7.2 原生 AudioStreamPlayer/2D、AudioBusLayout、Limiter、Compressor 与 WAV/Ogg；没有新增 Godot addon。
+
+离线依赖安装在被忽略的 build/audio/tools：SciPy 1.17.0（BSD-3-Clause）、SoundFile 0.13.1（BSD-3-Clause；libsndfile 为 LGPL-2.1-or-later）、imageio-ffmpeg 0.6.0（BSD-2-Clause，捆绑 FFmpeg 遵循其构建许可），NumPy 2.5.2（BSD-3-Clause）。来源分别为 scipy.org、python-soundfile.readthedocs.io、github.com/imageio/imageio-ffmpeg、numpy.org；通过 PyPI 官方包下载。只用于本地裁切、滤波、变速、解码、转码和客观检查，不随游戏分发。
+
+构建：Python tools/build_audio.py；质检：Python tools/check_audio.py。当前 Windows 上 libsndfile 的 Ogg 编码发生堆栈溢出，因此配乐编码使用 FFmpeg libvorbis；SoundFile 仅负责安全通过验证的读取和 WAV 写入。
+
+移除路径：音频依赖不影响游戏运行，可删除 build/audio/tools；要撤销音频系统，移除 GreenhouseLevel 的 soundscape 接线与 EnemyAudio/PlayerAudio 新事件，再恢复 SoundEmitter 旧映射及默认总线，不改变物理、AI 与资源系统。完整来源见 docs/credits.md；验证与试听入口见 docs/audio_design.md。

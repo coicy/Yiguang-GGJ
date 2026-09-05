@@ -5,6 +5,12 @@ extends Node2D
 signal animation_changed(animation_name: StringName)
 signal animation_completed(animation_name: StringName)
 signal animation_event_emitted(event_name: StringName)
+## Emitted only after Spine rebuilds world transforms, including the combat pose.
+## The basis retains hand orientation, form scale and facing reflection.
+signal combat_hand_transform_updated(global_hand_transform: Transform2D)
+
+const COMBAT_HAND_BONE: StringName = &"hand_L_3"
+const COMBAT_PALM_OFFSET: float = 18.0
 
 @export var default_animation: StringName = &"idle"
 @export var supported_animations: Array[StringName] = []
@@ -19,6 +25,12 @@ signal animation_event_emitted(event_name: StringName)
 
 @onready var spine_sprite: SpineSprite = %SpineSprite
 
+var combat_pose: Dictionary = {}
+var combat_offsets: Dictionary = {}
+var _combat_setup: Dictionary = {}
+var combat_blend: float = 1.0
+var _combat_animated: Dictionary = {}
+
 var _current_animation: StringName = &""
 var _gliding: bool = false
 var _glide_blend: float = 0.0
@@ -30,8 +42,14 @@ var _leaf_setup_transforms: Dictionary[StringName, Transform2D] = {}
 func _ready() -> void:
 	spine_sprite.animation_completed.connect(_on_spine_animation_completed)
 	spine_sprite.animation_event.connect(_on_spine_animation_event)
+	spine_sprite.before_animation_state_apply.connect(_restore_combat_pose)
 	spine_sprite.before_world_transforms_change.connect(_on_before_world_transforms_change)
+	spine_sprite.world_transforms_changed.connect(_on_world_transforms_changed)
 	_cache_leaf_setup_transforms()
+	for bone_data: StringName in [&"z2", &"leg_L3", &"leg_R3", &"z3", &"z4", &"head_2", &"hand_L_2", &"hand_L_1", &"hand_L_3", &"hand_R", &"hand_R2", &"leg_L", &"leg_R", &"spine2", &"spine3", &"head", &"spine5", &"spine6", &"spine7", &"spine8", &"spine9", &"spine10", &"leg_04", &"leg_07", &"leg_010", &"leg_012"]:
+		var bone: Object = spine_sprite.get_skeleton().find_bone(bone_data)
+		if bone != null:
+			_combat_setup[String(bone_data)] = bone.get_transform()
 	if not default_animation.is_empty():
 		play_animation(default_animation, looping_animations.has(default_animation))
 
@@ -96,6 +114,21 @@ func set_facing(direction: float) -> void:
 	spine_sprite.scale.x = absf(spine_sprite.scale.x) * signf(direction)
 
 
+func combat_hand_global_transform() -> Transform2D:
+	## Call from combat_hand_transform_updated for the current evaluated pose.
+	if not is_node_ready() or spine_sprite.get_skeleton().find_bone(COMBAT_HAND_BONE) == null:
+		return global_transform
+	var hand := spine_sprite.get_global_bone_transform(COMBAT_HAND_BONE)
+	# The authored bone starts at the wrist; the vine emerges beyond the palm.
+	hand.origin += hand.x * COMBAT_PALM_OFFSET
+	return hand
+
+
+func _on_world_transforms_changed(_sprite: SpineSprite) -> void:
+	if spine_sprite.get_skeleton().find_bone(COMBAT_HAND_BONE) != null:
+		combat_hand_transform_updated.emit(combat_hand_global_transform())
+
+
 func _cache_leaf_setup_transforms() -> void:
 	_leaf_setup_transforms.clear()
 	var skeleton: Object = spine_sprite.get_skeleton()
@@ -108,6 +141,7 @@ func _cache_leaf_setup_transforms() -> void:
 
 
 func _on_before_world_transforms_change(_sprite: SpineSprite) -> void:
+	_apply_combat_pose()
 	if _leaf_setup_transforms.is_empty():
 		return
 	if _glide_blend <= 0.0 and not _glide_needs_reset:
@@ -157,3 +191,30 @@ func _on_spine_animation_event(
 	if event == null or event.get_data() == null:
 		return
 	animation_event_emitted.emit(StringName(event.get_data().get_event_name()))
+
+
+func _restore_combat_pose(_sprite: SpineSprite) -> void:
+	# Restore the underlying evaluated animation before the next Spine apply.
+	# Unkeyed bones cannot accumulate; locomotion/death immediately regain ownership.
+	for bone_name: String in _combat_animated:
+		var bone: Object = spine_sprite.get_skeleton().find_bone(bone_name)
+		if bone != null:
+			bone.set_transform(_combat_animated[bone_name])
+	_combat_animated.clear()
+
+
+func _apply_combat_pose() -> void:
+	var posed_bones: Dictionary = combat_pose.duplicate()
+	for bone_name: String in combat_offsets:
+		posed_bones[bone_name] = combat_pose.get(bone_name, 0.0)
+	for bone_name: String in posed_bones:
+		if not _combat_setup.has(bone_name):
+			continue
+		var bone: Object = spine_sprite.get_skeleton().find_bone(bone_name)
+		var setup: Transform2D = _combat_setup[bone_name]
+		var animated: Transform2D = bone.get_transform()
+		_combat_animated[bone_name] = animated
+		var angle := float(posed_bones[bone_name])
+		var offset: Vector2 = combat_offsets.get(bone_name, Vector2.ZERO)
+		var target := Transform2D(setup.get_rotation() + angle, setup.get_scale(), setup.get_skew(), setup.origin + offset)
+		bone.set_transform(animated.interpolate_with(target, combat_blend))

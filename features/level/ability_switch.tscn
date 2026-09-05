@@ -7,7 +7,7 @@ size = Vector2(44, 24)
 
 [node name="AbilitySwitch" type="Area2D"]
 collision_layer = 64
-collision_mask = 10
+collision_mask = 130
 monitoring = true
 monitorable = true
 script = ExtResource("1_switch")

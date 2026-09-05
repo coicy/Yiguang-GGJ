@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="CombatPoseLibrary" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/combat/combat_pose_library.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+poses = {
+"sprout_bump": {
+"spine2": Vector3(-14, 11, -4),
+"spine3": Vector3(20, -16, 5),
+"head": Vector3(-9, 15, -5),
+"spine5": Vector3(16, -20, 12),
+"spine6": Vector3(10, -14, 10),
+"spine7": Vector3(8, -12, 9),
+"spine8": Vector3(-12, 19, -10),
+"spine9": Vector3(-16, 24, -12),
+"spine10": Vector3(-12, 18, -8)
+}
+}
+phase_times = {"sprout_bump": Vector3(0.235, 0.353, 0.588)}
+bone_phase_times = {
+"sprout_bump": {
+"spine5": Vector3(0.265, 0.412, 0.676),
+"spine6": Vector3(0.28, 0.441, 0.706),
+"spine7": Vector3(0.294, 0.471, 0.735),
+"spine8": Vector3(0.265, 0.412, 0.676),
+"spine9": Vector3(0.28, 0.441, 0.706),
+"spine10": Vector3(0.294, 0.471, 0.735),
+"leg_012": Vector3(0.206, 0.338, 0.647),
+"leg_010": Vector3(0.221, 0.368, 0.676),
+"leg_04": Vector3(0.235, 0.382, 0.574),
+"leg_07": Vector3(0.25, 0.412, 0.618)
+}
+}
+body_transforms = {"sprout_bump": [Transform2D(0.85359, -0.104808, 0.136494, 1.111652, -3, 0), Transform2D(1.145718, 0.181464, -0.136098, 0.859289, 2, -1), Transform2D(0.958684, -0.050243, 0.053906, 1.028588, -1, 0)]}
+bone_offsets = {
+"sprout_bump": {
+"leg_012": PackedVector2Array(8, -2, -26, 1, 10, -6),
+"leg_010": PackedVector2Array(6, -1, -20, 1, 8, -4),
+"leg_04": PackedVector2Array(-10, -4, 23, -19, 12, 0),
+"leg_07": PackedVector2Array(-7, -3, 17, -14, 9, 0)
+}
+}

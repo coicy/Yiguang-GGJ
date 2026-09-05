@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://features/level/toxin_resource.gd" id="1_toxin_resource"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/ungrow_tank.png" id="2_tank"]
+[ext_resource type="Texture2D" path="res://assets/runtime/resources/toxin_source.tres" id="2_tank"]
+[ext_resource type="ShaderMaterial" path="res://features/level/rooms/resource_cutout.tres" id="3_material"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_toxin_resource"]
 size = Vector2(48, 48)
@@ -16,6 +17,10 @@ shape = SubResource("RectangleShape2D_toxin_resource")
 debug_color = Color(0, 0.6, 0.69803923, 0)
 
 [node name="TankSprite" type="Sprite2D" parent="."]
-position = Vector2(0, -4)
-scale = Vector2(0.06, 0.06)
+z_index = -1
+texture_filter = 4
+material = ExtResource("3_material")
+position = Vector2(-31.45, -20.79)
+scale = Vector2(0.085, 0.085)
+centered = false
 texture = ExtResource("2_tank")

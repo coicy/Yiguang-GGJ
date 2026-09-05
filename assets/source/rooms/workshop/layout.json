@@ -1,0 +1,629 @@
+{
+  "schema": "greenhouse.room.layout/v1",
+  "status": "construction_design_not_installed_not_physics_tested",
+  "coordinate_system": "world units, +Y down; route points are player feet; polygons are closed implicitly",
+  "room_id": "workshop",
+  "title": "修枝车间",
+  "world_bounds": [
+    3640,
+    -60,
+    1440,
+    710
+  ],
+  "entry": [
+    3640,
+    440
+  ],
+  "exit": [
+    5080,
+    330
+  ],
+  "movement_basis": {
+    "sprout": {
+      "speed": 240,
+      "collision": [
+        24,
+        24
+      ],
+      "offset": [
+        2,
+        0
+      ],
+      "can_jump": false
+    },
+    "humanoid": {
+      "speed": 240,
+      "collision": [
+        16,
+        34
+      ],
+      "offset": [
+        2,
+        0
+      ],
+      "jump_velocity": -400
+    },
+    "mature": {
+      "speed": 240,
+      "collision": [
+        18,
+        46
+      ],
+      "jump_velocity": -400,
+      "glide_fall_speed": 140
+    },
+    "gravity": 1200,
+    "acceleration": 2400,
+    "coyote_seconds": 0.1,
+    "jump_buffer_seconds": 0.15,
+    "ideal_jump_apex": 66.6667,
+    "mandatory_rise_limit": 50,
+    "vine_max_range": 300,
+    "vine_design_budget": 260,
+    "vine_climb_clearance": 14,
+    "vine_route_search": 128
+  },
+  "art_direction": {
+    "foreground": "One registered full foreground painting includes root-wrapped workshop shell, load-bearing foundations, all vegetation and wall-embedded resource organ. No separate tanks, pots or repeated plant decals.",
+    "background": "Two work bays with muted blade housings, old rail/maintenance windows. Machinery behind the combat plane has no collision.",
+    "landmark": "Lower cutting bay opens into a raised inspection throat; the upper bay has a different roof silhouette and sightline back to the cleared lower bay.",
+    "registration": "Author mother image only after collision guide approval; record art_origin and uniform art_scale when actual image is delivered."
+  },
+  "ports": [
+    {
+      "id": "from_spore",
+      "feet": [
+        3640,
+        440
+      ],
+      "clear_opening": [
+        3640,
+        300,
+        64,
+        140
+      ]
+    },
+    {
+      "id": "to_canopy",
+      "feet": [
+        5080,
+        330
+      ],
+      "clear_opening": [
+        5016,
+        205,
+        64,
+        125
+      ]
+    }
+  ],
+  "collisions": [
+    {
+      "id": "workshop_foundation",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          3640,
+          440
+        ],
+        [
+          4336,
+          440
+        ],
+        [
+          4336,
+          400
+        ],
+        [
+          4404,
+          400
+        ],
+        [
+          4404,
+          360
+        ],
+        [
+          4472,
+          360
+        ],
+        [
+          4472,
+          330
+        ],
+        [
+          5080,
+          330
+        ],
+        [
+          5080,
+          650
+        ],
+        [
+          3640,
+          650
+        ]
+      ],
+      "support": "All combat slabs and connection steps are one continuous rooted masonry foundation; decorative top roots never change the top collision edge."
+    },
+    {
+      "id": "workshop_vault",
+      "type": "StaticBody2D/CollisionPolygon2D",
+      "layer": 1,
+      "polygon": [
+        [
+          3640,
+          -60
+        ],
+        [
+          5080,
+          -60
+        ],
+        [
+          5080,
+          205
+        ],
+        [
+          5000,
+          170
+        ],
+        [
+          4910,
+          135
+        ],
+        [
+          4800,
+          110
+        ],
+        [
+          4680,
+          120
+        ],
+        [
+          4580,
+          170
+        ],
+        [
+          4520,
+          195
+        ],
+        [
+          4472,
+          180
+        ],
+        [
+          4404,
+          220
+        ],
+        [
+          4336,
+          260
+        ],
+        [
+          4280,
+          300
+        ],
+        [
+          4220,
+          270
+        ],
+        [
+          4120,
+          225
+        ],
+        [
+          4010,
+          205
+        ],
+        [
+          3890,
+          220
+        ],
+        [
+          3800,
+          260
+        ],
+        [
+          3720,
+          305
+        ],
+        [
+          3640,
+          300
+        ]
+      ],
+      "support": "One continuous ceiling/root and machinery shell, painted with the foundation in the same foreground."
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "entry_preparation",
+      "x": [
+        3640,
+        3720
+      ],
+      "y": 440
+    },
+    {
+      "id": "pruner_intro_floor",
+      "x": [
+        3720,
+        4280
+      ],
+      "y": 440,
+      "encounter": "pruner_intro"
+    },
+    {
+      "id": "post_A_runup",
+      "x": [
+        4280,
+        4336
+      ],
+      "y": 440,
+      "available_after": "pruner_intro.completed"
+    },
+    {
+      "id": "inspection_step_1",
+      "x": [
+        4336,
+        4404
+      ],
+      "y": 400,
+      "rise": 40
+    },
+    {
+      "id": "inspection_step_2",
+      "x": [
+        4404,
+        4472
+      ],
+      "y": 360,
+      "rise": 40
+    },
+    {
+      "id": "inspection_step_3",
+      "x": [
+        4472,
+        4520
+      ],
+      "y": 330,
+      "rise": 30
+    },
+    {
+      "id": "pruner_mixed_floor",
+      "x": [
+        4520,
+        5080
+      ],
+      "y": 330,
+      "encounter": "pruner_mixed"
+    }
+  ],
+  "route": [
+    {
+      "action": "walk",
+      "from": [
+        3640,
+        440
+      ],
+      "to": [
+        3768,
+        440
+      ],
+      "note": "If sprout, use the visible embedded recovery source before proceeding. Trigger excludes sprout."
+    },
+    {
+      "action": "fight",
+      "encounter": "pruner_intro"
+    },
+    {
+      "action": "walk_after_clear",
+      "to": [
+        4312,
+        440
+      ]
+    },
+    {
+      "action": "held_jump",
+      "launch": [
+        4312,
+        440
+      ],
+      "landing": [
+        4374,
+        400
+      ],
+      "rise": 40,
+      "direction": "right"
+    },
+    {
+      "action": "held_jump",
+      "launch": [
+        4382,
+        400
+      ],
+      "landing": [
+        4442,
+        360
+      ],
+      "rise": 40,
+      "direction": "right"
+    },
+    {
+      "action": "held_jump",
+      "launch": [
+        4450,
+        360
+      ],
+      "landing": [
+        4502,
+        330
+      ],
+      "rise": 30,
+      "direction": "right"
+    },
+    {
+      "action": "walk",
+      "to": [
+        4576,
+        330
+      ]
+    },
+    {
+      "action": "fight",
+      "encounter": "pruner_mixed"
+    },
+    {
+      "action": "walk_after_clear",
+      "to": [
+        5080,
+        330
+      ]
+    }
+  ],
+  "encounters": [
+    {
+      "id": "pruner_intro",
+      "node_name": "PrunerIntro",
+      "origin": [
+        3720,
+        440
+      ],
+      "arena_size": [
+        560,
+        280
+      ],
+      "waves": [
+        [
+          "pruner"
+        ]
+      ],
+      "camera_zoom": 2.1,
+      "camera_center": [
+        4000,
+        360
+      ],
+      "gates": [
+        {
+          "x": 3720,
+          "y": [
+            160,
+            440
+          ]
+        },
+        {
+          "x": 4280,
+          "y": [
+            160,
+            440
+          ]
+        }
+      ],
+      "trigger_local_rect": [
+        52,
+        -110,
+        488,
+        130
+      ],
+      "spawn_world": [
+        [
+          3988.8,
+          440
+        ]
+      ],
+      "retry_current_api": [
+        3792,
+        438
+      ],
+      "safe_entry_checkpoint": [
+        3680,
+        438
+      ],
+      "constraints": [
+        "No raised collision inside the 560-wide activity floor.",
+        "Gate at 4280 must remain closed until clear; stairs begin 56 units beyond it.",
+        "Do not place resources or toxin inside this encounter."
+      ]
+    },
+    {
+      "id": "pruner_mixed",
+      "node_name": "PrunerMixed",
+      "origin": [
+        4520,
+        330
+      ],
+      "arena_size": [
+        560,
+        280
+      ],
+      "waves": [
+        [
+          "pruner",
+          "beetle"
+        ]
+      ],
+      "camera_zoom": 2.1,
+      "camera_center": [
+        4800,
+        250
+      ],
+      "gates": [
+        {
+          "x": 4520,
+          "y": [
+            50,
+            330
+          ]
+        },
+        {
+          "x": 5080,
+          "y": [
+            50,
+            330
+          ]
+        }
+      ],
+      "trigger_local_rect": [
+        52,
+        -110,
+        488,
+        130
+      ],
+      "spawn_world": [
+        [
+          4788.8,
+          330
+        ],
+        [
+          4884,
+          330
+        ]
+      ],
+      "retry_current_api": [
+        4592,
+        328
+      ],
+      "safe_entry_checkpoint": [
+        4504,
+        328
+      ],
+      "constraints": [
+        "Keep both pruner and beetle on the same plane.",
+        "No foreground machinery covers silhouettes at Y 240..330.",
+        "No extra stair at the canopy handoff."
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "workshop_recovery",
+      "kind": "nutrition",
+      "position": [
+        3665,
+        425
+      ],
+      "trigger_size": [
+        48,
+        48
+      ],
+      "accepted_form_id": "sprout",
+      "visual": "Nutrient slit embedded in the left wall/root base, painted with the foreground; only an invisible Area and event-linked light overlay are separate.",
+      "safety": "Earliest contact approx x3627; the complete sprout-to-human standing volume is in the open entrance. 107 units from source center to encounter trigger x3772."
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "workshop_entry",
+      "node_position": [
+        3680,
+        420
+      ],
+      "feet_after_settle": [
+        3680,
+        440
+      ]
+    },
+    {
+      "id": "workshop_inspection",
+      "node_position": [
+        4504,
+        310
+      ],
+      "feet_after_settle": [
+        4504,
+        330
+      ]
+    }
+  ],
+  "views": [
+    {
+      "id": "workshop_entry",
+      "region": [
+        3640,
+        280,
+        80,
+        250
+      ],
+      "center": [
+        3890,
+        360
+      ],
+      "zoom": 2.1,
+      "priority": 10,
+      "objective": "成长后进入修枝作业区；观察机兵抬刃"
+    },
+    {
+      "id": "workshop_inspection",
+      "region": [
+        4280,
+        150,
+        240,
+        350
+      ],
+      "center": [
+        4400,
+        300
+      ],
+      "zoom": 2.25,
+      "priority": 20,
+      "objective": "沿检修实台向上，前往第二作业房"
+    },
+    {
+      "id": "workshop_upper_preparation",
+      "region": [
+        4472,
+        180,
+        100,
+        200
+      ],
+      "center": [
+        4770,
+        250
+      ],
+      "zoom": 2.1,
+      "priority": 10,
+      "objective": "重击破防，处理机兵与甲虫"
+    },
+    {
+      "id": "workshop_exit",
+      "region": [
+        5050,
+        160,
+        30,
+        230
+      ],
+      "mode": "framed_follow",
+      "objective": "前往树冠通路"
+    }
+  ],
+  "anchors": [],
+  "hazards": [],
+  "world_escape_note": "Do not add a workshop-specific Y=650 death line. Foundation bottoms at650; use level-wide authored escape bounds.",
+  "implementation_notes": [
+    "This JSON is a design artifact, not a new runtime scene loader.",
+    "Retain the existing encounter IDs, signals and two waves. Only node origins change.",
+    "Current EncounterController already derives gates, spawns, camera center and enemy bounds from origin; the listed numbers match that API.",
+    "RoomRegion currently supports fixed views only; framed_follow entries mean no overriding region, not an unsupported serialized property.",
+    "The inspection window is part of the background and visible from the actual mandatory ascent; no dead-end sightseeing branch or moving elevator is added."
+  ]
+}

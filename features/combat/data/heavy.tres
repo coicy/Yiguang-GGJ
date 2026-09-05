@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://features/combat/attack_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = &"heavy"
+damage = 3
+poise_damage = 35.0
+windup = 0.24
+active = 0.1
+recovery = 0.31
+reach = 74.0
+height = 48.0
+knockback = 260.0
+breaks_guard = true

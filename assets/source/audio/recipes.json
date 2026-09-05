@@ -1,0 +1,2855 @@
+{
+  "humanoid_light_1": {
+    "layers": [
+      {
+        "source": "rpg:blade_01",
+        "gain": 1,
+        "rate": 1.15,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_01",
+        "gain": 0.24,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_01",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.38
+  },
+  "humanoid_light_2": {
+    "layers": [
+      {
+        "source": "rpg:blade_02",
+        "gain": 1,
+        "rate": 1.15,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.24,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_02",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.38
+  },
+  "humanoid_light_3": {
+    "layers": [
+      {
+        "source": "rpg:blade_03",
+        "gain": 1,
+        "rate": 1.012,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_03",
+        "gain": 0.24,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_03",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 0,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.55
+  },
+  "humanoid_heavy": {
+    "layers": [
+      {
+        "source": "rpg:blade_03",
+        "gain": 1,
+        "rate": 1.012,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_01",
+        "gain": 0.24,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_04",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 0,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.55
+  },
+  "humanoid_air": {
+    "layers": [
+      {
+        "source": "rpg:blade_02",
+        "gain": 1,
+        "rate": 1.15,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.24,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_01",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.38
+  },
+  "mature_light_1": {
+    "layers": [
+      {
+        "source": "rpg:blade_01",
+        "gain": 1,
+        "rate": 0.79,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_01",
+        "gain": 0.48,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_01",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.38
+  },
+  "mature_light_2": {
+    "layers": [
+      {
+        "source": "rpg:blade_02",
+        "gain": 1,
+        "rate": 0.79,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.48,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_02",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.38
+  },
+  "mature_light_3": {
+    "layers": [
+      {
+        "source": "rpg:blade_03",
+        "gain": 1,
+        "rate": 0.6952,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_03",
+        "gain": 0.48,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_03",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 0,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.55
+  },
+  "mature_heavy": {
+    "layers": [
+      {
+        "source": "rpg:blade_03",
+        "gain": 1,
+        "rate": 0.6952,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_01",
+        "gain": 0.48,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_04",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 0,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.55
+  },
+  "mature_air": {
+    "layers": [
+      {
+        "source": "rpg:blade_02",
+        "gain": 1,
+        "rate": 0.79,
+        "delay": 0,
+        "low": 7000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.48,
+        "rate": 0.85,
+        "delay": 0.02,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_01",
+        "gain": 0.15,
+        "rate": 1.5,
+        "delay": 0.05,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.38
+  },
+  "swing": {
+    "layers": [
+      {
+        "source": "rpg:blade_01",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_01",
+        "gain": 0.2,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.4
+  },
+  "hit": {
+    "layers": [
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.85,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_03",
+        "gain": 0.45,
+        "rate": 1.5,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.35
+  },
+  "heavy_hit": {
+    "layers": [
+      {
+        "source": "foley:hit_02",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_03",
+        "gain": 0.65,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_07",
+        "gain": 0.35,
+        "rate": 1,
+        "delay": 0.025,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 0,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.7
+  },
+  "guard": {
+    "layers": [
+      {
+        "source": "rpg:metal_01",
+        "gain": 1,
+        "rate": 1.1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_01",
+        "gain": 0.25,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.42
+  },
+  "block": {
+    "layers": [
+      {
+        "source": "rpg:metal_02",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:metal_hit_01",
+        "gain": 0.3,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.5
+  },
+  "parry": {
+    "layers": [
+      {
+        "source": "rpg:metal_03",
+        "gain": 1,
+        "rate": 1.5,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:item_gem_01",
+        "gain": 0.75,
+        "rate": 1,
+        "delay": 0.018,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:hit_01",
+        "gain": 0.3,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 1,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.9
+  },
+  "parry_ready": {
+    "layers": [
+      {
+        "source": "rpg:blade_02",
+        "gain": 0.6,
+        "rate": 1.5,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "old:cloth1.ogg",
+        "gain": 0.2,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -6,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.22
+  },
+  "dash": {
+    "layers": [
+      {
+        "source": "foley:air_01",
+        "gain": 1,
+        "rate": 1.6,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:book_02",
+        "gain": 0.35,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.32
+  },
+  "hurt": {
+    "layers": [
+      {
+        "source": "rpg:wood_04",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_02",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.38
+  },
+  "jump": {
+    "layers": [
+      {
+        "source": "rpg:book_01",
+        "gain": 1,
+        "rate": 1.6,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "old:footstep_grass_001.ogg",
+        "gain": 0.3,
+        "rate": 1.1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -5,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.24
+  },
+  "land": {
+    "layers": [
+      {
+        "source": "old:footstep_grass_000.ogg",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:hit_01",
+        "gain": 0.28,
+        "rate": 1,
+        "delay": 0,
+        "low": 2000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -5,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.25
+  },
+  "land_heavy": {
+    "layers": [
+      {
+        "source": "foley:hit_03",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "old:footstep_grass_002.ogg",
+        "gain": 0.65,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_01",
+        "gain": 0.18,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.48
+  },
+  "step_grass": {
+    "layers": [
+      {
+        "source": "old:footstep_grass_000.ogg",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -10,
+    "priority": 0,
+    "cooldown": 0.15,
+    "variants": 3,
+    "duration": 0.22
+  },
+  "step_hard": {
+    "layers": [
+      {
+        "source": "old:footstep_concrete_000.ogg",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -10,
+    "priority": 0,
+    "cooldown": 0.15,
+    "variants": 3,
+    "duration": 0.22
+  },
+  "step_wood": {
+    "layers": [
+      {
+        "source": "foley:footstep_wood_01",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -10,
+    "priority": 0,
+    "cooldown": 0.15,
+    "variants": 3,
+    "duration": 0.22
+  },
+  "step_metal": {
+    "layers": [
+      {
+        "source": "foley:metal_hit_01",
+        "gain": 1,
+        "rate": 1.5,
+        "delay": 0,
+        "low": 5000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "old:footstep_concrete_001.ogg",
+        "gain": 0.6,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -12,
+    "priority": 0,
+    "cooldown": 0.15,
+    "variants": 3,
+    "duration": 0.2
+  },
+  "grow": {
+    "layers": [
+      {
+        "source": "rpg:spell_01",
+        "gain": 1,
+        "rate": 1.15,
+        "delay": 0,
+        "low": 6500,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_03",
+        "gain": 0.3,
+        "rate": 0.7,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:bubble_02",
+        "gain": 0.2,
+        "rate": 1,
+        "delay": 0.16,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 1.5
+  },
+  "wither": {
+    "layers": [
+      {
+        "source": "rpg:spell_02",
+        "gain": 1,
+        "rate": 0.65,
+        "delay": 0,
+        "low": 5000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_05",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      }
+    ],
+    "db": -2,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 1.5
+  },
+  "absorb": {
+    "layers": [
+      {
+        "source": "water:bubble_01",
+        "gain": 1,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:item_gem_02",
+        "gain": 0.18,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -12,
+    "priority": 1,
+    "cooldown": 0.6,
+    "variants": 3,
+    "duration": 0.48
+  },
+  "absorb_toxin": {
+    "layers": [
+      {
+        "source": "water:slime_12",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:bubble_03",
+        "gain": 0.5,
+        "rate": 0.7,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -11,
+    "priority": 1,
+    "cooldown": 0.6,
+    "variants": 3,
+    "duration": 0.6
+  },
+  "root": {
+    "layers": [
+      {
+        "source": "rpg:wood_04",
+        "gain": 1,
+        "rate": 0.7,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:stones_01",
+        "gain": 0.3,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -4,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.55
+  },
+  "unroot": {
+    "layers": [
+      {
+        "source": "rpg:wood_01",
+        "gain": 1,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      },
+      {
+        "source": "water:slime_06",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -5,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.35
+  },
+  "extend": {
+    "layers": [
+      {
+        "source": "rpg:wood_05",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:book_03",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -7,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.65
+  },
+  "retract": {
+    "layers": [
+      {
+        "source": "rpg:wood_05",
+        "gain": 1,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      }
+    ],
+    "db": -7,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.5
+  },
+  "vine_launch": {
+    "layers": [
+      {
+        "source": "rpg:blade_02",
+        "gain": 1,
+        "rate": 1.2,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_05",
+        "gain": 0.4,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.38
+  },
+  "vine": {
+    "layers": [
+      {
+        "source": "rpg:wood_03",
+        "gain": 1,
+        "rate": 1.1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_02",
+        "gain": 0.12,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -4,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.35
+  },
+  "vine_release": {
+    "layers": [
+      {
+        "source": "rpg:wood_02",
+        "gain": 1,
+        "rate": 1.5,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:book_04",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      }
+    ],
+    "db": -6,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.3
+  },
+  "glide": {
+    "layers": [
+      {
+        "source": "rpg:book_04",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:air_02",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -7,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.7
+  },
+  "glide_end": {
+    "layers": [
+      {
+        "source": "rpg:book_01",
+        "gain": 1,
+        "rate": 1.2,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      }
+    ],
+    "db": -9,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.25
+  },
+  "vine_climb": {
+    "layers": [
+      {
+        "source": "rpg:wood_01",
+        "gain": 0.6,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_01",
+        "gain": 0.08,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -12,
+    "priority": 0,
+    "cooldown": 0.32,
+    "variants": 3,
+    "duration": 0.2
+  },
+  "death": {
+    "layers": [
+      {
+        "source": "rpg:wood_05",
+        "gain": 1,
+        "rate": 0.65,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:spell_02",
+        "gain": 0.45,
+        "rate": 0.6,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_15",
+        "gain": 0.2,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 0,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 1.5
+  },
+  "beetle_notice": {
+    "layers": [
+      {
+        "source": "rpg:creature_misc_03",
+        "gain": 1,
+        "rate": 1.35,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.35,
+        "rate": 1.35,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -3,
+    "priority": 1,
+    "cooldown": 0.8,
+    "variants": 3,
+    "duration": 1.05
+  },
+  "beetle_warning": {
+    "layers": [
+      {
+        "source": "rpg:creature_misc_03",
+        "gain": 1,
+        "rate": 1.5525,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.5,
+        "rate": 1.35,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      }
+    ],
+    "db": -1,
+    "priority": 2,
+    "cooldown": 0.18,
+    "variants": 3,
+    "duration": 0.5
+  },
+  "beetle_danger": {
+    "layers": [
+      {
+        "source": "rpg:creature_misc_03",
+        "gain": 1,
+        "rate": 1.1475,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.7,
+        "rate": 1.35,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 1,
+    "priority": 3,
+    "cooldown": 0.18,
+    "variants": 3,
+    "duration": 0.8
+  },
+  "beetle_attack": {
+    "layers": [
+      {
+        "source": "rpg:wood_02",
+        "gain": 1,
+        "rate": 1.35,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:creature_misc_03",
+        "gain": 0.25,
+        "rate": 1.7550000000000001,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.48
+  },
+  "beetle_hurt": {
+    "layers": [
+      {
+        "source": "rpg:creature_hurt_01",
+        "gain": 1,
+        "rate": 1.35,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.25,
+        "rate": 1.2,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -4,
+    "priority": 1,
+    "cooldown": 0.12,
+    "variants": 3,
+    "duration": 0.4
+  },
+  "beetle_death": {
+    "layers": [
+      {
+        "source": "rpg:creature_die_01",
+        "gain": 1,
+        "rate": 1.35,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_02",
+        "gain": 0.7,
+        "rate": 1.35,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:stones_03",
+        "gain": 0.25,
+        "rate": 1,
+        "delay": 0.15,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 2,
+    "duration": 1.25
+  },
+  "beetle_step": {
+    "layers": [
+      {
+        "source": "rpg:wood_02",
+        "gain": 1,
+        "rate": 1.7550000000000001,
+        "delay": 0,
+        "low": 3300,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "old:footstep_grass_001.ogg",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -14,
+    "priority": 0,
+    "cooldown": 0.2,
+    "variants": 3,
+    "duration": 0.18
+  },
+  "spore_notice": {
+    "layers": [
+      {
+        "source": "rpg:creature_slime_01",
+        "gain": 1,
+        "rate": 0.9,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:spell_02",
+        "gain": 0.35,
+        "rate": 0.9,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -3,
+    "priority": 1,
+    "cooldown": 0.8,
+    "variants": 3,
+    "duration": 1.05
+  },
+  "spore_warning": {
+    "layers": [
+      {
+        "source": "rpg:creature_slime_01",
+        "gain": 1,
+        "rate": 1.035,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:spell_02",
+        "gain": 0.5,
+        "rate": 0.9,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      }
+    ],
+    "db": -1,
+    "priority": 2,
+    "cooldown": 0.18,
+    "variants": 3,
+    "duration": 0.5
+  },
+  "spore_danger": {
+    "layers": [
+      {
+        "source": "rpg:creature_slime_01",
+        "gain": 1,
+        "rate": 0.765,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:spell_02",
+        "gain": 0.7,
+        "rate": 0.9,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 1,
+    "priority": 3,
+    "cooldown": 0.18,
+    "variants": 3,
+    "duration": 0.8
+  },
+  "spore_attack": {
+    "layers": [
+      {
+        "source": "rpg:spell_02",
+        "gain": 1,
+        "rate": 0.9,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:creature_slime_01",
+        "gain": 0.25,
+        "rate": 1.1700000000000002,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.48
+  },
+  "spore_hurt": {
+    "layers": [
+      {
+        "source": "rpg:creature_slime_03",
+        "gain": 1,
+        "rate": 0.9,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:spell_02",
+        "gain": 0.25,
+        "rate": 1.2,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -4,
+    "priority": 1,
+    "cooldown": 0.12,
+    "variants": 3,
+    "duration": 0.4
+  },
+  "spore_death": {
+    "layers": [
+      {
+        "source": "rpg:creature_slime_04",
+        "gain": 1,
+        "rate": 0.9,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:spell_02",
+        "gain": 0.7,
+        "rate": 0.9,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:stones_03",
+        "gain": 0.25,
+        "rate": 1,
+        "delay": 0.15,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 2,
+    "duration": 1.25
+  },
+  "spore_step": {
+    "layers": [
+      {
+        "source": "rpg:spell_02",
+        "gain": 1,
+        "rate": 1.1700000000000002,
+        "delay": 0,
+        "low": 3300,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "old:footstep_grass_001.ogg",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -14,
+    "priority": 0,
+    "cooldown": 0.2,
+    "variants": 3,
+    "duration": 0.18
+  },
+  "pruner_notice": {
+    "layers": [
+      {
+        "source": "rpg:chain_03",
+        "gain": 1,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:blade_03",
+        "gain": 0.35,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -3,
+    "priority": 1,
+    "cooldown": 0.8,
+    "variants": 3,
+    "duration": 1.05
+  },
+  "pruner_warning": {
+    "layers": [
+      {
+        "source": "rpg:chain_03",
+        "gain": 1,
+        "rate": 0.9774999999999999,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:blade_03",
+        "gain": 0.5,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      }
+    ],
+    "db": -1,
+    "priority": 2,
+    "cooldown": 0.18,
+    "variants": 3,
+    "duration": 0.5
+  },
+  "pruner_danger": {
+    "layers": [
+      {
+        "source": "rpg:chain_03",
+        "gain": 1,
+        "rate": 0.7224999999999999,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:blade_03",
+        "gain": 0.7,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 1,
+    "priority": 3,
+    "cooldown": 0.18,
+    "variants": 3,
+    "duration": 0.8
+  },
+  "pruner_attack": {
+    "layers": [
+      {
+        "source": "rpg:blade_03",
+        "gain": 1,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_03",
+        "gain": 0.25,
+        "rate": 1.105,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.48
+  },
+  "pruner_hurt": {
+    "layers": [
+      {
+        "source": "rpg:metal_02",
+        "gain": 1,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:blade_03",
+        "gain": 0.25,
+        "rate": 1.2,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -4,
+    "priority": 1,
+    "cooldown": 0.12,
+    "variants": 3,
+    "duration": 0.4
+  },
+  "pruner_death": {
+    "layers": [
+      {
+        "source": "rpg:metal_03",
+        "gain": 1,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:blade_03",
+        "gain": 0.7,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:stones_03",
+        "gain": 0.25,
+        "rate": 1,
+        "delay": 0.15,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 2,
+    "duration": 1.25
+  },
+  "pruner_step": {
+    "layers": [
+      {
+        "source": "rpg:blade_03",
+        "gain": 1,
+        "rate": 1.105,
+        "delay": 0,
+        "low": 3300,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "old:footstep_grass_001.ogg",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -14,
+    "priority": 0,
+    "cooldown": 0.2,
+    "variants": 3,
+    "duration": 0.18
+  },
+  "warden_notice": {
+    "layers": [
+      {
+        "source": "rpg:creature_roar_03",
+        "gain": 1,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_05",
+        "gain": 0.35,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -3,
+    "priority": 1,
+    "cooldown": 0.8,
+    "variants": 3,
+    "duration": 1.05
+  },
+  "warden_warning": {
+    "layers": [
+      {
+        "source": "rpg:creature_roar_03",
+        "gain": 1,
+        "rate": 0.7244999999999999,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_05",
+        "gain": 0.5,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      }
+    ],
+    "db": -1,
+    "priority": 2,
+    "cooldown": 0.18,
+    "variants": 3,
+    "duration": 0.5
+  },
+  "warden_danger": {
+    "layers": [
+      {
+        "source": "rpg:creature_roar_03",
+        "gain": 1,
+        "rate": 0.5355,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_05",
+        "gain": 0.7,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 1,
+    "priority": 3,
+    "cooldown": 0.18,
+    "variants": 3,
+    "duration": 0.8
+  },
+  "warden_attack": {
+    "layers": [
+      {
+        "source": "rpg:wood_05",
+        "gain": 1,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:creature_roar_03",
+        "gain": 0.25,
+        "rate": 0.8190000000000001,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.48
+  },
+  "warden_hurt": {
+    "layers": [
+      {
+        "source": "rpg:creature_monster_03",
+        "gain": 1,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_05",
+        "gain": 0.25,
+        "rate": 1.2,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -4,
+    "priority": 1,
+    "cooldown": 0.12,
+    "variants": 3,
+    "duration": 0.4
+  },
+  "warden_death": {
+    "layers": [
+      {
+        "source": "rpg:creature_roar_02",
+        "gain": 1,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_05",
+        "gain": 0.7,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:stones_03",
+        "gain": 0.25,
+        "rate": 1,
+        "delay": 0.15,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 2,
+    "duration": 1.25
+  },
+  "warden_step": {
+    "layers": [
+      {
+        "source": "rpg:wood_05",
+        "gain": 1,
+        "rate": 0.8190000000000001,
+        "delay": 0,
+        "low": 3300,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "old:footstep_grass_001.ogg",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -14,
+    "priority": 0,
+    "cooldown": 0.2,
+    "variants": 3,
+    "duration": 0.18
+  },
+  "beetle_charge": {
+    "layers": [
+      {
+        "source": "rpg:creature_monster_01",
+        "gain": 1,
+        "rate": 1.5,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_01",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.55
+  },
+  "beetle_bite": {
+    "layers": [
+      {
+        "source": "rpg:wood_03",
+        "gain": 1,
+        "rate": 1.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:creature_misc_02",
+        "gain": 0.5,
+        "rate": 1.5,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.3
+  },
+  "spore_lash": {
+    "layers": [
+      {
+        "source": "water:slime_04",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:blade_01",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.5
+  },
+  "spore_shot": {
+    "layers": [
+      {
+        "source": "water:bubble_03",
+        "gain": 1,
+        "rate": 1.4,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:splash_03",
+        "gain": 0.5,
+        "rate": 1.4,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.36
+  },
+  "spore_burst": {
+    "layers": [
+      {
+        "source": "water:slime_11",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:splash_07",
+        "gain": 0.6,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.42
+  },
+  "spore_reflect": {
+    "layers": [
+      {
+        "source": "water:bubble_02",
+        "gain": 1,
+        "rate": 1.7,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:item_gem_03",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.45
+  },
+  "pruner_slash": {
+    "layers": [
+      {
+        "source": "rpg:blade_03",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_02",
+        "gain": 0.45,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.42
+  },
+  "pruner_lunge": {
+    "layers": [
+      {
+        "source": "rpg:blade_01",
+        "gain": 1,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_03",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.55
+  },
+  "pruner_slam": {
+    "layers": [
+      {
+        "source": "foley:metal_hit_02",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:hit_02",
+        "gain": 0.7,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_01",
+        "gain": 0.25,
+        "rate": 1,
+        "delay": 0.06,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.65
+  },
+  "warden_slash": {
+    "layers": [
+      {
+        "source": "rpg:blade_03",
+        "gain": 1,
+        "rate": 0.66,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_04",
+        "gain": 0.6,
+        "rate": 0.7,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.65
+  },
+  "warden_charge": {
+    "layers": [
+      {
+        "source": "rpg:creature_monster_04",
+        "gain": 1,
+        "rate": 0.72,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_05",
+        "gain": 0.45,
+        "rate": 0.65,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.75
+  },
+  "warden_slam": {
+    "layers": [
+      {
+        "source": "foley:hit_03",
+        "gain": 1,
+        "rate": 0.58,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_05",
+        "gain": 0.75,
+        "rate": 0.6,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:stones_02",
+        "gain": 0.6,
+        "rate": 1,
+        "delay": 0.08,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 1,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 1.0
+  },
+  "warden_phase": {
+    "layers": [
+      {
+        "source": "rpg:creature_roar_01",
+        "gain": 1,
+        "rate": 0.63,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:metal_05",
+        "gain": 0.35,
+        "rate": 0.7,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:wood_04",
+        "gain": 0.6,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": 1,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 1.7
+  },
+  "warning": {
+    "layers": [
+      {
+        "source": "rpg:creature_misc_03",
+        "gain": 1,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.5
+  },
+  "danger": {
+    "layers": [
+      {
+        "source": "rpg:creature_roar_03",
+        "gain": 1,
+        "rate": 0.75,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.8
+  },
+  "enemy_death": {
+    "layers": [
+      {
+        "source": "rpg:creature_die_01",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 1
+  },
+  "button": {
+    "layers": [
+      {
+        "source": "foley:switch_01",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:lock_01",
+        "gain": 0.25,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -3,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.3
+  },
+  "mechanism_start": {
+    "layers": [
+      {
+        "source": "foley:door_01",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_02",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -5,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.8
+  },
+  "mechanism_stop": {
+    "layers": [
+      {
+        "source": "foley:wood_hit_02",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:lock_03",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -5,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.4
+  },
+  "gate_open": {
+    "layers": [
+      {
+        "source": "foley:door_02",
+        "gain": 1,
+        "rate": 0.7,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:chain_03",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -3,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 1
+  },
+  "gate_close": {
+    "layers": [
+      {
+        "source": "foley:door_03",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:metal_hit_01",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -3,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.6
+  },
+  "tank_start": {
+    "layers": [
+      {
+        "source": "water:bubble_02",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:lock_01",
+        "gain": 0.2,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -9,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.45
+  },
+  "tank_stop": {
+    "layers": [
+      {
+        "source": "water:bubble_01",
+        "gain": 1,
+        "rate": 0.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:switch_02",
+        "gain": 0.3,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -10,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.35
+  },
+  "toxin_enter": {
+    "layers": [
+      {
+        "source": "water:slime_10",
+        "gain": 1,
+        "rate": 0.7,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "foley:air_03",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -7,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.7
+  },
+  "thorn": {
+    "layers": [
+      {
+        "source": "rpg:wood_03",
+        "gain": 1,
+        "rate": 1.8,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "water:slime_08",
+        "gain": 0.4,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -2,
+    "priority": 2,
+    "cooldown": 0.07,
+    "variants": 3,
+    "duration": 0.35
+  },
+  "checkpoint": {
+    "layers": [
+      {
+        "source": "rpg:item_gem_02",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:spell_01",
+        "gain": 0.3,
+        "rate": 1.3,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -4,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 1.15
+  },
+  "encounter_clear": {
+    "layers": [
+      {
+        "source": "rpg:spell_01",
+        "gain": 1,
+        "rate": 1.2,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:item_gem_04",
+        "gain": 0.5,
+        "rate": 1,
+        "delay": 0.12,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -3,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 1.4
+  },
+  "victory": {
+    "layers": [
+      {
+        "source": "rpg:spell_01",
+        "gain": 1,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:item_gem_02",
+        "gain": 0.55,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:item_gem_04",
+        "gain": 0.6,
+        "rate": 1,
+        "delay": 0.32,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -1,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 2
+  },
+  "ui_open": {
+    "layers": [
+      {
+        "source": "foley:switch_01",
+        "gain": 1,
+        "rate": 0.85,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:book_02",
+        "gain": 0.15,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -7,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 0.2
+  },
+  "ui_confirm": {
+    "layers": [
+      {
+        "source": "foley:switch_02",
+        "gain": 1,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      },
+      {
+        "source": "rpg:item_gem_01",
+        "gain": 0.15,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -7,
+    "priority": 1,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 0.22
+  },
+  "ui_focus": {
+    "layers": [
+      {
+        "source": "foley:switch_02",
+        "gain": 1,
+        "rate": 1.6,
+        "delay": 0,
+        "low": 4000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -15,
+    "priority": 0,
+    "cooldown": 0.09,
+    "variants": 1,
+    "duration": 0.1
+  },
+  "respawn": {
+    "layers": [
+      {
+        "source": "rpg:spell_02",
+        "gain": 1,
+        "rate": 1.4,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": true
+      },
+      {
+        "source": "water:bubble_02",
+        "gain": 0.2,
+        "rate": 1,
+        "delay": 0,
+        "low": 10000,
+        "high": 65,
+        "reverse": false
+      }
+    ],
+    "db": -6,
+    "priority": 3,
+    "cooldown": 0.07,
+    "variants": 1,
+    "duration": 0.8
+  }
+}

@@ -1,5 +1,9 @@
 # 文档索引变更（WIP）
 
+- `docs/warden_design.md`：精英怪「守圃者」的设计参考、距离决策、招式时序、全身发力、玩家反制与正式关卡验证。
+
+- `docs/beetle_design.md`：第一个小怪「污染甲虫」的招式、距离决策、全身发力与受击规则，以及正式关卡验证入口。
+
 - `docs/handbuilt_level_building.md`：手工非 Tile 关卡的组件目录、搭建流程、组件接线方式与验证清单；手工关卡流程稳定后评估是否提升至 `AGENT.md`。
 
 - `docs/whitebox_acceptance_criteria.md`：本次 JSON 白盒落地的验收标准、操作步骤与证据要求；实施后逐项记录结果。
@@ -17,3 +21,5 @@
 - `docs/handbuilt_level_building.md`：补充普通与硬质地板的 Polygon2D / CollisionPolygon2D 编辑、素材变体与实例覆盖说明。
 
 - `assets/runtime/scenery/variants/`：根据场景素材表建立可复用的 `SpriteVariantSet` 素材组；待关卡实际采用后评估是否提升至权威索引。
+
+- `docs/audio_design.md`：声音身份、素材来源、事件覆盖与客观验证和试听边界。

@@ -36,10 +36,12 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 
 func _evaluate_target(move_dir: float, jump_held: bool) -> StringName:
 	if _body.is_on_floor():
+		if _movement.ground_brake_acceleration > 0.0:
+			return STATE_RUN if absf(_body.velocity.x) > 1.0 else STATE_IDLE
 		return STATE_RUN if move_dir != 0.0 else STATE_IDLE
 
 	var form := _form_controller.get_current()
-	if not _movement.is_vine_attached() and jump_held and form.can_glide and _body.velocity.y > 0.0:
+	if _movement.allow_glide and not _movement.is_vine_attached() and jump_held and form.can_glide and _body.velocity.y > 0.0:
 		return STATE_GLIDE
 	if _body.velocity.y < 0.0:
 		return STATE_JUMP

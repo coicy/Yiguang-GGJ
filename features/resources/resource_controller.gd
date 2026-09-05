@@ -88,6 +88,11 @@ func absorb_toxin(amount: float) -> bool:
 	return true
 
 
+func toxin_threshold() -> float:
+	## Read-only threshold for UI; uses the same rule as toxin absorption.
+	return _toxin_threshold(_forms.get_current()) if _forms != null and _forms.get_current() != null else 0.0
+
+
 func _toxin_threshold(form: FormDefinition) -> float:
 	if form.growth_threshold > 0.0:
 		return form.growth_threshold

@@ -185,15 +185,17 @@ func _physics_steps(count: int) -> void:
 
 
 func _press_primary(player: Player, mouse_position: Vector2 = Vector2.ZERO) -> void:
-	var event := InputEventMouseButton.new()
-	event.button_index = MOUSE_BUTTON_LEFT
-	event.position = mouse_position
+	var aim := InputEventMouseMotion.new()
+	aim.position = mouse_position
+	player._unhandled_input(aim)
+	var event := InputEventKey.new()
+	event.physical_keycode = KEY_Q
 	event.pressed = true
 	player._unhandled_input(event)
 
 
 func _release_primary(player: Player) -> void:
-	var event := InputEventMouseButton.new()
-	event.button_index = MOUSE_BUTTON_LEFT
+	var event := InputEventKey.new()
+	event.physical_keycode = KEY_Q
 	event.pressed = false
 	player._unhandled_input(event)

@@ -62,6 +62,10 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 		_request_sync()
 
 @export_category("Artwork")
+@export var show_artwork := true:
+	set(value):
+		show_artwork = value
+		_request_sync()
 @export var sprite_variants: SpriteVariantSet:
 	set(value):
 		sprite_variants = value
@@ -73,6 +77,10 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 @export var art_texture: Texture2D:
 	set(value):
 		art_texture = value
+		_request_sync()
+@export var tile_art_vertically := true:
+	set(value):
+		tile_art_vertically = value
 		_request_sync()
 @export var stretch_art := false:
 	set(value):
@@ -208,7 +216,7 @@ func _apply_artwork() -> void:
 	_whole_artwork.position = offset
 	_whole_artwork.scale = safe_visual_scale
 	_whole_artwork.rotation = deg_to_rad(art_rotation_degrees)
-	_whole_artwork.visible = whole_texture and texture != null
+	_whole_artwork.visible = show_artwork and whole_texture and texture != null
 	var visual_size := piece_size / safe_visual_scale
 	_terrain_visual.texture = texture
 	_terrain_visual.position = offset
@@ -217,9 +225,9 @@ func _apply_artwork() -> void:
 	_terrain_visual.scale = safe_visual_scale
 	_terrain_visual.rotation = deg_to_rad(art_rotation_degrees)
 	_terrain_visual.axis_stretch_horizontal = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if should_stretch else NinePatchRect.AXIS_STRETCH_MODE_TILE
-	_terrain_visual.axis_stretch_vertical = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if should_stretch else NinePatchRect.AXIS_STRETCH_MODE_TILE
+	_terrain_visual.axis_stretch_vertical = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if should_stretch or not tile_art_vertically else NinePatchRect.AXIS_STRETCH_MODE_TILE
 	_terrain_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_terrain_visual.visible = display_mode == DisplayMode.SPRITE and texture != null
+	_terrain_visual.visible = show_artwork and display_mode == DisplayMode.SPRITE and texture != null
 	_polygon_artwork.texture = texture
 	var polygon_offset := variant.polygon_texture_offset if variant != null else Vector2.ZERO
 	var polygon_scale := variant.polygon_texture_scale if variant != null else Vector2.ONE
@@ -230,7 +238,7 @@ func _apply_artwork() -> void:
 	_polygon_artwork.texture_scale = polygon_scale / safe_visual_scale
 	_polygon_artwork.texture_rotation = deg_to_rad(polygon_rotation_degrees + art_rotation_degrees)
 	_polygon_artwork.texture_repeat = variant.polygon_texture_repeat if variant != null else CanvasItem.TEXTURE_REPEAT_ENABLED
-	_polygon_artwork.visible = display_mode == DisplayMode.POLYGON and texture != null
+	_polygon_artwork.visible = show_artwork and display_mode == DisplayMode.POLYGON and texture != null
 	_apply_caps(variant, art_scale * art_scale_multiplier)
 
 func _fit_nine_patch_margins(visual_size: Vector2) -> void:
@@ -251,7 +259,7 @@ func _margin_ratio(axis_size: float, first_margin: int, second_margin: int) -> f
 	return minf(1.0, axis_size / float(margin_total))
 
 func _apply_caps(variant: LevelSpriteVariant, cap_scale: Vector2) -> void:
-	var show_caps := display_mode == DisplayMode.POLYGON and variant != null
+	var show_caps := show_artwork and display_mode == DisplayMode.POLYGON and variant != null
 	_left_cap.texture = variant.left_cap_texture if show_caps else null
 	_left_cap.position = variant.left_cap_offset if show_caps else Vector2.ZERO
 	_left_cap.scale = cap_scale
@@ -320,6 +328,8 @@ func _get_configuration_warnings() -> PackedStringArray:
 	return warnings
 
 func _draw() -> void:
+	if not show_artwork:
+		return
 	var variant := _selected_variant()
 	if (variant != null and variant.texture != null) or art_texture != null:
 		return

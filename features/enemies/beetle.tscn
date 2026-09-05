@@ -1,0 +1,25 @@
+[gd_scene load_steps=7 format=3]
+[ext_resource type="Script" path="res://features/enemies/combat_enemy.gd" id="1"]
+[ext_resource type="Resource" path="res://features/enemies/data/beetle.tres" id="2"]
+[ext_resource type="Script" path="res://features/combat/health_component.gd" id="3"]
+[ext_resource type="Script" path="res://features/enemies/beetle_visual.gd" id="4"]
+[ext_resource type="Script" path="res://features/enemies/beetle_behavior.gd" id="5"]
+[ext_resource type="Resource" path="res://features/enemies/data/beetle_behavior.tres" id="6"]
+[node name="Beetle" type="CharacterBody2D" node_paths=PackedStringArray("beetle_behavior")]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+definition = ExtResource("2")
+beetle_behavior = NodePath("BeetleBehavior")
+floor_snap_length = 6.0
+[node name="BeetleBehavior" type="Node" parent="."]
+script = ExtResource("5")
+tuning = ExtResource("6")
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+[node name="EnemyHealth" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3")
+[node name="EnemyVisual" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4")

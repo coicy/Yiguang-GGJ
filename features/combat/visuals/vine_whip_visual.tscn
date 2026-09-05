@@ -1,0 +1,116 @@
+[gd_scene load_steps=6 format=3]
+[ext_resource type="Script" path="res://features/combat/visuals/vine_whip_visual.gd" id="1"]
+[ext_resource type="Resource" path="res://features/combat/data/vine_attack/humanoid.tres" id="2"]
+[ext_resource type="Resource" path="res://features/combat/data/vine_attack/mature.tres" id="3"]
+[ext_resource type="AnimationLibrary" path="res://features/combat/data/vine_attack/humanoid_animations.tres" id="4"]
+[ext_resource type="AnimationLibrary" path="res://features/combat/data/vine_attack/mature_animations.tres" id="5"]
+
+[node name="VineWhipVisual" type="Node2D"]
+physics_interpolation_mode = 2
+script = ExtResource("1")
+humanoid_profile = ExtResource("2")
+mature_profile = ExtResource("3")
+
+[node name="Skeleton2D" type="Skeleton2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Stem" type="Polygon2D" parent="Skeleton2D"]
+unique_name_in_owner = true
+color = Color(0.455, 0.612, 0.224, 1)
+skeleton = NodePath("..")
+
+[node name="Root" type="Bone2D" parent="Skeleton2D"]
+unique_name_in_owner = true
+position = Vector2(0, 0)
+rest = Transform2D(1, 0, 0, 1, 0, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment01" type="Bone2D" parent="Skeleton2D/Root"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment02" type="Bone2D" parent="Skeleton2D/Root/Segment01"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment03" type="Bone2D" parent="Skeleton2D/Root/Segment01/Segment02"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment04" type="Bone2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment05" type="Bone2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment06" type="Bone2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment07" type="Bone2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment08" type="Bone2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06/Segment07"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="Segment09" type="Bone2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06/Segment07/Segment08"]
+position = Vector2(10, 0)
+rest = Transform2D(1, 0, 0, 1, 10, 0)
+length = 10.0
+auto_calculate_length_and_angle = false
+
+[node name="LeafA" type="Sprite2D" parent="Skeleton2D/Root/Segment01/Segment02"]
+unique_name_in_owner = true
+
+[node name="LeafB" type="Sprite2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04"]
+unique_name_in_owner = true
+
+[node name="LeafC" type="Sprite2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06"]
+unique_name_in_owner = true
+
+[node name="LeafD" type="Sprite2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06/Segment07/Segment08"]
+unique_name_in_owner = true
+
+[node name="NodeA" type="Sprite2D" parent="Skeleton2D/Root/Segment01/Segment02"]
+unique_name_in_owner = true
+
+[node name="NodeB" type="Sprite2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04"]
+unique_name_in_owner = true
+
+[node name="NodeC" type="Sprite2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06"]
+unique_name_in_owner = true
+
+[node name="Tip" type="Sprite2D" parent="Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06/Segment07/Segment08/Segment09"]
+unique_name_in_owner = true
+
+[node name="Sheath" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+callback_mode_process = 2
+libraries = {
+&"humanoid": ExtResource("4"),
+&"mature": ExtResource("5")
+}

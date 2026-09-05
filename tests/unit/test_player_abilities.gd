@@ -8,7 +8,8 @@ var _requested_ability: StringName = &""
 
 
 func _init() -> void:
-	assert(_action_has_mouse_button(&"ability_primary"))
+	assert(_action_has_physical_key(&"ability_primary", KEY_Q))
+	assert(_action_has_mouse_button(&"attack"))
 	assert(_action_has_physical_key(&"move_up", KEY_W))
 	assert(_action_has_physical_key(&"move_down", KEY_S))
 	assert(_action_has_physical_key(&"absorb_resource", KEY_E))

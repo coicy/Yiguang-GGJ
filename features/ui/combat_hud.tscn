@@ -1,0 +1,510 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://features/ui/combat_hud.gd" id="1_script"]
+[ext_resource type="Theme" path="res://features/ui/botanical_theme.tres" id="2_theme"]
+
+[sub_resource type="StyleBoxFlat" id="PipTrack"]
+bg_color = Color(0.85, 0.91, 0.74, 0.16)
+corner_radius_top_left = 10
+corner_radius_bottom_right = 10
+
+[sub_resource type="StyleBoxFlat" id="PipFill"]
+bg_color = Color(0.74, 0.86, 0.42, 1)
+corner_radius_top_left = 10
+corner_radius_bottom_right = 10
+
+[sub_resource type="StyleBoxFlat" id="BossTrack"]
+bg_color = Color(0.95, 0.88, 0.73, 0.12)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="BossFill"]
+bg_color = Color(0.91, 0.59, 0.36, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="Primary"]
+bg_color = Color(0.76, 0.85, 0.5, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_left = 7
+corner_radius_bottom_right = 7
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+content_margin_left = 24.0
+content_margin_right = 24.0
+
+[sub_resource type="StyleBoxFlat" id="Hover"]
+bg_color = Color(0.88, 0.95, 0.63, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_left = 7
+corner_radius_bottom_right = 7
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+content_margin_left = 24.0
+content_margin_right = 24.0
+
+[sub_resource type="StyleBoxFlat" id="Focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.98, 0.95, 0.78, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_left = 7
+corner_radius_bottom_right = 7
+expand_margin_left = 3.0
+expand_margin_top = 3.0
+expand_margin_right = 3.0
+expand_margin_bottom = 3.0
+
+[sub_resource type="StyleBoxFlat" id="Secondary"]
+bg_color = Color(0.1, 0.16, 0.11, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.40, 0.50, 0.31, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_left = 7
+corner_radius_bottom_right = 7
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+content_margin_left = 24.0
+content_margin_right = 24.0
+
+[sub_resource type="StyleBoxFlat" id="SecondaryHover"]
+bg_color = Color(0.19, 0.28, 0.16, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.64, 0.75, 0.44, 1)
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_left = 7
+corner_radius_bottom_right = 7
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+content_margin_left = 24.0
+content_margin_right = 24.0
+
+[node name="CombatHud" type="CanvasLayer"]
+process_mode = 3
+layer = 12
+script = ExtResource("1_script")
+
+[node name="Screen" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+
+[node name="Gameplay" type="Control" parent="Screen"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CombatPanel" type="PanelContainer" parent="Screen/Gameplay"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -290.0
+offset_top = 22.0
+offset_right = -24.0
+grow_horizontal = 0
+theme_type_variation = &"DarkPanel"
+
+[node name="Rows" type="VBoxContainer" parent="Screen/Gameplay/CombatPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="Screen/Gameplay/CombatPanel/Rows"]
+layout_mode = 2
+
+[node name="HealthLabel" type="Label" parent="Screen/Gameplay/CombatPanel/Rows/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptTitle"
+text = "生命  5 / 5"
+
+[node name="PauseHint" type="Label" parent="Screen/Gameplay/CombatPanel/Rows/Header"]
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 13
+text = "Esc 暂停"
+
+[node name="HealthPips" type="HBoxContainer" parent="Screen/Gameplay/CombatPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Pip0" type="ProgressBar" parent="Screen/Gameplay/CombatPanel/Rows/HealthPips"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(34, 12)
+max_value = 1.0
+step = 1.0
+value = 1.0
+show_percentage = false
+theme_override_styles/background = SubResource("PipTrack")
+theme_override_styles/fill = SubResource("PipFill")
+
+[node name="Pip1" type="ProgressBar" parent="Screen/Gameplay/CombatPanel/Rows/HealthPips"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(34, 12)
+max_value = 1.0
+step = 1.0
+value = 1.0
+show_percentage = false
+theme_override_styles/background = SubResource("PipTrack")
+theme_override_styles/fill = SubResource("PipFill")
+
+[node name="Pip2" type="ProgressBar" parent="Screen/Gameplay/CombatPanel/Rows/HealthPips"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(34, 12)
+max_value = 1.0
+step = 1.0
+value = 1.0
+show_percentage = false
+theme_override_styles/background = SubResource("PipTrack")
+theme_override_styles/fill = SubResource("PipFill")
+
+[node name="Pip3" type="ProgressBar" parent="Screen/Gameplay/CombatPanel/Rows/HealthPips"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(34, 12)
+max_value = 1.0
+step = 1.0
+value = 1.0
+show_percentage = false
+theme_override_styles/background = SubResource("PipTrack")
+theme_override_styles/fill = SubResource("PipFill")
+
+[node name="Pip4" type="ProgressBar" parent="Screen/Gameplay/CombatPanel/Rows/HealthPips"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(34, 12)
+max_value = 1.0
+step = 1.0
+value = 1.0
+show_percentage = false
+theme_override_styles/background = SubResource("PipTrack")
+theme_override_styles/fill = SubResource("PipFill")
+
+[node name="DashLabel" type="Label" parent="Screen/Gameplay/CombatPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+text = "Shift  闪避 · 就绪"
+
+[node name="DashBar" type="ProgressBar" parent="Screen/Gameplay/CombatPanel/Rows"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+theme_type_variation = &"NutritionBar"
+max_value = 1.0
+step = 0.01
+value = 1.0
+show_percentage = false
+
+[node name="ParryLabel" type="Label" parent="Screen/Gameplay/CombatPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+text = "F  弹反 · 就绪"
+
+[node name="ParryBar" type="ProgressBar" parent="Screen/Gameplay/CombatPanel/Rows"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+theme_type_variation = &"NutritionBar"
+max_value = 1.0
+step = 0.01
+value = 1.0
+show_percentage = false
+
+[node name="AttackHint" type="Label" parent="Screen/Gameplay/CombatPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 13
+text = "左键 连击 / 空击  ·  右键 重击"
+
+[node name="Objective" type="VBoxContainer" parent="Screen/Gameplay"]
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -262.0
+offset_top = 78.0
+offset_right = 262.0
+theme_override_constants/separation = 3
+
+[node name="SectionLabel" type="Label" parent="Screen/Gameplay/Objective"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+theme_override_colors/font_shadow_color = Color(0.04, 0.1, 0.07, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 23
+horizontal_alignment = 1
+text = "01  /  培养室"
+
+[node name="ObjectiveLabel" type="Label" parent="Screen/Gameplay/Objective"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+theme_override_colors/font_shadow_color = Color(0.04, 0.1, 0.07, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
+autowrap_mode = 2
+text = "寻找营养液，成长为人形"
+
+[node name="RunLabel" type="Label" parent="Screen/Gameplay/Objective"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+theme_override_colors/font_shadow_color = Color(0.04, 0.1, 0.07, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+text = "00:00   ·   重试 0"
+
+[node name="BossPanel" type="PanelContainer" parent="Screen/Gameplay"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -248.0
+offset_top = 172.0
+offset_right = 248.0
+theme_type_variation = &"DarkPanel"
+
+[node name="Rows" type="VBoxContainer" parent="Screen/Gameplay/BossPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Names" type="HBoxContainer" parent="Screen/Gameplay/BossPanel/Rows"]
+layout_mode = 2
+
+[node name="BossName" type="Label" parent="Screen/Gameplay/BossPanel/Rows/Names"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptTitle"
+text = "守圃者"
+
+[node name="BossPhase" type="Label" parent="Screen/Gameplay/BossPanel/Rows/Names"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+text = "第一阶段"
+
+[node name="BossBar" type="ProgressBar" parent="Screen/Gameplay/BossPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 7)
+theme_override_styles/background = SubResource("BossTrack")
+theme_override_styles/fill = SubResource("BossFill")
+max_value = 40.0
+value = 40.0
+show_percentage = false
+
+[node name="Overlay" type="Control" parent="Screen"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Shade" type="ColorRect" parent="Screen/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.025, 0.07, 0.045, 0.89)
+
+[node name="Center" type="CenterContainer" parent="Screen/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Screen/Overlay/Center"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+theme_type_variation = &"DarkPanel"
+
+[node name="Margin" type="MarginContainer" parent="Screen/Overlay/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 22
+
+[node name="Contents" type="VBoxContainer" parent="Screen/Overlay/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="OverlayKicker" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 14
+text = "失控温室 / 已暂停"
+horizontal_alignment = 1
+
+[node name="OverlayTitle" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+theme_override_font_sizes/font_size = 36
+text = "稍作停留"
+horizontal_alignment = 1
+
+[node name="OverlayDetail" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"PromptDetail"
+text = "休息片刻，随时继续探索温室。"
+horizontal_alignment = 1
+
+[node name="OverlayStats" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Light"
+theme_override_font_sizes/font_size = 17
+text = "探索用时  00:00     /     重试  0 次"
+horizontal_alignment = 1
+
+[node name="ControlsGuide" type="GridContainer" parent="Screen/Overlay/Center/Panel/Margin/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 38
+theme_override_constants/v_separation = 8
+
+[node name="Guide0" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents/ControlsGuide"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 15
+text = "A / D    移动"
+
+[node name="Guide1" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents/ControlsGuide"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 15
+text = "空格    跳跃 / 滑翔"
+
+[node name="Guide2" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents/ControlsGuide"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 15
+text = "左键    幼芽前顶 / 连击 / 空击"
+
+[node name="Guide3" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents/ControlsGuide"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 15
+text = "右键    重击破防"
+
+[node name="Guide4" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents/ControlsGuide"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 15
+text = "Shift    闪避"
+
+[node name="Guide5" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents/ControlsGuide"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 15
+text = "F    弹反"
+
+[node name="Guide6" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents/ControlsGuide"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 15
+text = "Q    扎根 / 藤蔓"
+
+[node name="Guide7" type="Label" parent="Screen/Overlay/Center/Panel/Margin/Contents/ControlsGuide"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"PromptDetail"
+theme_override_font_sizes/font_size = 15
+text = "E    吸收 / 上环"
+
+[node name="PrimaryButton" type="Button" parent="Screen/Overlay/Center/Panel/Margin/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+theme_override_colors/font_color = Color(0.09, 0.18, 0.1, 1)
+theme_override_colors/font_hover_color = Color(0.06, 0.14, 0.07, 1)
+theme_override_colors/font_focus_color = Color(0.09, 0.18, 0.1, 1)
+theme_override_colors/font_pressed_color = Color(0.09, 0.18, 0.1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("Primary")
+theme_override_styles/hover = SubResource("Hover")
+theme_override_styles/pressed = SubResource("Primary")
+theme_override_styles/focus = SubResource("Focus")
+text = "继续游戏"
+
+[node name="RestartButton" type="Button" parent="Screen/Overlay/Center/Panel/Margin/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+theme_override_colors/font_color = Color(0.94, 0.93, 0.82, 1)
+theme_override_colors/font_hover_color = Color(0.99, 0.98, 0.9, 1)
+theme_override_colors/font_focus_color = Color(0.94, 0.93, 0.82, 1)
+theme_override_colors/font_pressed_color = Color(0.94, 0.93, 0.82, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("Secondary")
+theme_override_styles/hover = SubResource("SecondaryHover")
+theme_override_styles/pressed = SubResource("Secondary")
+theme_override_styles/focus = SubResource("Focus")
+text = "重新开始整关"

@@ -13,6 +13,9 @@ const STATE_DEATH: StringName = &"death"
 
 signal animation_state_changed(previous: StringName, current: StringName)
 
+@export_range(0.0, 100.0, 1.0) var combat_step_stop_speed: float = 32.0
+@export_range(0.0, 0.2, 0.01) var locomotion_mix_duration: float = 0.06
+
 var _visual: SpineCharacterVisual
 var _locomotion_state: StringName = StateMachine.STATE_IDLE
 var _animation_state: StringName = &""
@@ -20,6 +23,9 @@ var _return_state: StringName = STATE_IDLE
 var _facing: float = 1.0
 var _skill_playing: bool = false
 var _dead: bool = false
+var _ground_attack: bool = false
+var _landing_recovery: bool = false
+var _combat_horizontal_speed: float = 0.0
 
 
 func set_visual(visual: SpineCharacterVisual) -> void:
@@ -29,6 +35,9 @@ func set_visual(visual: SpineCharacterVisual) -> void:
 	_animation_state = &""
 	_skill_playing = false
 	if _visual == null:
+		_ground_attack = false
+		_landing_recovery = false
+		_combat_horizontal_speed = 0.0
 		return
 	_visual.animation_completed.connect(_on_animation_completed)
 	_visual.set_facing(_facing)
@@ -46,6 +55,11 @@ func set_locomotion_state(state: StringName) -> void:
 	_return_state = _animation_for_locomotion(state)
 	if _visual == null or _dead or _skill_playing:
 		return
+	if _landing_recovery and _is_grounded(state):
+		return
+	if _ground_attack and _is_grounded(state):
+		_sync_locomotion()
+		return
 	if state == StateMachine.STATE_JUMP and not _is_airborne(previous):
 		_play_with_fallback(STATE_JUMP_START, false)
 		return
@@ -55,11 +69,38 @@ func set_locomotion_state(state: StringName) -> void:
 	_sync_locomotion()
 
 
-func play_skill() -> bool:
-	if _visual == null or _dead or _skill_playing or not _visual.has_animation(STATE_SKILL):
+func begin_combat() -> void:
+	# Keep ongoing walk/up/down tracks; airborne attacks skip a remaining takeoff clip.
+	var leave_takeoff := _animation_state == STATE_JUMP_START and _is_airborne(_locomotion_state)
+	if not _skill_playing and not leave_takeoff:
+		return
+	_skill_playing = false
+	if _visual != null and not _dead:
+		_sync_locomotion()
+
+
+func set_combat_context(ground_attack: bool, landing_recovery: bool, horizontal_speed: float = 0.0) -> void:
+	var context_changed := ground_attack != _ground_attack or landing_recovery != _landing_recovery
+	var landing_started := landing_recovery and not _landing_recovery
+	_ground_attack = ground_attack
+	_landing_recovery = landing_recovery
+	_combat_horizontal_speed = absf(horizontal_speed)
+	if _visual == null or _dead:
+		return
+	if landing_recovery:
+		_skill_playing = false
+		if landing_started:
+			_play_with_fallback(STATE_JUMP_END, false)
+		return
+	if ground_attack or context_changed:
+		_sync_locomotion()
+
+
+func play_skill(restart: bool = false) -> bool:
+	if _visual == null or _dead or (_skill_playing and not restart) or not _visual.has_animation(STATE_SKILL):
 		return false
 	_return_state = _animation_for_locomotion(_locomotion_state)
-	_skill_playing = _play(STATE_SKILL, false)
+	_skill_playing = _play(STATE_SKILL, false, restart)
 	return _skill_playing
 
 
@@ -68,6 +109,8 @@ func play_death() -> bool:
 		return false
 	_dead = true
 	_skill_playing = false
+	_ground_attack = false
+	_landing_recovery = false
 	return _play_with_fallback(STATE_DEATH, false)
 
 
@@ -96,6 +139,12 @@ func is_dead() -> bool:
 
 func _sync_locomotion(force: bool = false) -> void:
 	var target := _animation_for_locomotion(_locomotion_state)
+	if _landing_recovery and _is_grounded(_locomotion_state):
+		_play_with_fallback(STATE_JUMP_END, false, force)
+		return
+	if _ground_attack and _is_grounded(_locomotion_state):
+		# The final walking step follows physical braking, then the feet plant.
+		target = STATE_MOVE if _combat_horizontal_speed > combat_step_stop_speed else STATE_IDLE
 	_play_with_fallback(target, true, force)
 
 
@@ -128,6 +177,10 @@ func _play(animation_name: StringName, loop: bool, force: bool = false) -> bool:
 	if not _visual.play_animation(animation_name, loop):
 		return false
 	var previous := _animation_state
+	if not previous.is_empty() and animation_name != STATE_DEATH:
+		var track: Object = _visual.spine_sprite.get_animation_state().get_track(0)
+		if track != null:
+			track.set_mix_duration(locomotion_mix_duration)
 	_animation_state = animation_name
 	animation_state_changed.emit(previous, _animation_state)
 	return true

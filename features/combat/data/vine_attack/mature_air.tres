@@ -1,0 +1,186 @@
+[gd_resource type="Animation" format=3]
+
+[resource]
+resource_name = "mature_air"
+length = 3.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Skeleton2D/Root:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-31.74, -68.77, -26.45, -5.29, 4.232, 12.696, 26.45, -10.58, -31.74, -37.03]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skeleton2D/Root/Segment01:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-21.16, 15.87, 10.58, -13.754, -11.638, 6.348, -5.29, 21.16, -31.74, -31.74]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Skeleton2D/Root/Segment01/Segment02:rotation_degrees")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-5.29, 21.16, 31.74, 5.29, -3.174, -8.464, -12.696, 31.74, -21.16, -21.16]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Skeleton2D/Root/Segment01/Segment02/Segment03:rotation_degrees")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [31.74, 31.74, 21.16, 22.218, 10.58, -16.928, -19.044, 26.45, 15.87, 15.87]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04:rotation_degrees")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [47.61, 37.03, -5.29, 17.986, 16.928, -11.638, -15.87, 5.29, 52.9, 58.19]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05:rotation_degrees")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [52.9, 31.74, -31.74, -1.058, 8.464, 9.522, -5.29, -26.45, 74.06, 74.06]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06:rotation_degrees")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [52.9, 37.03, -42.32, -21.16, -5.29, 25.392, 15.87, -47.61, 63.48, 63.48]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06/Segment07:rotation_degrees")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [37.03, 37.03, -26.45, -25.392, -24.334, 10.58, 37.03, -52.9, 42.32, 42.32]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06/Segment07/Segment08:rotation_degrees")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [15.87, 15.87, -15.87, -25.392, -23.276, 4.232, 47.61, -47.61, 21.16, 21.16]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Skeleton2D/Root/Segment01/Segment02/Segment03/Segment04/Segment05/Segment06/Segment07/Segment08/Segment09:rotation_degrees")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [5.29, 5.29, -5.29, -14.812, -11.638, 3.174, 28.566, -26.45, 5.29, 5.29]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath(".:extension")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.16, 0.22, 0.4, 1, 1, 1, 1, 0.35, 0.16, 0.035]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath(".:sweep")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-0.28, -0.3, -0.2, -0.16, -0.06, 0.2, 0.38, 0.2, 0.02, -0.08]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath(".:leaf_flutter")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0, -0.5, -1, -1.25, -0.5, 1.125, 1.25, 0.625, -0.25, 0]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath(".:silhouette_alpha")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [1, 1, 1, 1, 1, 1, 1, 1, 0.9, 0]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath(".:behind_body")
+tracks/14/interp = 0
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0, 0.32, 0.72, 1, 1.24, 1.65, 2, 2.2, 2.65, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [false, false, false, false, false, false, false, false, false, false]
+}

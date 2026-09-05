@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AttackDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://features/combat/attack_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+id = &"light_1"
+damage = 1
+poise_damage = 10.0
+windup = 0.08
+active = 0.07
+recovery = 0.13
+reach = 60.0
+height = 36.0
+knockback = 100.0
+breaks_guard = false

@@ -1,0 +1,93 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/levels/combat_test.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/terrain_piece.tscn" id="3_floor"]
+[ext_resource type="PackedScene" path="res://features/enemies/beetle.tscn" id="4_beetle"]
+[ext_resource type="PackedScene" path="res://features/enemies/spore.tscn" id="5_spore"]
+[ext_resource type="PackedScene" path="res://features/enemies/pruner.tscn" id="6_pruner"]
+[ext_resource type="PackedScene" path="res://features/enemies/warden.tscn" id="7_warden"]
+[ext_resource type="PackedScene" path="res://features/ui/combat_hud.tscn" id="8_hud"]
+[ext_resource type="Script" path="res://features/combat/combat_feedback.gd" id="9_feedback"]
+[ext_resource type="PackedScene" path="res://features/audio/sound_emitter.tscn" id="10_sounds"]
+
+[node name="CombatTest" type="Node2D"]
+process_mode = 3
+script = ExtResource("1_level")
+
+[node name="Background" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-40, -600, 5040, -600, 5040, 760, -40, 760)
+color = Color(0.10, 0.15, 0.16, 1)
+
+[node name="Geometry" type="Node2D" parent="."]
+
+[node name="LongPlatform" parent="Geometry" instance=ExtResource("3_floor")]
+unique_name_in_owner = true
+position = Vector2(0, 560)
+piece_size = Vector2(5000, 160)
+sprite_variants = null
+art_texture = null
+placeholder_color = Color(0.22, 0.32, 0.25, 1)
+
+[node name="LeftBoundary" parent="Geometry" instance=ExtResource("3_floor")]
+position = Vector2(-40, -600)
+piece_size = Vector2(40, 1160)
+sprite_variants = null
+art_texture = null
+
+[node name="RightBoundary" parent="Geometry" instance=ExtResource("3_floor")]
+position = Vector2(5000, -600)
+piece_size = Vector2(40, 1160)
+sprite_variants = null
+art_texture = null
+
+[node name="Actors" type="Node2D" parent="."]
+process_mode = 1
+
+[node name="Player" parent="Actors" instance=ExtResource("2_player")]
+unique_name_in_owner = true
+position = Vector2(160, 560)
+
+[node name="FormController" parent="Actors/Player" index="8"]
+default_form_id = &"humanoid"
+
+[node name="Camera2D" type="Camera2D" parent="Actors/Player"]
+unique_name_in_owner = true
+position = Vector2(0, -120)
+zoom = Vector2(1.5, 1.5)
+limit_left = 0
+limit_top = 0
+limit_right = 5000
+limit_bottom = 720
+process_callback = 0
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="Enemies" type="Node2D" parent="Actors"]
+unique_name_in_owner = true
+
+[node name="Beetle" parent="Actors/Enemies" instance=ExtResource("4_beetle")]
+position = Vector2(700, 560)
+
+[node name="Spore" parent="Actors/Enemies" instance=ExtResource("5_spore")]
+position = Vector2(1900, 560)
+
+[node name="Pruner" parent="Actors/Enemies" instance=ExtResource("6_pruner")]
+position = Vector2(3100, 560)
+
+[node name="Warden" parent="Actors/Enemies" instance=ExtResource("7_warden")]
+position = Vector2(4300, 560)
+
+[node name="Projectiles" type="Node2D" parent="Actors"]
+unique_name_in_owner = true
+
+[node name="CombatFeedback" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = 10
+script = ExtResource("9_feedback")
+
+[node name="LevelSounds" parent="." instance=ExtResource("10_sounds")]
+unique_name_in_owner = true
+
+[node name="CombatHud" parent="." instance=ExtResource("8_hud")]
+unique_name_in_owner = true

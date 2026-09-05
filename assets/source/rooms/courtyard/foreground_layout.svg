@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1200" viewBox="6480 -250 960 600">
+<title>courtyard complete foreground geometry target</title>
+<desc>Pure geometry guide. White is empty air. Same world transform as layout.json. No labels should appear in generated art.</desc>
+<rect x="6480" y="-250" width="960" height="600" fill="#ffffff"/>
+<polygon id="Foundation" points="6480,210 7040,210 7040,170 7160,170 7160,130 7440,130 7440,350 6480,350" fill="#18281d"/>
+<polygon id="BrokenWestVault" points="6480,-250 6670,-250 6670,-195 6630,-148 6600,-91 6572,-45 6534,-13 6503,0 6480,0" fill="#203326"/>
+<polygon id="PreparationVault" points="6940,-250 7440,-250 7440,-75 7350,-75 7250,-78 7160,-89 7080,-115 7022,-150 6970,-192 6940,-218" fill="#203326"/>
+<polyline points="6480,210 7040,210 7040,170 7160,170 7160,130 7440,130" fill="none" stroke="#536445" stroke-width="2"/>
+<g id="CoreGrowth"><ellipse cx="7240" cy="162" rx="24" ry="26" fill="#728b3b"/><ellipse cx="7240" cy="162" rx="17" ry="20" fill="#c1d774"/><path d="M7240 142L7234 154L7242 164L7236 180M7224 158L7234 154M7242 164L7254 157" fill="none" stroke="#6b8b46" stroke-width="2"/></g>
+<g id="CoreWither"><rect x="7337" y="150" width="66" height="34" rx="8" fill="#39434a"/><rect x="7343" y="156" width="54" height="22" rx="4" fill="#9564a6"/><path d="M7353 156V178M7364 156V178M7375 156V178M7386 156V178" stroke="#393441" stroke-width="4"/></g>
+</svg>

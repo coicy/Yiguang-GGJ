@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://features/player/movement_controller.gd" id="2_movement"]
@@ -13,6 +13,12 @@
 [ext_resource type="Script" path="res://features/player/player_animation_machine.gd" id="13_animation"]
 [ext_resource type="Script" path="res://features/player/player_audio.gd" id="13_audio"]
 [ext_resource type="PackedScene" path="res://features/audio/sound_emitter.tscn" id="14_sounds"]
+
+[ext_resource type="Script" path="res://features/abilities/vine_visual.gd" id="15_vine_visual"]
+
+[ext_resource type="Script" path="res://features/combat/combat_controller.gd" id="16_combat"]
+[ext_resource type="Script" path="res://features/combat/health_component.gd" id="17_health"]
+[ext_resource type="Resource" path="res://features/combat/data/player_combat.tres" id="18_tuning"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 resource_local_to_scene = true
@@ -53,7 +59,7 @@ margin = 0.01
 [node name="LegExtension" type="Area2D" parent="." groups=["leg_extension"]]
 unique_name_in_owner = true
 position = Vector2(0, -36)
-collision_layer = 8
+collision_layer = 128
 collision_mask = 64
 monitoring = false
 monitorable = true
@@ -74,6 +80,12 @@ energy = 1.8
 color = Color(1, 0.78, 0.38, 1)
 texture_scale = 1.05
 shadow_enabled = true
+
+[node name="VineVisual" type="Node2D" parent="Visuals"]
+unique_name_in_owner = true
+show_behind_parent = true
+script = ExtResource("15_vine_visual")
+
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
 unique_name_in_owner = true
@@ -113,3 +125,12 @@ script = ExtResource("13_audio")
 
 [node name="PlayerSounds" parent="." instance=ExtResource("14_sounds")]
 unique_name_in_owner = true
+
+[node name="Combat" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("16_combat")
+tuning = ExtResource("18_tuning")
+
+[node name="CombatHealth" type="Node" parent="Combat"]
+unique_name_in_owner = true
+script = ExtResource("17_health")

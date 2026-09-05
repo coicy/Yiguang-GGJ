@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="WardenTuning" load_steps=8 format=3]
+[ext_resource type="Script" path="res://features/enemies/warden_tuning.gd" id="1"]
+[ext_resource type="Script" path="res://features/enemies/warden_move.gd" id="2"]
+[sub_resource type="Resource" id="Slash"]
+script = ExtResource("2")
+kind = &"slash"
+windup = 0.48
+duration = 0.34
+active_start = 0.10
+active_end = 0.23
+recovery = 0.65
+reach = 98.0
+step_speed = 150.0
+step_end = 0.24
+[sub_resource type="Resource" id="Charge"]
+script = ExtResource("2")
+kind = &"charge"
+windup = 0.62
+duration = 0.58
+active_start = 0.07
+active_end = 0.47
+recovery = 0.82
+reach = 385.0
+step_speed = 510.0
+step_end = 0.50
+knockback = Vector2(310, -130)
+[sub_resource type="Resource" id="Slam"]
+script = ExtResource("2")
+kind = &"slam"
+windup = 0.80
+duration = 0.40
+active_start = 0.17
+active_end = 0.26
+recovery = 1.0
+reach = 122.0
+step_speed = 76.0
+step_end = 0.18
+damage = 2
+parryable = false
+knockback = Vector2(250, -170)
+[sub_resource type="Resource" id="Uppercut"]
+script = ExtResource("2")
+kind = &"uppercut"
+windup = 0.52
+duration = 0.38
+active_start = 0.11
+active_end = 0.25
+recovery = 0.82
+reach = 112.0
+step_speed = 95.0
+step_end = 0.22
+knockback = Vector2(150, -240)
+[sub_resource type="Resource" id="Backswing"]
+script = ExtResource("2")
+kind = &"backswing"
+windup = 0.38
+duration = 0.34
+active_start = 0.10
+active_end = 0.23
+recovery = 0.86
+reach = 135.0
+step_speed = 190.0
+step_end = 0.24
+[resource]
+script = ExtResource("1")
+slash = SubResource("Slash")
+charge = SubResource("Charge")
+slam = SubResource("Slam")
+uppercut = SubResource("Uppercut")
+backswing = SubResource("Backswing")

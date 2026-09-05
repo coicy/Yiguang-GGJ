@@ -1,356 +1,776 @@
-[gd_scene format=3 uid="uid://c3ecyvogpqagh"]
+[gd_scene format=3]
 
-[ext_resource type="Script" uid="uid://bmrw83r1jfdo" path="res://features/level/handbuilt/handbuilt_level.gd" id="1_level"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/glowing_flower.tscn" id="2_flower"]
-[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="2_player"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/decorative_scenery.tscn" id="2_t0hvh"]
-[ext_resource type="Resource" uid="uid://beekb7ob3irq1" path="res://assets/runtime/scenery/variants/grass_turf_variants.tres" id="3_kfebt"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/spawn_point.tscn" id="3_spawn"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="4_bounds"]
-[ext_resource type="Resource" uid="uid://c7n078btf0rvr" path="res://assets/runtime/scenery/variants/small_vine_variants.tres" id="4_gi8m4"]
-[ext_resource type="PackedScene" uid="uid://c65j2lesd56mx" path="res://features/level/handbuilt/terrain_piece.tscn" id="5_terrain"]
-[ext_resource type="PackedScene" uid="uid://de0u5xwpljsbi" path="res://features/level/branch_wall.tscn" id="6_jmes4"]
-[ext_resource type="PackedScene" uid="uid://cjyj11urlfue0" path="res://features/level/nutrition_tank.tscn" id="6_nutrition"]
-[ext_resource type="PackedScene" path="res://features/level/toxin_resource.tscn" id="7_toxin_resource"]
-[ext_resource type="Resource" uid="uid://banow4dqwuxmx" path="res://assets/runtime/scenery/variants/platform_variants.tres" id="8_cwffn"]
-[ext_resource type="PackedScene" path="res://features/abilities/vine_ring.tscn" id="8_vine_ring"]
-[ext_resource type="Texture2D" uid="uid://dcg5aepatmfvk" path="res://assets/runtime/scenery/_0037_已插入图像.png" id="9_cwffn"]
-[ext_resource type="PackedScene" path="res://features/level/handbuilt/thorn_damage.tscn" id="11_e6lid"]
-[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="14_3g50r"]
-[ext_resource type="Texture2D" uid="uid://dkq0p7me8pn8x" path="res://assets/runtime/scenery/_0014_培养罐.png" id="31_broken_tank"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="32_phantom_host"]
-[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="33_phantom_camera"]
+[ext_resource type="Script" path="res://features/level/terrain/terrain_skin.gd" id="skin"]
+[ext_resource type="Resource" path="res://features/level/terrain/data/root_passage.tres" id="style_root_passage"]
+[ext_resource type="ShaderMaterial" path="res://features/level/terrain/terrain_cutout.tres" id="cutout"]
+[ext_resource type="Script" path="res://features/level/combat/greenhouse_level.gd" id="level"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="phantom_host"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="phantom_camera"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="camera_tween"]
+[ext_resource type="PackedScene" path="res://features/player/player.tscn" id="player"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/terrain_piece.tscn" id="terrain"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/spawn_point.tscn" id="spawn"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="bounds"]
+[ext_resource type="PackedScene" path="res://features/level/nutrition_tank.tscn" id="grow"]
+[ext_resource type="PackedScene" path="res://features/level/toxin_resource.tscn" id="toxin"]
+[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="checkpoint"]
+[ext_resource type="PackedScene" path="res://features/abilities/vine_anchor.tscn" id="anchor"]
+[ext_resource type="PackedScene" path="res://features/level/exit_goal.tscn" id="exit"]
+[ext_resource type="Script" path="res://features/level/combat/encounter_controller.gd" id="encounter"]
+[ext_resource type="Script" path="res://features/level/combat/greenhouse_backdrop.gd" id="backdrop"]
+[ext_resource type="Script" path="res://features/combat/combat_feedback.gd" id="feedback"]
+[ext_resource type="PackedScene" path="res://features/audio/sound_emitter.tscn" id="sounds"]
+[ext_resource type="PackedScene" path="res://features/ui/handbuilt_hud.tscn" id="hud"]
+[ext_resource type="PackedScene" path="res://features/ui/combat_hud.tscn" id="combat_hud"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0036_苔藓地1.png" id="moss"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0030_锈蚀钢板-.png" id="steel"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0026_树枝平台（延申）.png" id="branch"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0011_高草1.png" id="grass"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0006_树根1.png" id="root"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0021_爬墙藤.png" id="vine"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0002_红花1.png" id="flowers"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0014_培养罐.png" id="tank"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/greenhouse_ground.png" id="ground_art"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/greenhouse_background.png" id="glasshouse_art"]
+[ext_resource type="FontFile" path="res://assets/runtime/ui/botanical/NotoSansSC.ttf" id="font"]
+[ext_resource type="Resource" path="res://features/level/terrain/data/nursery.tres" id="style_nursery"]
+[ext_resource type="Resource" path="res://features/level/terrain/data/moss.tres" id="style_moss"]
+[ext_resource type="Resource" path="res://features/level/terrain/data/spore.tres" id="style_spore"]
+[ext_resource type="Resource" path="res://features/level/terrain/data/workshop.tres" id="style_workshop"]
+[ext_resource type="Resource" path="res://features/level/terrain/data/canopy.tres" id="style_canopy"]
+[ext_resource type="Resource" path="res://features/level/terrain/data/courtyard.tres" id="style_courtyard"]
+[ext_resource type="Resource" path="res://features/level/terrain/data/core.tres" id="style_core"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/drain.tres" id="part_drain"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/catwalk.tres" id="part_catwalk"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/culvert.tres" id="part_culvert"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/pipe.tres" id="part_pipe"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/buttress.tres" id="part_buttress"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/core_plinth.tres" id="part_core_plinth"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/root_soil.tres" id="part_root_soil"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/fungal_log.tres" id="part_fungal_log"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/seedling_tray.tres" id="part_seedling_tray"]
+[ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/broken_planter.tres" id="part_broken_planter"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0025_根部延申.png" id="root_support"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/branch_wall.png" id="root_wall"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0032_底面地板.png" id="slab_a"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0034_水泥板.png" id="slab_b"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0029_石板.png" id="stone_alt"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0035_草地坡.png" id="slope"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0040_垂坠1.png" id="hang_a"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0041_垂坠2.png" id="hang_b"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0001_草团2.png" id="tuft_b"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0003_红花2.png" id="flower_b"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0022_草皮.png" id="grass_low"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0023_草皮2.png" id="grass_low_b"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0024_草皮.png" id="grass_low_c"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0004_针草1.png" id="needle_a"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0005_针草2.png" id="needle_b"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0016_量杯.png" id="beaker"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0017_锥形瓶1.png" id="flask_alt"]
+[ext_resource type="Texture2D" path="res://assets/runtime/rooms/nursery_foreground.png" id="nursery_art"]
+[ext_resource type="ShaderMaterial" path="res://features/level/rooms/foreground_cutout.tres" id="nursery_foreground_matte"]
+[ext_resource type="Texture2D" path="res://assets/runtime/rooms/nursery_distant.png" id="nursery_distant"]
+[ext_resource type="Script" path="res://features/level/rooms/nursery_atmosphere.gd" id="nursery_atmosphere"]
+[ext_resource type="Script" path="res://features/level/rooms/room_region.gd" id="room_region"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_e6lid"]
-resource_local_to_scene = true
-radius = 12.0
+[sub_resource type="AtlasTexture" id="flat_moss"]
+atlas = ExtResource("ground_art")
+region = Rect2(0, 98, 1774, 789)
+filter_clip = true
 
-[node name="Level01" type="Node2D" unique_id=943232891]
-script = ExtResource("1_level")
-metadata/_edit_vertical_guides_ = [-8.0]
+[sub_resource type="Resource" id="camera_transition"]
+script = ExtResource("camera_tween")
+duration = 0.35
+transition = 1
+ease = 2
 
-[node name="Node" type="Node" parent="." unique_id=1887232084]
+[sub_resource type="RectangleShape2D" id="wall1"]
+size = Vector2(20, 510)
 
-[node name="DecorativeScenery" parent="Node" unique_id=819484407 instance=ExtResource("2_t0hvh")]
-position = Vector2(-258, 467)
-scale = Vector2(0.2, 0.2)
-sprite_variants = ExtResource("3_kfebt")
-variant_index = 1
-layout_mode = 1
-tile_count = Vector2i(20, 1)
-tile_spacing = Vector2(-60, 0)
+[sub_resource type="RectangleShape2D" id="wall2"]
+size = Vector2(20, 400)
 
-[node name="DecorativeScenery2" parent="Node" unique_id=1336819193 instance=ExtResource("2_t0hvh")]
-position = Vector2(-209, 474.99997)
-scale = Vector2(0.2, 0.2)
-sprite_variants = ExtResource("3_kfebt")
-variant_index = 2
-layout_mode = 1
-tile_count = Vector2i(40, 1)
-tile_spacing = Vector2(-60, 0)
+[sub_resource type="RectangleShape2D" id="wall4"]
+size = Vector2(45.25, 69)
 
-[node name="DecorativeScenery3" parent="Node" unique_id=1402646353 instance=ExtResource("2_t0hvh")]
-position = Vector2(54, 238)
-sprite_variants = ExtResource("4_gi8m4")
+[sub_resource type="RectangleShape2D" id="nursery_source_reach"]
+size = Vector2(96, 48)
 
-[node name="DecorativeScenery4" parent="Node" unique_id=258388238 instance=ExtResource("2_t0hvh")]
-position = Vector2(127.99999, 178)
-rotation = -0.7586893
-sprite_variants = ExtResource("4_gi8m4")
-variant_index = 1
+[node name="Level01" type="Node2D"]
+script = ExtResource("level")
 
-[node name="FlowerDecorations" type="Node2D" parent="." unique_id=1250026949]
-
-[node name="FlowerStart" parent="FlowerDecorations" unique_id=121951564 instance=ExtResource("2_flower")]
-position = Vector2(88, 494)
-
-[node name="FlowerMiddle" parent="FlowerDecorations" unique_id=188238632 instance=ExtResource("2_flower")]
-position = Vector2(610, 495)
-
-[node name="FlowerBehindWall" parent="FlowerDecorations" unique_id=1092995025 instance=ExtResource("2_flower")]
-position = Vector2(1036.0001, 493)
-scale = Vector2(0.9, 0.9)
-
-[node name="FlowerUpper" parent="FlowerDecorations" unique_id=1850958193 instance=ExtResource("2_flower")]
-position = Vector2(589, 11.999999)
-scale = Vector2(0.85, 0.85)
-
-[node name="Background" type="Node2D" parent="." unique_id=1684300338]
+[node name="Background" type="Node2D" parent="."]
 z_index = -20
 
-[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1633713359]
-color = Color(0.2, 0.24, 0.28, 1)
+[node name="Glasshouse" type="Node2D" parent="Background"]
+script = ExtResource("backdrop")
+background_texture = ExtResource("glasshouse_art")
+length = 8620.0
+floor_y = 400.0
 
-[node name="Geometry" type="Node2D" parent="." unique_id=1772310243]
+[node name="Geometry" type="Node2D" parent="."]
 
-[node name="Terrain" type="Node2D" parent="Geometry" unique_id=1030929769]
 
-[node name="StartFloor" parent="Geometry/Terrain" unique_id=373654360 instance=ExtResource("5_terrain")]
-position = Vector2(-256, 469)
-piece_size = Vector2(1344, 40)
-collision_top_inset = 6.5
-art_scale_multiplier = 0.4
+[node name="Terrain" type="Node2D" parent="Geometry"]
 
-[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor" index="0" unique_id=1031688781]
-polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
 
-[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor" index="1" unique_id=1185384908]
-offset_right = 3360.0
-offset_bottom = 100.0
-scale = Vector2(0.4, 0.4)
-patch_margin_left = 22
-patch_margin_right = 38
-patch_margin_bottom = 8
+[node name="Mechanisms" type="Node2D" parent="Geometry"]
 
-[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor" index="2" unique_id=1905841275]
-texture_scale = Vector2(2.5, 2.5)
-polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
 
-[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor" index="3" unique_id=1905841276]
-scale = Vector2(0.4, 0.4)
+[node name="Floor760" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(760, 400)
+piece_size = Vector2(1440, 140)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("moss")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
 
-[node name="LeftCap" parent="Geometry/Terrain/StartFloor" index="4" unique_id=1739312993]
-scale = Vector2(0.4, 0.4)
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/Floor760"]
+script = ExtResource("skin")
+profile = ExtResource("style_moss")
+span = 1440
+depth = 140
+z_index = -3
+pattern_offset = 0
 
-[node name="RightCap" parent="Geometry/Terrain/StartFloor" index="5" unique_id=1455343970]
-scale = Vector2(0.4, 0.4)
+[node name="Floor2200" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(2200, 400)
+piece_size = Vector2(1440, 140)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("moss")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
 
-[node name="BranchWall" parent="Geometry/Terrain" unique_id=168909206 instance=ExtResource("6_jmes4")]
-position = Vector2(220, 346)
-rotation = 2.5920396
-scale = Vector2(0.9, 0.9)
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/Floor2200"]
+script = ExtResource("skin")
+profile = ExtResource("style_spore")
+span = 1440
+depth = 140
+z_index = -3
+pattern_offset = 0
 
-[node name="CollisionPolygon2D" parent="Geometry/Terrain/BranchWall" index="1" unique_id=331758531]
-position = Vector2(2.958107, 4.743433)
-polygon = PackedVector2Array(-27.648926, -141.5304, -15.377289, -147.2066, -3.505066, -109.15253, 0.66567993, -72.88385, 12, -50, 5, -10, 27, 41, 10, 54, 14, 138, -6, 138, -11, 87, -6, 33, -6, 15, -25, -22, -17, -79, -18.494919, -111.00452)
+[node name="Floor3640" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(3640, 400)
+piece_size = Vector2(1440, 24)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("steel")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, 0)
+collision_mode = 0
+one_way_collision = false
 
-[node name="LightOccluder2D" parent="Geometry/Terrain/BranchWall" index="2"]
-position = Vector2(2.958107, 4.743433)
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/Floor3640"]
+script = ExtResource("skin")
+profile = ExtResource("style_workshop")
+span = 1440
+depth = 24
+z_index = -3
+pattern_offset = 1
 
-[node name="StartFloor2" parent="Geometry/Terrain" unique_id=1291361382 instance=ExtResource("5_terrain")]
-position = Vector2(-262, -3)
-piece_size = Vector2(1344, 40)
-collision_top_inset = 6.5
-art_scale_multiplier = 0.4
+[node name="Floor5080" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5080, 400)
+piece_size = Vector2(320, 140)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("moss")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
 
-[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor2" index="0" unique_id=1031688781]
-polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/Floor5080"]
+script = ExtResource("skin")
+profile = ExtResource("style_moss")
+span = 320
+depth = 140
+z_index = -3
+pattern_offset = 1
 
-[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor2" index="1" unique_id=1185384908]
-offset_right = 3360.0
-offset_bottom = 100.0
-scale = Vector2(0.4, 0.4)
-patch_margin_left = 22
-patch_margin_right = 38
-patch_margin_bottom = 8
+[node name="Floor6140" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(6140, 400)
+piece_size = Vector2(340, 140)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("moss")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
 
-[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor2" index="2" unique_id=1905841275]
-texture_scale = Vector2(2.5, 2.5)
-polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/Floor6140"]
+script = ExtResource("skin")
+profile = ExtResource("style_moss")
+span = 340
+depth = 140
+z_index = -3
+pattern_offset = 3
 
-[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor2" index="3" unique_id=1905841276]
-scale = Vector2(0.4, 0.4)
+[node name="Floor6480" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(6480, 400)
+piece_size = Vector2(960, 140)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("steel")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, 0)
+collision_mode = 0
+one_way_collision = false
 
-[node name="LeftCap" parent="Geometry/Terrain/StartFloor2" index="4" unique_id=1739312993]
-scale = Vector2(0.4, 0.4)
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/Floor6480"]
+script = ExtResource("skin")
+profile = ExtResource("style_courtyard")
+span = 960
+depth = 140
+z_index = -3
+pattern_offset = 1
 
-[node name="RightCap" parent="Geometry/Terrain/StartFloor2" index="5" unique_id=1455343970]
-scale = Vector2(0.4, 0.4)
+[node name="Floor7440" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(7440, 400)
+piece_size = Vector2(1180, 140)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("steel")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, 0)
+collision_mode = 0
+one_way_collision = false
 
-[node name="Node2" type="Node" parent="Geometry/Terrain/StartFloor2" unique_id=43964354]
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/Floor7440"]
+script = ExtResource("skin")
+profile = ExtResource("style_core")
+span = 1180
+depth = 140
+z_index = -3
+pattern_offset = 3
 
-[node name="DecorativeScenery" parent="Geometry/Terrain/StartFloor2/Node2" unique_id=736504682 instance=ExtResource("2_t0hvh")]
-position = Vector2(-258, -4.9999847)
-scale = Vector2(0.2, 0.2)
-sprite_variants = ExtResource("3_kfebt")
-variant_index = 1
-layout_mode = 1
-tile_count = Vector2i(20, 1)
-tile_spacing = Vector2(-60, 0)
+[node name="LeftBoundary" type="StaticBody2D" parent="Geometry/Mechanisms"]
+position = Vector2(-150, 450)
+collision_layer = 1
+collision_mask = 0
 
-[node name="DecorativeScenery2" parent="Geometry/Terrain/StartFloor2/Node2" unique_id=192915609 instance=ExtResource("2_t0hvh")]
-position = Vector2(-204, 4)
-scale = Vector2(0.2, 0.2)
-sprite_variants = ExtResource("3_kfebt")
-variant_index = 2
-layout_mode = 1
-tile_count = Vector2i(40, 1)
-tile_spacing = Vector2(-60, 0)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Mechanisms/LeftBoundary"]
+shape = SubResource("wall1")
 
-[node name="StartFloor3" parent="Geometry/Terrain" unique_id=1062924864 instance=ExtResource("5_terrain")]
-position = Vector2(-262, 210)
-piece_size = Vector2(420, 40)
-collision_top_inset = 6.5
-art_scale_multiplier = 0.4
+[node name="Artwork" type="Polygon2D" parent="Geometry/Mechanisms/LeftBoundary"]
+polygon = PackedVector2Array(-10, -255, 10, -255, 10, 255, -10, 255)
+color = Color(0.24,0.38,0.28,1)
 
-[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor3" index="0" unique_id=1031688781]
-polygon = PackedVector2Array(0, 6.5, 420, 6.5, 420, 40, 0, 40)
+[node name="NurseryRoom" type="Node2D" parent="."]
 
-[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor3" index="1" unique_id=1185384908]
-offset_right = 1050.0
-offset_bottom = 100.0
-scale = Vector2(0.4, 0.4)
-patch_margin_left = 22
-patch_margin_right = 38
-patch_margin_bottom = 8
 
-[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor3" index="2" unique_id=1905841275]
-texture_scale = Vector2(2.5, 2.5)
-polygon = PackedVector2Array(0, 0, 420, 0, 420, 40, 0, 40)
+[node name="EntryView" type="Node2D" parent="NurseryRoom"]
+script = ExtResource("room_region")
+position = Vector2(-80, 200)
+room_id = &"nursery_entry"
+room_name = "01 / 培养室"
+objective = "穿过根洞，前往右侧营养源"
+region_size = Vector2(390, 420)
+camera_center = Vector2(410, 200)
+camera_zoom = 1.5
+selection_priority = 1
 
-[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor3" index="3" unique_id=1905841276]
-scale = Vector2(0.4, 0.4)
+[node name="ChamberView" type="Node2D" parent="NurseryRoom"]
+script = ExtResource("room_region")
+position = Vector2(310, 200)
+room_id = &"nursery_chamber"
+room_name = "01 / 培养室"
+objective = "按住 E 吸收营养 · 跳跃登上右侧温室步道"
+region_size = Vector2(385, 420)
+camera_center = Vector2(20, 200)
+camera_zoom = 1.5
+selection_priority = 1
 
-[node name="LeftCap" parent="Geometry/Terrain/StartFloor3" index="4" unique_id=1739312993]
-scale = Vector2(0.4, 0.4)
+[node name="RoomAir" type="Polygon2D" parent="NurseryRoom"]
+z_index = -15
+polygon = PackedVector2Array(-160, 120, 760, 120, 760, 704, -160, 704)
+color = Color(0.12,0.25,0.24,1)
 
-[node name="RightCap" parent="Geometry/Terrain/StartFloor3" index="5" unique_id=1455343970]
-scale = Vector2(0.4, 0.4)
+[node name="BackgroundClip" type="Polygon2D" parent="NurseryRoom"]
+z_index = -10
+clip_children = 1
+polygon = PackedVector2Array(-160, 120, 760, 120, 760, 704, -160, 704)
+color = Color(1,1,1,1)
 
-[node name="Node2" type="Node" parent="Geometry/Terrain/StartFloor3" unique_id=1891376500]
+[node name="DistantInterior" type="Sprite2D" parent="NurseryRoom/BackgroundClip"]
+texture = ExtResource("nursery_distant")
+centered = false
+position = Vector2(-105.42857142857144, 166.53061224489795)
+scale = Vector2(0.5306122448979592, 0.5306122448979592)
 
-[node name="DecorativeScenery" parent="Geometry/Terrain/StartFloor3/Node2" unique_id=709672287 instance=ExtResource("2_t0hvh")]
-position = Vector2(-258, -4.9999847)
-scale = Vector2(0.2, 0.2)
-sprite_variants = ExtResource("3_kfebt")
-variant_index = 1
-layout_mode = 1
-tile_count = Vector2i(20, 1)
-tile_spacing = Vector2(-60, 0)
+[node name="DistanceVeil" type="Polygon2D" parent="NurseryRoom/BackgroundClip"]
+polygon = PackedVector2Array(-160, 120, 760, 120, 760, 704, -160, 704)
+color = Color(0.28,0.44,0.42,0.22)
 
-[node name="DecorativeScenery2" parent="Geometry/Terrain/StartFloor3/Node2" unique_id=1508855872 instance=ExtResource("2_t0hvh")]
-position = Vector2(-204, 4)
-scale = Vector2(0.2, 0.2)
-sprite_variants = ExtResource("3_kfebt")
-variant_index = 2
-layout_mode = 1
-tile_count = Vector2i(40, 1)
-tile_spacing = Vector2(-60, 0)
+[node name="Foundation" type="StaticBody2D" parent="NurseryRoom"]
+collision_layer = 1
+collision_mask = 0
 
-[node name="BranchWall2" parent="Geometry/Terrain" unique_id=1358648627 instance=ExtResource("6_jmes4")]
-position = Vector2(250, 135.99997)
-rotation = 0.86986727
+[node name="Collision" type="CollisionPolygon2D" parent="NurseryRoom/Foundation"]
+polygon = PackedVector2Array(-160, 530, 390.694, 530, 396, 521.51, 399.714, 506.122, 402.898, 490.204, 413.51, 482.245, 443.755, 480.653, 483.551, 481.714, 512.204, 482.245, 514.327, 466.327, 518.041, 442.449, 531.306, 436.612, 563.143, 436.612, 620.449, 438.204, 623.633, 419.102, 632.122, 401.061, 642.735, 393.633, 695.796, 393.633, 760.531, 393.633, 760.531, 705.102, -160, 705.102)
 
-[node name="TerrainPiece" parent="Geometry/Terrain" unique_id=1706165700 instance=ExtResource("5_terrain")]
-position = Vector2(345, 316)
-scale = Vector2(0.5, 0.5)
-piece_size = Vector2(320, 200)
-display_mode = 2
-collision_mode = 1
-sprite_variants = ExtResource("8_cwffn")
-variant_index = 2
-
-[node name="CollisionPolygon2D" parent="Geometry/Terrain/TerrainPiece" index="0" unique_id=1031688781]
-position = Vector2(0, -1)
-polygon = PackedVector2Array(85, 24, 287, 26, 316, 35, 318, 53, 235, 177, 235, 213, 222, 217, 174, 162, 146, 176, 130, 166, 122, 124, 47, 105, 7, 65, 6, 27)
-
-[node name="TerrainVisual" parent="Geometry/Terrain/TerrainPiece" index="1" unique_id=1185384908]
+[node name="PaintedStructure" type="Polygon2D" parent="NurseryRoom/Foundation"]
 visible = false
-offset_right = 320.0
-offset_bottom = 200.0
-texture = ExtResource("9_cwffn")
-patch_margin_left = 9
-patch_margin_top = 5
-patch_margin_right = 9
-patch_margin_bottom = 5
+antialiased = true
+z_index = -3
+texture = ExtResource("nursery_art")
+polygon = PackedVector2Array(-160, 530, 390.694, 530, 396, 521.51, 399.714, 506.122, 402.898, 490.204, 413.51, 482.245, 443.755, 480.653, 483.551, 481.714, 512.204, 482.245, 514.327, 466.327, 518.041, 442.449, 531.306, 436.612, 563.143, 436.612, 620.449, 438.204, 623.633, 419.102, 632.122, 401.061, 642.735, 393.633, 695.796, 393.633, 760.531, 393.633, 760.531, 705.102, -160, 705.102)
+uv = PackedVector2Array(-102.846, 685, 935, 685, 945, 669, 952, 640, 958, 610, 978, 595, 1035, 592, 1110, 594, 1164, 595, 1168, 565, 1175, 520, 1200, 509, 1260, 509, 1368, 512, 1374, 476, 1390, 442, 1410, 428, 1510, 428, 1632, 428, 1632, 1015, -102.846, 1015)
 
-[node name="PolygonArtwork" parent="Geometry/Terrain/TerrainPiece" index="2" unique_id=1905841275]
-texture = ExtResource("9_cwffn")
-polygon = PackedVector2Array(0, 0, 320, 0, 320, 200, 0, 200)
+[node name="RootVault" type="StaticBody2D" parent="NurseryRoom"]
+collision_layer = 1
+collision_mask = 0
 
-[node name="WholeArtwork" parent="Geometry/Terrain/TerrainPiece" index="3" unique_id=1905841276]
-visible = true
-texture = ExtResource("9_cwffn")
+[node name="Collision" type="CollisionPolygon2D" parent="NurseryRoom/RootVault"]
+polygon = PackedVector2Array(-160, 100, 547.224, 100, 547.224, 158.571, 533.959, 166.531, 494.163, 188.816, 462.857, 209.51, 425.184, 231.265, 406.612, 257.265, 377.959, 281.673, 366.816, 293.878, 346.122, 310.327, 329.143, 335.796, 300.49, 350.653, 282.98, 371.347, 269.184, 386.735, 266, 410.082, 271.306, 428.122, 274.49, 451.469, 270.776, 476.939, 261.755, 487.551, 247.959, 495.51, 219.306, 498.694, 188, 497.102, 154.041, 493.918, 118.49, 490.204, 105.224, 475.878, 92.49, 458.367, 69.673, 450.408, 25.102, 449.347, 3.347, 455.714, -10.449, 466.327, -27.429, 461.551, -47.061, 464.204, -72, 454.653, -88.98, 449.878, -105.429, 453.061, -160, 453.061)
 
-[node name="TerrainPiece2" parent="Geometry/Terrain" unique_id=307304784 instance=ExtResource("5_terrain")]
-position = Vector2(588, 327)
-scale = Vector2(0.25, 0.25)
-piece_size = Vector2(320, 200)
-display_mode = 2
-collision_mode = 1
-sprite_variants = ExtResource("8_cwffn")
-variant_index = 2
-
-[node name="CollisionPolygon2D" parent="Geometry/Terrain/TerrainPiece2" index="0" unique_id=1031688781]
-position = Vector2(0, -1)
-polygon = PackedVector2Array(316, 41, 284, 25, 24, 25, 8, 33, 4, 65, 52, 105, 112, 113, 140, 169, 180, 165, 220, 213, 224, 217, 320, 53, 312, 37)
-
-[node name="TerrainVisual" parent="Geometry/Terrain/TerrainPiece2" index="1" unique_id=1185384908]
+[node name="PaintedStructure" type="Polygon2D" parent="NurseryRoom/RootVault"]
 visible = false
-offset_right = 320.0
-offset_bottom = 200.0
-texture = ExtResource("9_cwffn")
-patch_margin_left = 9
-patch_margin_top = 5
-patch_margin_right = 9
-patch_margin_bottom = 5
+antialiased = true
+z_index = -3
+texture = ExtResource("nursery_art")
+polygon = PackedVector2Array(-160, 100, 547.224, 100, 547.224, 158.571, 533.959, 166.531, 494.163, 188.816, 462.857, 209.51, 425.184, 231.265, 406.612, 257.265, 377.959, 281.673, 366.816, 293.878, 346.122, 310.327, 329.143, 335.796, 300.49, 350.653, 282.98, 371.347, 269.184, 386.735, 266, 410.082, 271.306, 428.122, 274.49, 451.469, 270.776, 476.939, 261.755, 487.551, 247.959, 495.51, 219.306, 498.694, 188, 497.102, 154.041, 493.918, 118.49, 490.204, 105.224, 475.878, 92.49, 458.367, 69.673, 450.408, 25.102, 449.347, 3.347, 455.714, -10.449, 466.327, -27.429, 461.551, -47.061, 464.204, -72, 454.653, -88.98, 449.878, -105.429, 453.061, -160, 453.061)
+uv = PackedVector2Array(-102.846, -125.385, 1230, -125.385, 1230, -15, 1205, 0, 1130, 42, 1071, 81, 1000, 122, 965, 171, 911, 217, 890, 240, 851, 271, 819, 319, 765, 347, 732, 386, 706, 415, 700, 459, 710, 493, 716, 537, 709, 585, 692, 605, 666, 620, 612, 626, 553, 623, 489, 617, 422, 610, 397, 583, 373, 550, 330, 535, 246, 533, 205, 545, 179, 565, 147, 556, 110, 561, 63, 543, 31, 534, 0, 540, -102.846, 540)
 
-[node name="PolygonArtwork" parent="Geometry/Terrain/TerrainPiece2" index="2" unique_id=1905841275]
-texture = ExtResource("9_cwffn")
-polygon = PackedVector2Array(0, 0, 320, 0, 320, 200, 0, 200)
+[node name="RoomPainting" type="Sprite2D" parent="NurseryRoom"]
+texture = ExtResource("nursery_art")
+material = ExtResource("nursery_foreground_matte")
+texture_filter = 4
+z_index = -5
+centered = false
+position = Vector2(-105.42857142857144, 158.57142857142856)
+scale = Vector2(0.5306122448979592, 0.5306122448979592)
 
-[node name="WholeArtwork" parent="Geometry/Terrain/TerrainPiece2" index="3" unique_id=1905841276]
-visible = true
-texture = ExtResource("9_cwffn")
+[node name="AirMotes" type="Node2D" parent="NurseryRoom"]
+script = ExtResource("nursery_atmosphere")
+z_index = -4
 
-[node name="Mechanisms" type="Node2D" parent="Geometry" unique_id=558713796]
+[node name="RightBoundary" type="StaticBody2D" parent="Geometry/Mechanisms"]
+position = Vector2(8570, 200)
+collision_layer = 1
+collision_mask = 0
 
-[node name="VineRing" parent="Geometry/Mechanisms" unique_id=22483420 instance=ExtResource("8_vine_ring")]
-position = Vector2(1626, 721)
-vine_length = 128.0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Mechanisms/RightBoundary"]
+shape = SubResource("wall2")
 
-[node name="ThornDamage" parent="Geometry/Mechanisms" unique_id=507255010 instance=ExtResource("11_e6lid")]
-position = Vector2(473, 391)
-collision_points = PackedVector2Array(0.03, 0.55, 0.15, 0.42, 0.29, 0.45, 0.43, 0.32, 0.58, 0.42, 0.72, 0.31, 0.97, 0.49, 0.97, 0.94, 0.03, 0.94)
+[node name="Artwork" type="Polygon2D" parent="Geometry/Mechanisms/RightBoundary"]
+polygon = PackedVector2Array(-10, -200, 10, -200, 10, 200, -10, 200)
+color = Color(0.24,0.38,0.28,1)
 
-[node name="Areas" type="Node2D" parent="." unique_id=1858714879]
+[node name="BeetlePlatformA" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(1180, 340)
+piece_size = Vector2(120, 8)
+sprite_variants = null
+show_artwork = true
+art_texture = ExtResource("slab_b")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
 
-[node name="GrowDrug" parent="Areas" unique_id=1480241049 instance=ExtResource("6_nutrition")]
-position = Vector2(-98, 456.00003)
-scale = Vector2(1.5, 1.5)
+[node name="BeetlePlatformB" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(1504, 340)
+piece_size = Vector2(120, 8)
+sprite_variants = null
+show_artwork = true
+art_texture = ExtResource("slab_b")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
 
-[node name="UnGrowDrug" parent="Areas" unique_id=2028605519 instance=ExtResource("7_toxin_resource")]
-position = Vector2(6, 457)
-scale = Vector2(1.5, 1.5)
+[node name="WorkshopPlatformB" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(4770, 340)
+piece_size = Vector2(120, 8)
+sprite_variants = null
+show_artwork = true
+art_texture = ExtResource("steel")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, 0)
+collision_mode = 1
+one_way_collision = true
 
-[node name="GrowDrug2" parent="Areas" unique_id=225277071 instance=ExtResource("6_nutrition")]
-position = Vector2(347.00003, 451)
-scale = Vector2(2.25, 2.25)
+[node name="CourtyardPlatform" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(6560, 340)
+piece_size = Vector2(104, 8)
+sprite_variants = null
+show_artwork = true
+art_texture = ExtResource("steel")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, 0)
+collision_mode = 1
+one_way_collision = true
 
-[node name="UnGrowDrug2" parent="Areas" unique_id=385952438 instance=ExtResource("7_toxin_resource")]
-position = Vector2(762, 440)
-scale = Vector2(2.25, 2.25)
+[node name="TreeStep" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5290, 350)
+piece_size = Vector2(140, 20)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
 
-[node name="Checkpoints" type="Node2D" parent="." unique_id=422565820]
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/TreeStep"]
+script = ExtResource("skin")
+profile = ExtResource("style_canopy")
+span = 140
+depth = 20
+z_index = -3
+pattern_offset = 2
 
-[node name="Checkpoint" parent="Checkpoints" unique_id=758390787 instance=ExtResource("14_3g50r")]
-position = Vector2(329, 438)
+[node name="CanopyWest" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5480, 300)
+piece_size = Vector2(120, 20)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
 
-[node name="Actors" type="Node2D" parent="." unique_id=25705282]
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/CanopyWest"]
+script = ExtResource("skin")
+profile = ExtResource("style_canopy")
+span = 120
+depth = 20
+z_index = -3
+pattern_offset = 4
 
-[node name="Player" parent="Actors" unique_id=1995216275 instance=ExtResource("2_player")]
+[node name="CanopyCrown" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5660, 260)
+piece_size = Vector2(150, 20)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/CanopyCrown"]
+script = ExtResource("skin")
+profile = ExtResource("style_canopy")
+span = 150
+depth = 20
+z_index = -3
+pattern_offset = 0
+
+[node name="CanopyEast" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5880, 300)
+piece_size = Vector2(130, 20)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/CanopyEast"]
+script = ExtResource("skin")
+profile = ExtResource("style_canopy")
+span = 130
+depth = 20
+z_index = -3
+pattern_offset = 2
+
+[node name="TreeLanding" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(6090, 350)
+piece_size = Vector2(130, 20)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/TreeLanding"]
+script = ExtResource("skin")
+profile = ExtResource("style_canopy")
+span = 130
+depth = 20
+z_index = -3
+pattern_offset = 3
+
+[node name="SporeCoverA" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(2320, 368)
+piece_size = Vector2(64, 32)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("slab_b")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/SporeCoverA"]
+script = ExtResource("skin")
+profile = ExtResource("style_spore")
+span = 64
+depth = 32
+z_index = -3
+pattern_offset = 1
+
+[node name="SporeCoverB" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(3040, 368)
+piece_size = Vector2(64, 32)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("slab_b")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/SporeCoverB"]
+script = ExtResource("skin")
+profile = ExtResource("style_spore")
+span = 64
+depth = 32
+z_index = -3
+pattern_offset = 1
+
+[node name="CanopyCatch" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5300, 555)
+piece_size = Vector2(860, 80)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("moss")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/CanopyCatch"]
+script = ExtResource("skin")
+profile = ExtResource("style_moss")
+span = 860
+depth = 80
+z_index = -3
+pattern_offset = 2
+
+[node name="CatchReturn0" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5840, 510)
+piece_size = Vector2(100, 12)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/CatchReturn0"]
+script = ExtResource("skin")
+profile = ExtResource("style_canopy")
+span = 100
+depth = 12
+z_index = -3
+pattern_offset = 1
+
+[node name="CatchReturn1" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5940, 465)
+piece_size = Vector2(100, 12)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/CatchReturn1"]
+script = ExtResource("skin")
+profile = ExtResource("style_canopy")
+span = 100
+depth = 12
+z_index = -3
+pattern_offset = 2
+
+[node name="CatchReturn2" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(6040, 420)
+piece_size = Vector2(100, 12)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 1
+one_way_collision = true
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/CatchReturn2"]
+script = ExtResource("skin")
+profile = ExtResource("style_canopy")
+span = 100
+depth = 12
+z_index = -3
+pattern_offset = 3
+
+[node name="SproutAlcoveRoof" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(5370, 486)
+piece_size = Vector2(165, 36)
+sprite_variants = null
+show_artwork = false
+art_texture = ExtResource("branch")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
+
+[node name="Surface" type="Node2D" parent="Geometry/Terrain/SproutAlcoveRoof"]
+script = ExtResource("skin")
+profile = ExtResource("style_root_passage")
+span = 165
+depth = 36
+z_index = -3
+pattern_offset = 3
+
+[node name="AlcoveBackwall" type="StaticBody2D" parent="Geometry/Mechanisms"]
+position = Vector2(5393.375, 520.5)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Geometry/Mechanisms/AlcoveBackwall"]
+shape = SubResource("wall4")
+
+[node name="Artwork" type="Polygon2D" parent="Geometry/Mechanisms/AlcoveBackwall"]
+polygon = PackedVector2Array(-22.625, -34.5, 22.625, -34.5, 22.625, 34.5, -22.625, 34.5)
+color = Color(0,0,0,0)
+
+[node name="SupportEnd" type="Sprite2D" parent="Geometry/Mechanisms/AlcoveBackwall"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(-22.625, -34.5)
+centered = false
+scale = Vector2(0.14935064935064934, 0.14935064935064934)
+
+[node name="ReturnFoundationSeal" parent="Geometry/Terrain" instance=ExtResource("terrain")]
+position = Vector2(6140, 540)
+piece_size = Vector2(20, 15)
+sprite_variants = null
+show_artwork = true
+art_texture = ExtResource("slab_b")
+art_scale_multiplier = 0.35
+tile_art_vertically = false
+art_offset = Vector2(0, -5)
+collision_mode = 0
+one_way_collision = false
+
+[node name="Areas" type="Node2D" parent="."]
+
+
+[node name="FirstGrowth" parent="Areas" instance=ExtResource("grow")]
+position = Vector2(429.43, 511.43)
+show_world_prompt = false
+accepted_form_id = &"sprout"
+
+[node name="TankSprite" parent="Areas/FirstGrowth"]
+visible = false
+
+[node name="CollisionShape2D" parent="Areas/FirstGrowth"]
+shape = SubResource("nursery_source_reach")
+
+[node name="MatureGrowth" parent="Areas" instance=ExtResource("grow")]
+position = Vector2(5190, 385)
+show_world_prompt = false
+
+[node name="BranchWither" parent="Areas" instance=ExtResource("toxin")]
+position = Vector2(5600, 540)
+show_world_prompt = false
+
+[node name="BranchRegrowth" parent="Areas" instance=ExtResource("grow")]
+position = Vector2(5680, 540)
+show_world_prompt = false
+
+[node name="CoreGrowth" parent="Areas" instance=ExtResource("grow")]
+position = Vector2(7190, 385)
+show_world_prompt = false
+
+[node name="CoreWither" parent="Areas" instance=ExtResource("toxin")]
+position = Vector2(7280, 385)
+show_world_prompt = false
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+
+[node name="Nursery" parent="Checkpoints" instance=ExtResource("checkpoint")]
+position = Vector2(725, 380)
+
+[node name="Canopy" parent="Checkpoints" instance=ExtResource("checkpoint")]
+position = Vector2(5160, 380)
+
+[node name="Crown" parent="Checkpoints" instance=ExtResource("checkpoint")]
+position = Vector2(5740, 240)
+
+[node name="Core" parent="Checkpoints" instance=ExtResource("checkpoint")]
+position = Vector2(7360, 380)
+
+[node name="Actors" type="Node2D" parent="."]
+
+
+[node name="Player" parent="Actors" instance=ExtResource("player")]
 unique_name_in_owner = true
-position = Vector2(96, 464)
+position = Vector2(35, 530)
 
-[node name="CollisionShape2D" parent="Actors/Player" index="0"]
-shape = SubResource("CircleShape2D_e6lid")
+[node name="FlowerLight" parent="Actors/Player/Visuals"]
+energy = 0.3
+texture_scale = 0.72
 
-[node name="Camera2D" type="Camera2D" parent="Actors/Player" unique_id=1453819068]
+[node name="Camera2D" type="Camera2D" parent="."]
 unique_name_in_owner = true
-limit_smoothed = true
+process_mode = 1
+position = Vector2(80, 450)
+zoom = Vector2(2.5, 2.5)
+position_smoothing_enabled = false
+limit_smoothed = false
 
-[node name="PhantomCameraHost" type="Node" parent="Actors/Player/Camera2D"]
-script = ExtResource("32_phantom_host")
+[node name="PhantomCameraHost" type="Node" parent="Camera2D"]
+unique_name_in_owner = true
+script = ExtResource("phantom_host")
 interpolation_mode = 2
 
-[node name="PhantomCamera2D" type="Node2D" parent="." unique_id=1453819069 node_paths=PackedStringArray("follow_target")]
+[node name="PhantomCamera2D" type="Node2D" parent="."]
 unique_name_in_owner = true
-script = ExtResource("33_phantom_camera")
-priority = 1
+process_mode = 1
+script = ExtResource("phantom_camera")
+position = Vector2(80, 450)
+priority = 10
 follow_mode = 5
-follow_target = NodePath("Actors/Player")
-zoom = Vector2(3, 3)
-follow_offset = Vector2(0, -80)
+zoom = Vector2(2.5, 2.5)
+follow_offset = Vector2(45, -60)
 follow_damping = true
 follow_damping_value = Vector2(0.12, 0.18)
 dead_zone_width = 0.6
@@ -359,35 +779,627 @@ lookahead = true
 lookahead_time = Vector2(0.2, 0)
 lookahead_max = true
 lookahead_max_value = Vector2(300, 0)
+tween_resource = SubResource("camera_transition")
+tween_on_load = false
 
-[node name="SpawnPoint" parent="." unique_id=943232892 instance=ExtResource("3_spawn")]
+[node name="EncounterCamera2D" type="Node2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(-229, 465)
-scale = Vector2(2, 2)
+process_mode = 1
+script = ExtResource("phantom_camera")
+position = Vector2(80, 450)
+priority = 0
+follow_mode = 0
+zoom = Vector2(2.1, 2.1)
+tween_resource = SubResource("camera_transition")
+tween_on_load = false
 
-[node name="BrokenTankIcon" type="Sprite2D" parent="SpawnPoint" unique_id=1622603824]
-z_index = -1
-position = Vector2(-1, -15)
-scale = Vector2(0.07, 0.07)
-texture = ExtResource("31_broken_tank")
-
-[node name="CameraBounds" parent="." unique_id=943232893 instance=ExtResource("4_bounds")]
+[node name="SpawnPoint" parent="." instance=ExtResource("spawn")]
 unique_name_in_owner = true
-position = Vector2(-414, 190)
-scale = Vector2(1.16, 0.9200003)
-bounds_size = Vector2(1500, 500)
+position = Vector2(35, 530)
 
-[node name="Foreground" type="Node2D" parent="." unique_id=943232894]
+[node name="CameraBounds" parent="." instance=ExtResource("bounds")]
+unique_name_in_owner = true
+position = Vector2(-160, -180)
+bounds_size = Vector2(8840, 850)
+
+[node name="Ring0" parent="Geometry/Mechanisms" instance=ExtResource("anchor")]
+position = Vector2(5540, 210)
+
+[node name="Ring1" parent="Geometry/Mechanisms" instance=ExtResource("anchor")]
+position = Vector2(5730, 170)
+
+[node name="Ring2" parent="Geometry/Mechanisms" instance=ExtResource("anchor")]
+position = Vector2(5950, 210)
+
+[node name="Encounters" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="BeetleIntro" type="Node2D" parent="Encounters"]
+position = Vector2(760, 400)
+script = ExtResource("encounter")
+encounter_id = &"beetle_intro"
+display_name = "苔藓步道"
+objective = "观察蓄力，跳过冲撞后反击"
+arena_size = Vector2(560, 280)
+camera_zoom = 2.1
+waves = Array[PackedStringArray]([PackedStringArray("beetle")])
+
+[node name="BeetlePair" type="Node2D" parent="Encounters"]
+position = Vector2(1480, 400)
+script = ExtResource("encounter")
+encounter_id = &"beetle_pair"
+display_name = "苔藓步道"
+objective = "连击末段击退 · Shift 闪避"
+arena_size = Vector2(560, 280)
+camera_zoom = 2.1
+waves = Array[PackedStringArray]([PackedStringArray("beetle", "beetle")])
+
+[node name="SporeIntro" type="Node2D" parent="Encounters"]
+position = Vector2(2200, 400)
+script = ExtResource("encounter")
+encounter_id = &"spore_intro"
+display_name = "孢子廊"
+objective = "F 弹反孢子，或跳跃接近"
+arena_size = Vector2(560, 280)
+camera_zoom = 2.1
+waves = Array[PackedStringArray]([PackedStringArray("spore")])
+
+[node name="SporeMixed" type="Node2D" parent="Encounters"]
+position = Vector2(2920, 400)
+script = ExtResource("encounter")
+encounter_id = &"spore_mixed"
+display_name = "孢子廊"
+objective = "利用高低差，先处理远程威胁"
+arena_size = Vector2(560, 280)
+camera_zoom = 2.1
+waves = Array[PackedStringArray]([PackedStringArray("spore", "beetle")])
+
+[node name="PrunerIntro" type="Node2D" parent="Encounters"]
+position = Vector2(3640, 400)
+script = ExtResource("encounter")
+encounter_id = &"pruner_intro"
+display_name = "修枝车间"
+objective = "右键破防 · F 弹反挥刃"
+arena_size = Vector2(560, 280)
+camera_zoom = 2.1
+waves = Array[PackedStringArray]([PackedStringArray("pruner")])
+
+[node name="PrunerMixed" type="Node2D" parent="Encounters"]
+position = Vector2(4360, 400)
+script = ExtResource("encounter")
+encounter_id = &"pruner_mixed"
+display_name = "修枝车间"
+objective = "绕背、破防与闪避交替使用"
+arena_size = Vector2(560, 280)
+camera_zoom = 2.1
+waves = Array[PackedStringArray]([PackedStringArray("pruner", "beetle")])
+
+[node name="Quarantine" type="Node2D" parent="Encounters"]
+position = Vector2(6480, 400)
+script = ExtResource("encounter")
+encounter_id = &"quarantine"
+display_name = "隔离庭院"
+objective = "两轮防线 · 注意远程与近战配合"
+arena_size = Vector2(560, 280)
+camera_zoom = 2.1
+waves = Array[PackedStringArray]([PackedStringArray("beetle", "beetle", "spore"), PackedStringArray("beetle", "spore", "pruner")])
+
+[node name="Warden" type="Node2D" parent="Encounters"]
+position = Vector2(7440, 400)
+script = ExtResource("encounter")
+encounter_id = &"warden"
+display_name = "温室核心"
+objective = "红叉重砸不可弹反 · 抓住收招"
+arena_size = Vector2(720, 280)
+camera_zoom = 1.65
+waves = Array[PackedStringArray]([PackedStringArray("warden")])
+
+[node name="ExitGoal" parent="Areas" instance=ExtResource("exit")]
+unique_name_in_owner = true
+position = Vector2(8370, 400)
+
+[node name="Foreground" type="Node2D" parent="."]
+z_index = 5
+
+[node name="Effects" type="Node2D" parent="."]
 z_index = 10
 
-[node name="Effects" type="Node2D" parent="." unique_id=943232895]
-z_index = 20
+[node name="CombatFeedback" type="Node2D" parent="Effects"]
+unique_name_in_owner = true
+script = ExtResource("feedback")
 
-[editable path="Geometry/Terrain/StartFloor"]
-[editable path="Geometry/Terrain/BranchWall"]
-[editable path="Geometry/Terrain/StartFloor2"]
-[editable path="Geometry/Terrain/StartFloor3"]
-[editable path="Geometry/Terrain/TerrainPiece"]
-[editable path="Geometry/Terrain/TerrainPiece2"]
-[editable path="Geometry/Mechanisms/VineRing"]
-[editable path="Actors/Player"]
+[node name="LevelSounds" parent="." instance=ExtResource("sounds")]
+unique_name_in_owner = true
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+
+[node name="HandbuiltHud" parent="Interface" instance=ExtResource("hud")]
+unique_name_in_owner = true
+
+[node name="CombatHud" parent="." instance=ExtResource("combat_hud")]
+unique_name_in_owner = true
+
+[node name="Architecture" type="Node2D" parent="."]
+z_index = -2
+
+[node name="RoomDetails" type="Node2D" parent="Background"]
+z_index = 15
+
+[node name="WalkDrainTransition" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_culvert")
+material = ExtResource("cutout")
+position = Vector2(1345, 403)
+scale = Vector2(0.35564853556485354, 0.35564853556485354)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="SporeDrainTransition" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_drain")
+material = ExtResource("cutout")
+position = Vector2(2080, 402)
+scale = Vector2(0.23949579831932774, 0.23949579831932774)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="PathRootA" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("root_support")
+position = Vector2(915, 450)
+scale = Vector2(0.48, 0.48)
+modulate = Color(0.63,0.72,0.51,1)
+
+[node name="PathRootB" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("root_support")
+position = Vector2(1880, 455)
+scale = Vector2(0.38, 0.38)
+modulate = Color(0.63,0.72,0.51,1)
+
+[node name="PathRootC" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("root_support")
+position = Vector2(2050, 409)
+scale = Vector2(0.26, 0.26)
+modulate = Color(0.63,0.72,0.51,1)
+
+[node name="MossShoulder" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("slope")
+position = Vector2(1400, 420)
+scale = Vector2(0.4, 0.4)
+modulate = Color(0.74,0.8,0.62,1)
+
+[node name="SporeCulvertA" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_culvert")
+material = ExtResource("cutout")
+position = Vector2(2220, 408)
+scale = Vector2(0.42887029288702927, 0.42887029288702927)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="SporeCulvertB" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_culvert")
+material = ExtResource("cutout")
+position = Vector2(3240, 408)
+scale = Vector2(0.4497907949790795, 0.4497907949790795)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="SporePipeA" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_pipe")
+material = ExtResource("cutout")
+position = Vector2(2645, 262)
+scale = Vector2(0.31671554252199413, 0.31671554252199413)
+centered = false
+modulate = Color(0.34,0.46,0.43,1)
+
+[node name="SporePipeB" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_pipe")
+material = ExtResource("cutout")
+position = Vector2(2920, 278)
+scale = Vector2(0.2756598240469208, 0.2756598240469208)
+centered = false
+modulate = Color(0.38,0.47,0.39,1)
+
+[node name="FungalTimberA" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_fungal_log")
+material = ExtResource("cutout")
+position = Vector2(2580, 415)
+scale = Vector2(0.20893371757925072, 0.20893371757925072)
+centered = false
+modulate = Color(0.63,0.68,0.55,1)
+
+[node name="FungalTimberB" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_fungal_log")
+material = ExtResource("cutout")
+position = Vector2(3320, 418)
+scale = Vector2(0.17002881844380405, 0.17002881844380405)
+centered = false
+modulate = Color(0.6,0.65,0.54,1)
+
+[node name="SporeCoverSeedlingsA" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_seedling_tray")
+material = ExtResource("cutout")
+position = Vector2(2325, 344)
+scale = Vector2(0.07627118644067797, 0.07627118644067797)
+centered = false
+modulate = Color(0.5,0.56,0.42,1)
+
+[node name="SporeCoverSeedlingsB" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_seedling_tray")
+material = ExtResource("cutout")
+position = Vector2(3045, 344)
+scale = Vector2(0.07627118644067797, 0.07627118644067797)
+centered = false
+modulate = Color(0.47,0.52,0.42,1)
+
+[node name="WorkshopColumn0" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(3650, 421)
+scale = Vector2(0.1716171617161716, 0.1716171617161716)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="WorkshopColumn1" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(4060, 421)
+scale = Vector2(0.1716171617161716, 0.1716171617161716)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="WorkshopColumn2" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(4380, 421)
+scale = Vector2(0.1716171617161716, 0.1716171617161716)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="WorkshopColumn3" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(4860, 421)
+scale = Vector2(0.1716171617161716, 0.1716171617161716)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="WorkshopBridge" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_catwalk")
+material = ExtResource("cutout")
+position = Vector2(4200, 401)
+scale = Vector2(0.32454361054766734, 0.32454361054766734)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="WorkshopServicePipe" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_pipe")
+material = ExtResource("cutout")
+position = Vector2(4170, 295)
+scale = Vector2(0.2932551319648094, 0.2932551319648094)
+centered = false
+modulate = Color(0.45,0.51,0.44,1)
+
+[node name="WorkshopSideBracket" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_catwalk")
+material = ExtResource("cutout")
+position = Vector2(4770, 343)
+scale = Vector2(0.2434077079107505, 0.2434077079107505)
+centered = false
+modulate = Color(0.46,0.56,0.49,1)
+
+[node name="WorkshopRootJoint" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("root_support")
+position = Vector2(5035, 420)
+scale = Vector2(0.46, 0.46)
+modulate = Color(0.64,0.73,0.53,1)
+
+[node name="RootStairBearing" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_support")
+position = Vector2(5350, 409)
+scale = Vector2(0.56, 0.56)
+modulate = Color(0.48,0.59,0.39,1)
+
+[node name="WestBranchBearing" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_support")
+position = Vector2(5515, 355)
+scale = Vector2(0.53, 0.53)
+modulate = Color(0.48,0.59,0.39,1)
+
+[node name="CrownBranchBearing" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_support")
+position = Vector2(5730, 325)
+scale = Vector2(0.64, 0.64)
+modulate = Color(0.48,0.59,0.39,1)
+
+[node name="EastBranchBearing" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_support")
+position = Vector2(5920, 357)
+scale = Vector2(0.54, 0.54)
+modulate = Color(0.48,0.59,0.39,1)
+
+[node name="LandingRootBearing" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_support")
+position = Vector2(6150, 414)
+scale = Vector2(0.6, 0.6)
+modulate = Color(0.48,0.59,0.39,1)
+
+[node name="ReturnBranch0" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_support")
+position = Vector2(5900, 555)
+scale = Vector2(0.39, 0.39)
+modulate = Color(0.48,0.59,0.39,1)
+
+[node name="ReturnBranch1" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_support")
+position = Vector2(6000, 510)
+scale = Vector2(0.39, 0.39)
+modulate = Color(0.48,0.59,0.39,1)
+
+[node name="ReturnBranch2" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_support")
+position = Vector2(6100, 465)
+scale = Vector2(0.39, 0.39)
+modulate = Color(0.48,0.59,0.39,1)
+
+[node name="CanopyTrunkWest" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_wall")
+position = Vector2(5490, 320)
+scale = Vector2(0.94, 0.94)
+rotation = 1.5707963
+modulate = Color(0.26,0.38,0.27,1)
+
+[node name="CanopyTrunkEast" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("root_wall")
+position = Vector2(5960, 340)
+scale = Vector2(0.94, 0.94)
+rotation = 1.5707963
+modulate = Color(0.26,0.38,0.27,1)
+
+[node name="LowerNurseryTrough" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_seedling_tray")
+material = ExtResource("cutout")
+position = Vector2(5440, 560)
+scale = Vector2(0.2189265536723164, 0.2189265536723164)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="LowerNurseryPlanter" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_broken_planter")
+material = ExtResource("cutout")
+position = Vector2(5775, 488)
+scale = Vector2(0.11538461538461539, 0.11538461538461539)
+centered = false
+modulate = Color(0.5,0.57,0.4,1)
+
+[node name="CanopyDrainOutlet" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_drain")
+material = ExtResource("cutout")
+position = Vector2(5320, 557)
+scale = Vector2(0.25210084033613445, 0.25210084033613445)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="CrownHangingLeaves" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("hang_a")
+position = Vector2(5740, 318)
+scale = Vector2(0.25, 0.25)
+modulate = Color(0.5,0.62,0.43,1)
+
+[node name="WestHangingLeaves" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("hang_b")
+position = Vector2(5500, 354)
+scale = Vector2(0.2, 0.2)
+modulate = Color(0.4,0.54,0.38,1)
+
+[node name="CourtSideSupport0" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(6560, 346)
+scale = Vector2(0.11551155115511551, 0.11551155115511551)
+centered = false
+modulate = Color(0.28,0.38,0.33,1)
+
+[node name="CourtSideSupport1" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(6629, 346)
+scale = Vector2(0.11551155115511551, 0.11551155115511551)
+centered = false
+modulate = Color(0.28,0.38,0.33,1)
+
+[node name="CourtButtress0" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(6485, 404)
+scale = Vector2(0.20462046204620463, 0.20462046204620463)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="CourtButtress1" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(7000, 404)
+scale = Vector2(0.20462046204620463, 0.20462046204620463)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="CourtButtress2" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_buttress")
+material = ExtResource("cutout")
+position = Vector2(7360, 404)
+scale = Vector2(0.20462046204620463, 0.20462046204620463)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="CourtPlanter" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_broken_planter")
+material = ExtResource("cutout")
+position = Vector2(7090, 320)
+scale = Vector2(0.14053254437869822, 0.14053254437869822)
+centered = false
+modulate = Color(0.4,0.46,0.37,1)
+
+[node name="CourtPrepareTray" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_seedling_tray")
+material = ExtResource("cutout")
+position = Vector2(7170, 405)
+scale = Vector2(0.1694915254237288, 0.1694915254237288)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="CourtRootDrain" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("part_drain")
+material = ExtResource("cutout")
+position = Vector2(7290, 404)
+scale = Vector2(0.21008403361344538, 0.21008403361344538)
+centered = false
+modulate = Color(0.8,0.84,0.76,1)
+
+[node name="CorePipeLeft" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_pipe")
+material = ExtResource("cutout")
+position = Vector2(7465, 280)
+scale = Vector2(0.2697947214076246, 0.2697947214076246)
+centered = false
+modulate = Color(0.37,0.44,0.38,1)
+
+[node name="CorePipeRight" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_pipe")
+material = ExtResource("cutout")
+position = Vector2(8090, 280)
+scale = Vector2(0.2697947214076246, 0.2697947214076246)
+centered = false
+modulate = Color(0.37,0.44,0.38,1)
+
+[node name="CoreRootFeed" type="Sprite2D" parent="Architecture"]
+texture = ExtResource("root_support")
+position = Vector2(7855, 475)
+scale = Vector2(0.55, 0.55)
+modulate = Color(0.54,0.62,0.44,1)
+
+[node name="ExitSeedlings" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("part_seedling_tray")
+material = ExtResource("cutout")
+position = Vector2(8480, 360)
+scale = Vector2(0.11299435028248588, 0.11299435028248588)
+centered = false
+modulate = Color(0.58,0.69,0.48,1)
+
+[node name="LocalGrowth3" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("grass_low_b")
+position = Vector2(820, 402)
+scale = Vector2(0.16, 0.16)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth4" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("tuft_b")
+position = Vector2(1250, 402)
+scale = Vector2(0.08, 0.08)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth5" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("needle_a")
+position = Vector2(1405, 403)
+scale = Vector2(0.07, 0.07)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth6" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("flowers")
+position = Vector2(1540, 402)
+scale = Vector2(0.055, 0.055)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth7" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("grass_low_c")
+position = Vector2(1980, 402)
+scale = Vector2(0.16, 0.16)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth8" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("needle_b")
+position = Vector2(2140, 402)
+scale = Vector2(0.075, 0.075)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth9" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("grass_low_b")
+position = Vector2(2250, 402)
+scale = Vector2(0.11, 0.11)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth10" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("tuft_b")
+position = Vector2(2700, 402)
+scale = Vector2(0.055, 0.055)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth11" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("grass_low_c")
+position = Vector2(2890, 402)
+scale = Vector2(0.12, 0.12)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth12" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("grass_low")
+position = Vector2(3490, 402)
+scale = Vector2(0.12, 0.12)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth13" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("needle_a")
+position = Vector2(4990, 401)
+scale = Vector2(0.065, 0.065)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth14" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("tuft_b")
+position = Vector2(5170, 401)
+scale = Vector2(0.08, 0.08)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth15" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("flower_b")
+position = Vector2(5375, 351)
+scale = Vector2(0.055, 0.055)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth16" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("grass_low_b")
+position = Vector2(5715, 261)
+scale = Vector2(0.11, 0.11)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth17" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("needle_b")
+position = Vector2(5980, 301)
+scale = Vector2(0.065, 0.065)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth18" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("grass_low_c")
+position = Vector2(6310, 402)
+scale = Vector2(0.15, 0.15)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth19" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("flower_b")
+position = Vector2(7080, 402)
+scale = Vector2(0.05, 0.05)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth20" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("tuft_b")
+position = Vector2(7420, 402)
+scale = Vector2(0.06, 0.06)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth21" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("grass_low")
+position = Vector2(8250, 402)
+scale = Vector2(0.13, 0.13)
+modulate = Color(0.55,0.69,0.48,1)
+
+[node name="LocalGrowth22" type="Sprite2D" parent="Background/RoomDetails"]
+texture = ExtResource("flower_b")
+position = Vector2(8520, 402)
+scale = Vector2(0.055, 0.055)
+modulate = Color(0.55,0.69,0.48,1)

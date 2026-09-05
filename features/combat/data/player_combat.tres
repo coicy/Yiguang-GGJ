@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CombatTuning" load_steps=8 format=3]
+[ext_resource type="Script" path="res://features/combat/combat_tuning.gd" id="1"]
+[ext_resource type="Resource" path="res://features/combat/data/light_1.tres" id="2"]
+[ext_resource type="Resource" path="res://features/combat/data/light_2.tres" id="3"]
+[ext_resource type="Resource" path="res://features/combat/data/light_3.tres" id="4"]
+[ext_resource type="Resource" path="res://features/combat/data/heavy.tres" id="5"]
+[ext_resource type="Resource" path="res://features/combat/data/air.tres" id="6"]
+[ext_resource type="Resource" path="res://features/combat/data/sprout_bump.tres" id="7"]
+[resource]
+script = ExtResource("1")
+attacks = [ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7")]
+ground_attack_stop_seconds = 0.06
+ground_attack_braking = 3600.0
+air_attack_steering = 0.35
+attack_landing_recovery = 0.08

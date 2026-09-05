@@ -3,6 +3,9 @@ extends CharacterBody2D
 ## Composition root: reads input and wires child components together.
 
 signal resource_absorbed(kind: StringName, amount: float)
+signal died
+@onready var combat: CombatController = %Combat
+var hurtbox: Hurtbox
 
 var _absorption_locked: bool = false
 @onready var audio: PlayerAudio = %PlayerAudio
@@ -31,11 +34,27 @@ func _ready() -> void:
 	form_controller.form_changed.connect(_on_form_changed)
 	state_machine.state_changed.connect(_on_state_changed)
 	abilities.ability_state_changed.connect(_on_ability_state_changed)
+	abilities.vine_fired.connect(visuals.fire_vine)
 	add_to_group("player")
 	audio.setup(self)
+	combat.setup(self)
+	combat.defeated.connect(func() -> void: died.emit())
+	hurtbox = Hurtbox.new()
+	hurtbox.name = "Hurtbox"
+	hurtbox.configure(self, CombatQuery.PLAYER_HURT, form_controller.get_current().collision_size)
+	add_child(hurtbox)
+	hurtbox.resize(form_controller.get_current().collision_size, form_controller.get_current().collision_offset)
 
 
 func _physics_process(delta: float) -> void:
+	if combat.health.current <= 0:
+		return
+	# Sample jump before combat so a simultaneous press chooses an airborne strike.
+	if Input.is_action_just_pressed("jump"):
+		movement.request_jump()
+	if Input.is_action_just_released("jump"):
+		movement.release_jump()
+	combat.tick(delta)
 	if not Input.is_action_pressed("absorb_resource"):
 		_absorption_locked = false
 	resources.tick(delta)
@@ -47,13 +66,11 @@ func _physics_process(delta: float) -> void:
 	var move_dir := Input.get_axis("move_left", "move_right")
 	var jump_held := Input.is_action_pressed("jump")
 
-	if Input.is_action_just_pressed("jump"):
-		movement.request_jump()
-	if Input.is_action_just_released("jump"):
-		movement.release_jump()
 
 	state_machine.tick(delta, move_dir, jump_held)
 	abilities.post_movement_update()
+	combat.after_movement()
+	visuals.set_combat_state(combat)
 	visuals.set_motion(velocity)
 	visuals.set_leg_direction(abilities.get_leg_extension_direction())
 	visuals.set_leg_path(abilities.get_leg_path())
@@ -66,7 +83,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		abilities.set_vine_aim_global_position(canvas_transform.affine_inverse() * mouse_event.position)
 	if event.is_action_released("absorb_resource"):
 		_absorption_locked = false
-	if event.is_action_pressed("ability_primary"):
+	for action: StringName in [&"attack", &"heavy", &"dash", &"parry"]:
+		if event.is_action_pressed(action) and not event.is_echo():
+			combat.request_action(action, get_global_mouse_position())
+	if event.is_action_pressed("ability_primary") and combat.can_use_ability():
 		abilities.toggle_primary()
 	if event.is_action_pressed("absorb_resource") and not event.is_echo():
 		abilities.request_vine_climb()
@@ -79,6 +99,8 @@ func _on_form_changed(form_id: StringName) -> void:
 	movement.set_form(form_controller.get_current())
 	visuals.set_form(form_controller.get_current())
 	visuals.set_state(state_machine.current_state)
+	if hurtbox != null:
+		hurtbox.resize(form_controller.get_current().collision_size, form_controller.get_current().collision_offset)
 	var signal_bus := get_node_or_null("/root/GlobalSignalBus")
 	if signal_bus != null:
 		signal_bus.player_form_changed.emit(form_id)
@@ -123,7 +145,7 @@ func is_absorbing_resource() -> bool:
 	if not Input.is_action_pressed("absorb_resource"):
 		_absorption_locked = false
 		return false
-	return not _absorption_locked
+	return not _absorption_locked and combat.can_use_ability()
 
 
 func requires_absorption_release() -> bool:
@@ -174,7 +196,10 @@ func restore_state(saved: Dictionary) -> void:
 
 
 func cancel_actions() -> void:
+	if is_instance_valid(combat):
+		combat.cancel()
 	abilities.cancel_all()
+	visuals.cancel_vine_effect()
 
 
 func play_death_animation() -> bool:
@@ -219,3 +244,7 @@ func _can_fit_form(target: FormDefinition) -> bool:
 	)
 	growth_cast.force_shapecast_update()
 	return not growth_cast.is_colliding()
+
+
+func receive_damage(request: DamageRequest) -> int:
+	return combat.receive_damage(request)

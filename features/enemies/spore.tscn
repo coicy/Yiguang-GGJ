@@ -1,0 +1,25 @@
+[gd_scene load_steps=7 format=3]
+[ext_resource type="Script" path="res://features/enemies/combat_enemy.gd" id="1"]
+[ext_resource type="Resource" path="res://features/enemies/data/spore.tres" id="2"]
+[ext_resource type="Script" path="res://features/combat/health_component.gd" id="3"]
+[ext_resource type="Script" path="res://features/enemies/spore_visual.gd" id="4"]
+[ext_resource type="Script" path="res://features/enemies/spore_behavior.gd" id="5"]
+[ext_resource type="Resource" path="res://features/enemies/data/spore_behavior.tres" id="6"]
+[node name="Spore" type="CharacterBody2D" node_paths=PackedStringArray("spore_behavior")]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+definition = ExtResource("2")
+spore_behavior = NodePath("SporeBehavior")
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+[node name="EnemyHealth" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3")
+[node name="EnemyVisual" type="Node2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4")
+[node name="SporeBehavior" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("5")
+tuning = ExtResource("6")

@@ -13,7 +13,7 @@ signal hook_prompt_changed(visible: bool)
 
 @export_group("Mature Prompt")
 @export_range(32.0, 320.0, 1.0) var prompt_radius: float = 180.0
-@export var hook_prompt_text: String = "成熟期 · 左键连接藤蔓"
+@export var hook_prompt_text: String = "成熟期 · Q 连接藤蔓"
 
 @onready var hook_area: Area2D = %HookArea
 @onready var hook_collision: CollisionShape2D = %HookCollision
