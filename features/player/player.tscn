@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://features/player/movement_controller.gd" id="2_movement"]
@@ -11,6 +11,8 @@
 [ext_resource type="Script" path="res://features/resources/resource_controller.gd" id="11_resources"]
 [ext_resource type="Script" path="res://features/abilities/ability_controller.gd" id="12_abilities"]
 [ext_resource type="Script" path="res://features/player/player_animation_machine.gd" id="13_animation"]
+[ext_resource type="Script" path="res://features/player/player_audio.gd" id="13_audio"]
+[ext_resource type="PackedScene" path="res://features/audio/sound_emitter.tscn" id="14_sounds"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 resource_local_to_scene = true
@@ -83,3 +85,10 @@ unique_name_in_owner = true
 script = ExtResource("4_form")
 forms = [ExtResource("6_sprout"), ExtResource("7_humanoid"), ExtResource("8_mature")]
 default_form_id = &"sprout"
+
+[node name="PlayerAudio" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("13_audio")
+
+[node name="PlayerSounds" parent="." instance=ExtResource("14_sounds")]
+unique_name_in_owner = true

@@ -2,6 +2,11 @@ class_name Player
 extends CharacterBody2D
 ## Composition root: reads input and wires child components together.
 
+signal resource_absorbed(kind: StringName, amount: float)
+
+var _absorption_locked: bool = false
+@onready var audio: PlayerAudio = %PlayerAudio
+
 @onready var state_machine: StateMachine = %StateMachine
 @onready var movement: MovementController = %Movement
 @onready var form_controller: FormController = %FormController
@@ -27,9 +32,12 @@ func _ready() -> void:
 	state_machine.state_changed.connect(_on_state_changed)
 	abilities.ability_state_changed.connect(_on_ability_state_changed)
 	add_to_group("player")
+	audio.setup(self)
 
 
 func _physics_process(delta: float) -> void:
+	if not Input.is_action_pressed("absorb_resource"):
+		_absorption_locked = false
 	resources.tick(delta)
 	if Input.is_action_just_pressed(&"absorb_resource"):
 		abilities.request_vine_climb()
@@ -56,6 +64,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if mouse_event != null:
 		var canvas_transform := get_viewport().get_canvas_transform()
 		abilities.set_vine_aim_global_position(canvas_transform.affine_inverse() * mouse_event.position)
+	if event.is_action_released("absorb_resource"):
+		_absorption_locked = false
 	if event.is_action_pressed("ability_primary"):
 		abilities.toggle_primary()
 	if event.is_action_pressed("absorb_resource") and not event.is_echo():
@@ -63,6 +73,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_form_changed(form_id: StringName) -> void:
+	_absorption_locked = Input.is_action_pressed("absorb_resource")
 	cancel_actions()
 	_apply_form_shape(form_controller.get_current())
 	movement.set_form(form_controller.get_current())
@@ -109,15 +120,28 @@ func can_root_here() -> bool:
 
 
 func is_absorbing_resource() -> bool:
-	return Input.is_action_pressed("absorb_resource")
+	if not Input.is_action_pressed("absorb_resource"):
+		_absorption_locked = false
+		return false
+	return not _absorption_locked
+
+
+func requires_absorption_release() -> bool:
+	return _absorption_locked and Input.is_action_pressed("absorb_resource")
 
 
 func absorb_nutrition(amount: float) -> bool:
-	return resources.absorb_nutrition(amount)
+	var absorbed := resources.absorb_nutrition(amount)
+	if absorbed:
+		resource_absorbed.emit(&"nutrition", amount)
+	return absorbed
 
 
 func absorb_toxin(amount: float) -> bool:
-	return resources.absorb_toxin(amount)
+	var absorbed := resources.absorb_toxin(amount)
+	if absorbed:
+		resource_absorbed.emit(&"toxin", amount)
+	return absorbed
 
 
 func enter_toxin(source: Object) -> void:

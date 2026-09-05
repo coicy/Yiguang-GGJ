@@ -37,7 +37,7 @@
 
 ### 多边形地板
 
-`terrain_piece.tscn` 与 `hard_floor_piece.tscn` 都提供两套独立模式：`display_mode` 控制整图 `Sprite2D` 或纹理 `Polygon2D`，`collision_mode` 控制矩形或 `CollisionPolygon2D`。`TerrainPiece` 默认使用 `POLYGON + RECTANGLE`，因此改变 `piece_size` 会直接扩大平铺视觉；`HardFloorPiece` 显式保持 `SPRITE + RECTANGLE`。
+`terrain_piece.tscn` 与 `hard_floor_piece.tscn` 都提供两套独立模式：`display_mode=SPRITE` 使用 `NinePatchRect` 平铺矩形地块，`display_mode=POLYGON` 使用纹理 `Polygon2D`，`collision_mode` 控制矩形或 `CollisionPolygon2D`。两者默认使用 `SPRITE + RECTANGLE`；改变 `piece_size` 会直接扩大 NinePatch 视觉。
 
 - 选择 `POLYGON` 后，在 2D 视图编辑 `PolygonArtwork` 的顶点；`collision_follows_visual` 默认开启，加载实例和编辑有效视觉轮廓时都会同步到碰撞轮廓。
 - 若视觉边缘不适合承重，关闭 `collision_follows_visual`，再单独编辑 `CollisionPolygon2D`。
@@ -49,10 +49,11 @@
 
 长地面应分别处理轮廓、贴图和碰撞：延长 `piece_size` 或视觉多边形来定义地形范围，使用可无缝平铺的中段贴图填充范围，碰撞则只覆盖实际可站立表面。不要通过缩放 `Sprite2D` 或物理根节点来拉长地面；`stretch_art` 仅用于允许变形的一次性美术，不用于常规地形。
 
-- `RECT_FROM_PIECE_SIZE` 是默认布局，用于直线、矩形地面。视觉多边形由 `piece_size` 自动生成；修改宽度或高度后，中段贴图随轮廓重复而不被拉伸。连续平坦的可站立表面应尽量使用一个矩形碰撞体，避免装饰或相邻小碰撞体产生接缝。
+- `RECT_FROM_PIECE_SIZE` 是默认布局，用于直线、矩形地面。`display_mode=SPRITE` 时由 `NinePatchRect` 直接接收 `piece_size`，左右边缘保持不变，中间贴图平铺延长；连续平坦的可站立表面应尽量使用一个矩形碰撞体，避免装饰或相邻小碰撞体产生接缝。
 - 斜坡、洞穴和简单不规则地面必须显式选择 `CUSTOM_POLYGON`，再在 2D 视图中编辑 `PolygonArtwork` 轮廓；使用可重复的土壤或岩石贴图填充内部，并用独立的草皮、岩层或悬崖边缘素材修饰轮廓。碰撞按本节的 `collision_follows_visual` 规则同步，或保留独立的碰撞多边形。
 - 一个可延长的地面素材至少分为中段、左端帽和右端帽。中段必须在延长方向上无缝衔接；端帽保持原始尺寸，摆在地形两端。草、石头、藤蔓等装饰是独立节点，不参与地面碰撞。
-- 中段纹理通过 `PolygonArtwork` 的 `texture_repeat` 重复。`art_offset`、`art_scale_multiplier` 和 `art_rotation_degrees` 同时作用于 Sprite 与多边形贴图：调整 `piece_size` 时，图案保持该视觉尺寸并重复填满新轮廓。变体中可用 `polygon_texture_scale` 进一步控制图案密度；像素风素材使用整数位置、整数顶点和 Nearest 过滤，以避免边缘出现采样缝。
+- 矩形地块中段纹理通过 `NinePatchRect` 的 `AXIS_STRETCH_MODE_TILE` 重复；将 `stretch_art` 改为 `true` 才会切换为拉伸。多边形地块仍通过 `PolygonArtwork.texture_repeat` 重复。`art_offset`、`art_scale_multiplier` 和 `art_rotation_degrees` 同时作用于两种视觉节点；像素风素材使用整数位置、整数顶点和 Nearest 过滤，以避免边缘出现采样缝。
+- 九宫格切分直接编辑 `TerrainVisual` 子节点的 `patch_margin_left/top/right/bottom`；在实例场景中先对 `TerrainPiece` 选择“Editable Children”，再在 2D 视图选中 `TerrainVisual`，拖动边界手柄即可观察和调整切分。脚本不会覆盖这些边距，只会把 `piece_size` 同步为 NinePatchRect 的显示尺寸。
 - 多个 `TerrainPiece` 首尾拼接时，在每个实例上设置 `polygon_repeat_offset`，使右侧实例的纹理相位承接左侧实例。例如左侧宽度为 `480` 时，右侧实例从 `Vector2(-480, 0)` 开始。该偏移属于 TerrainPiece 实例，不能写回共享的 `SpriteVariantSet` 或 `LevelSpriteVariant` 资源。
 - 当关卡需要大量规则网格地形、自动转角或自动边缘连接时，改用 `TileMapLayer` 和 TileSet Terrain Set。`TerrainPiece` 继续用于手工不规则地形、端帽和特殊地表。
 

@@ -31,15 +31,24 @@ func _verify_root_texture_drives_both_artwork_modes() -> void:
 	root.add_child(terrain)
 	await process_frame
 	var sprite_artwork := terrain.get_node("Artwork") as Sprite2D
+	var nine_patch := terrain.get_node("TerrainVisual") as NinePatchRect
 	var polygon_artwork := terrain.get_node("PolygonArtwork") as Polygon2D
 	assert(terrain.art_texture == root_texture)
 	assert(sprite_artwork.texture == root_texture)
-	assert(sprite_artwork.visible)
+	assert(not sprite_artwork.visible)
+	assert(nine_patch.visible)
+	assert(nine_patch.size == terrain.piece_size)
+	assert(nine_patch.patch_margin_left == 64)
+	assert(nine_patch.patch_margin_right == 64)
+	terrain.piece_size = Vector2(384.0, 96.0)
+	await process_frame
+	assert(nine_patch.size == terrain.piece_size)
 
 	terrain.display_mode = TerrainPiece.DisplayMode.POLYGON
 	await process_frame
 	assert(polygon_artwork.texture == root_texture)
 	assert(polygon_artwork.visible)
+	assert(not nine_patch.visible)
 	assert(not sprite_artwork.visible)
 	var variant_texture := GradientTexture2D.new()
 	variant_texture.width = 8
@@ -58,6 +67,7 @@ func _verify_rect_polygon_layout_tracks_piece_size() -> void:
 	var terrain := TERRAIN_SCENE.instantiate() as TerrainPiece
 	terrain.sprite_variants = null
 	terrain.art_texture = _test_texture(16)
+	terrain.display_mode = TerrainPiece.DisplayMode.POLYGON
 	terrain.collision_mode = TerrainPiece.CollisionMode.POLYGON
 	terrain.polygon_layout = TerrainPiece.PolygonLayout.RECT_FROM_PIECE_SIZE
 	terrain.piece_size = Vector2(384.0, 96.0)

@@ -84,6 +84,10 @@ func _draw() -> void:
 	if _actors.is_empty():
 		return
 	var prompt := "E 吸收"
+	for actor: Node in _actors:
+		if is_instance_valid(actor) and actor.has_method(&"requires_absorption_release") and actor.call(&"requires_absorption_release"):
+			prompt = "松开 E 后继续吸收"
+			break
 	var prompt_color := Color("#f0d6ff")
 	if _absorbing_actor != null:
 		prompt = "吸收毒液"

@@ -3,6 +3,9 @@ extends Node
 ## Owns physics movement and jump feel. Universal feel values are @export here;
 ## per-form stats (speed, jump, gravity, glide) come from the current FormDefinition.
 
+signal jumped
+signal landed(impact_speed: float)
+
 @export_group("Movement")
 @export var acceleration: float = 1200.0
 @export var friction: float = 800.0
@@ -117,6 +120,8 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, friction * delta)
 	_try_leg_step(delta)
 
+	var was_grounded := body.is_on_floor()
+	var falling_speed := body.velocity.y
 	body.move_and_slide()
 	_enforce_vine_length()
 
@@ -125,6 +130,8 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 
 	if body.is_on_floor():
 		body.velocity.y = 0.0
+		if not was_grounded and falling_speed > 80.0:
+			landed.emit(falling_speed)
 
 
 func _perform_jump() -> void:
@@ -134,6 +141,7 @@ func _perform_jump() -> void:
 	body.velocity.y = form.jump_force
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
+	jumped.emit()
 
 
 func set_rooted(rooted: bool) -> void:

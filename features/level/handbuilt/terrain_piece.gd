@@ -21,8 +21,8 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 		_request_sync()
 
 @export_category("Modes")
-## Repeating polygon art is the default so piece_size extends terrain without stretching pixels.
-@export var display_mode: DisplayMode = DisplayMode.POLYGON:
+## NinePatchRect art is the default so piece_size extends terrain without stretching pixels.
+@export var display_mode: DisplayMode = DisplayMode.SPRITE:
 	set(value):
 		display_mode = value
 		_request_sync()
@@ -85,6 +85,7 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 @onready var _collision_shape: CollisionShape2D = %CollisionShape2D
 @onready var _collision_polygon: CollisionPolygon2D = %CollisionPolygon2D
 @onready var _artwork: Sprite2D = %Artwork
+@onready var _terrain_visual: NinePatchRect = %TerrainVisual
 @onready var _polygon_artwork: Polygon2D = %PolygonArtwork
 @onready var _left_cap: Sprite2D = %LeftCap
 @onready var _right_cap: Sprite2D = %RightCap
@@ -157,20 +158,29 @@ func _apply_artwork() -> void:
 	_artwork.texture = texture
 	_artwork.position = offset
 	_artwork.centered = false
-	_artwork.visible = display_mode == DisplayMode.SPRITE and texture != null
+	_artwork.visible = false
 	_artwork.scale = art_scale * art_scale_multiplier
 	_artwork.rotation = deg_to_rad(art_rotation_degrees)
 	if texture != null and should_stretch:
 		var texture_size := texture.get_size()
 		if texture_size.x > 0.0 and texture_size.y > 0.0:
 			_artwork.scale *= piece_size / texture_size
+	var safe_visual_scale := Vector2(maxf(absf(art_scale.x * art_scale_multiplier), 0.01), maxf(absf(art_scale.y * art_scale_multiplier), 0.01))
+	_terrain_visual.texture = texture
+	_terrain_visual.position = offset
+	_terrain_visual.size = piece_size / safe_visual_scale
+	_terrain_visual.scale = safe_visual_scale
+	_terrain_visual.rotation = deg_to_rad(art_rotation_degrees)
+	_terrain_visual.axis_stretch_horizontal = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if stretch_art else NinePatchRect.AXIS_STRETCH_MODE_TILE
+	_terrain_visual.axis_stretch_vertical = NinePatchRect.AXIS_STRETCH_MODE_STRETCH if stretch_art else NinePatchRect.AXIS_STRETCH_MODE_TILE
+	_terrain_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_terrain_visual.visible = display_mode == DisplayMode.SPRITE and texture != null
 	_polygon_artwork.texture = texture
 	var polygon_offset := variant.polygon_texture_offset if variant != null else Vector2.ZERO
 	var polygon_scale := variant.polygon_texture_scale if variant != null else Vector2.ONE
 	var polygon_rotation_degrees := variant.polygon_texture_rotation if variant != null else 0.0
 	# Polygon2D scales texture coordinates, so invert the visual scale used by Sprite2D.
 	# This makes an art_scale_multiplier of 0.5 draw half-size tiles instead of cropping one full-size tile.
-	var safe_visual_scale := Vector2(maxf(absf(art_scale.x * art_scale_multiplier), 0.01), maxf(absf(art_scale.y * art_scale_multiplier), 0.01))
 	_polygon_artwork.texture_offset = polygon_offset + art_offset + polygon_repeat_offset
 	_polygon_artwork.texture_scale = polygon_scale / safe_visual_scale
 	_polygon_artwork.texture_rotation = deg_to_rad(polygon_rotation_degrees + art_rotation_degrees)

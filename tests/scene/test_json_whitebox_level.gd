@@ -2,6 +2,11 @@ extends SceneTree
 
 const LEVEL_SCENE: PackedScene = preload("res://scenes/levels/json_whitebox_level.tscn")
 const SOURCE_PATH := "res://data/Yiguang.json"
+const GATED_RINGS := ["e33e56b0-96d0-11f1-9ec0-eb30919fa281", "e4d80980-96d0-11f1-9ec0-bf3ef0df67ce", "e638aaf0-96d0-11f1-9ec0-47d36b46fa53", "e6afd6c0-96d0-11f1-9ec0-230200d3b3cc"]
+const DESTINATION_RINGS := ["e6481070-96d0-11f1-ba31-f968a2c6c8eb", "e6979000-96d0-11f1-ba31-7964dc9ae8c8", "e7204800-96d0-11f1-ba31-85359e1dc5d3", "e763e0b0-96d0-11f1-ba31-8b4b49d4e2c5"]
+const B2 := "bbbb4660-96d0-11f1-9ec0-d3fb842dd849"
+const C2 := "3005cb90-96d0-11f1-9ec0-231d9bef30a8"
+const C6 := "322a3230-96d0-11f1-9ec0-65ba33f44fa8"
 
 
 func _init() -> void:
@@ -15,10 +20,22 @@ func _run() -> void:
 	var source_data := _read_source_data()
 	_assert_world_extents_and_camera(level, source_data)
 	_assert_source_geometry_and_entities(level, source_data)
+	for ring_id: String in GATED_RINGS:
+		var ring := level.get_entity(ring_id) as VineAnchor
+		assert(not ring.is_available() and not ring.is_in_group("vine_anchor") and not ring.visible)
 	await _assert_button_to_cube_paths(level, source_data)
+	for ring_id: String in GATED_RINGS:
+		var ring := level.get_entity(ring_id) as VineAnchor
+		assert(ring.is_available() and ring.is_in_group("vine_anchor") and ring.visible)
+		var support := ring.get_parent() as MoveableCube
+		assert(is_equal_approx(ring.global_position.y, support.get_world_rect().end.y + 8.0))
 	_assert_supported_entity_binding(level)
 	assert(level.get_data_issues().is_empty(), "The supplied map must not require hard-coded mechanism fallbacks.")
 	level.queue_free()
+	print("PASS: map references, B1/B2 motion, gated Rings and resizing attachments")
+	# Let queued nodes and the audio mixer release stopped playback before shutdown.
+	await process_frame
+	await create_timer(0.1).timeout
 	quit()
 
 
@@ -62,7 +79,7 @@ func _assert_source_geometry_and_entities(level: JsonWhiteboxLevel, source_data:
 		var identifier := String(entity.get("__identifier", ""))
 		if identifier in ["Start", "Camera"]:
 			continue
-		if destination_ids.has(entity_id):
+		if destination_ids.has(entity_id) or entity_id in DESTINATION_RINGS:
 			assert(level.get_entity(entity_id) == null, "Cube destination anchors must not create duplicate solid bodies.")
 			continue
 		var runtime_entity := level.get_entity(entity_id)
@@ -83,11 +100,28 @@ func _assert_button_to_cube_paths(level: JsonWhiteboxLevel, source_data: Diction
 		if button_data.get("__identifier", "") != "Button":
 			continue
 		var button_targets := _linked_ids(button_data)
-		if button_targets.is_empty():
-			continue
+		assert(not button_targets.is_empty(), "Every supplied button must control a cube.")
+		if button_id == "0f859c40-96d0-11f1-9ec0-a7f50fdb1f9d":
+			assert(button_targets == ["14f1b660-96d0-11f1-ba31-2fb3210b8ae8"])
+		if button_id == B2:
+			assert(button_targets.size() == 2 and C2 in button_targets and C6 in button_targets)
+		if button_id == "17ea7d40-96d0-11f1-9ec0-5b135eaa7d6d":
+			assert(button_targets.size() == 2 and "3c92f320-96d0-11f1-9ec0-adb2f775b414" in button_targets and "dbcf3f60-96d0-11f1-ba31-81dc80293df2" in button_targets)
 		var button := level.get_entity(button_id) as WhiteboxButton
 		assert(button != null)
 		assert(button.press(level.get_node("Player") as Player))
+		for cube_id: String in button_targets:
+			assert((level.get_entity(cube_id) as MoveableCube).is_moving(), "All linked cubes start together.")
+		if button_id == B2:
+			var a := level.get_entity(C2) as MoveableCube
+			var b := level.get_entity(C6) as MoveableCube
+			var distance := a.global_position.distance_to(b.global_position)
+			for step: int in range(360):
+				if not a.is_moving() and not b.is_moving():
+					break
+				await physics_frame
+				assert(absf(a.global_position.distance_to(b.global_position) - distance) < 0.01, "Linked cubes must stay rigid throughout rotation.")
+			assert(not a.is_moving() and not b.is_moving(), "B2 must finish within six seconds.")
 		for cube_id: String in button_targets:
 			var cube_data := source_entities[cube_id] as Dictionary
 			assert(cube_data.get("__identifier", "") == "MoveableCube")
@@ -95,7 +129,6 @@ func _assert_button_to_cube_paths(level: JsonWhiteboxLevel, source_data: Diction
 			assert(destinations.size() == 1, "A button-driven cube must have exactly one next-cube destination.")
 			var cube := level.get_entity(cube_id) as MoveableCube
 			assert(cube != null)
-			assert(cube.is_moving(), "Motion must include the startup shake phase.")
 			await _wait_for_motion(cube)
 			var target_data := source_entities[destinations[0]] as Dictionary
 			var expected_target_rect := _world_rect_from_index(target_data, source_entities)

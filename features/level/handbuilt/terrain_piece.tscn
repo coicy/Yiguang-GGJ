@@ -28,11 +28,25 @@ visible = false
 texture = ExtResource("3_s8b1s")
 centered = false
 
+[node name="TerrainVisual" type="NinePatchRect" parent="." unique_id=1185384908]
+unique_name_in_owner = true
+offset_right = 475.0
+offset_bottom = 122.0
+texture = ExtResource("3_s8b1s")
+region_rect = Rect2(2.6060562, 14.242416, 474.54544, 121.81818)
+patch_margin_left = 218
+patch_margin_top = 103
+patch_margin_right = 257
+patch_margin_bottom = 19
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
 [node name="PolygonArtwork" type="Polygon2D" parent="." unique_id=1905841275]
 unique_name_in_owner = true
+visible = false
 texture_repeat = 2
 texture = ExtResource("3_s8b1s")
-polygon = PackedVector2Array(-1.6846848, 22.526789, 473.2627, 18.316263, 460.6311, 131.57942, 26.9469, 130.73732)
+polygon = PackedVector2Array(0, 0, 192, 0, 192, 48, 0, 48)
 
 [node name="LeftCap" type="Sprite2D" parent="." unique_id=1739312993]
 unique_name_in_owner = true
