@@ -1,6 +1,6 @@
 class_name JsonWhiteboxLevel
 extends Node2D
-## Runtime whitebox generated from the LDtk source data. Instance coordinates stay in world pixels.
+## Runtime whitebox generated from LDtk data. World-space instance rectangles are authoritative.
 
 const SOURCE_PATH := "res://data/Yiguang.json"
 const GRID_SIZE := 16.0
@@ -17,30 +17,26 @@ const BUTTON_SCENE: PackedScene = preload("res://features/level/whitebox_button.
 const CHECKPOINT_SCENE: PackedScene = preload("res://features/level/checkpoint.tscn")
 const DAMAGE_MACHINE_SCENE: PackedScene = preload("res://features/level/damage_machine.tscn")
 
-const C1_ID := "6eaa3900-96d0-11f1-a2bb-61a47c4c3084"
-const C2_ID := "3005cb90-96d0-11f1-9ec0-231d9bef30a8"
-const C3_ID := "3c92f320-96d0-11f1-9ec0-adb2f775b414"
-const C4_ID := "44101060-96d0-11f1-9ec0-dd217176b5ba"
-const C5_ID := "de356dc0-96d0-11f1-9ec0-15760920bd18"
-const C6_ID := "322a3230-96d0-11f1-9ec0-65ba33f44fa8"
-const B1_ID := "0f859c40-96d0-11f1-9ec0-a7f50fdb1f9d"
-const B2_ID := "bbbb4660-96d0-11f1-9ec0-d3fb842dd849"
-const B3_ID := "59bb7020-96d0-11f1-9ec0-1f9ad61c57bc"
-const B4_ID := "17ea7d40-96d0-11f1-9ec0-5b135eaa7d6d"
-
-const C3_C4_HIDDEN_OFFSET := Vector2(0.0, -160.0)
-const C5_INITIAL_OFFSET := Vector2(0.0, -128.0)
 const DAMAGE_MACHINE_TRAVEL_DISTANCE := 32.0
 const DAMAGE_MACHINE_TRAVEL_SPEED := 64.0
 const CAMERA_DRAG_MARGIN_HORIZONTAL := 0.2
 const CAMERA_DRAG_MARGIN_VERTICAL := 0.25
+const SUPPORT_EPSILON := 0.01
 
 var _player: Player
 var _spawn_position := Vector2.ZERO
+var _camera_rect := Rect2(Vector2.ZERO, Vector2(336.0, 160.0))
+var _world_bounds := Rect2()
+var _has_world_bounds := false
 var _entity_nodes: Dictionary = {}
-var _cube_source_positions: Dictionary = {}
+var _entity_source_rects: Dictionary = {}
+var _entity_identifiers: Dictionary = {}
+var _entity_links: Dictionary = {}
+var _destination_cube_ids: Dictionary = {}
+var _surface_tiles: Array[Dictionary] = []
 var _visual_rectangles: Array[Dictionary] = []
 var _entity_labels: Array[Dictionary] = []
+var _data_issues: PackedStringArray = []
 
 
 func _ready() -> void:
@@ -55,6 +51,14 @@ func _ready() -> void:
 
 func get_entity(entity_iid: String) -> Node:
 	return _entity_nodes.get(entity_iid) as Node
+
+
+func get_source_rect(entity_iid: String) -> Rect2:
+	return _entity_source_rects.get(entity_iid, Rect2()) as Rect2
+
+
+func get_data_issues() -> PackedStringArray:
+	return _data_issues
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -72,12 +76,44 @@ func _build_from_source() -> void:
 	if data.is_empty():
 		push_error("Whitebox source is empty.")
 		return
+	_index_source_data(data)
 	var cube_rectangles := _collect_cube_rectangles(data)
 	for raw_level: Variant in data.get("levels", []):
 		var level := raw_level as Dictionary
 		_build_level_geometry(level, cube_rectangles)
 		_build_level_entities(level)
-	_wire_known_mechanisms()
+	_bind_entities_to_supporting_geometry()
+	_wire_data_mechanisms()
+
+
+func _index_source_data(data: Dictionary) -> void:
+	for raw_level: Variant in data.get("levels", []):
+		var level := raw_level as Dictionary
+		var world_offset := Vector2(float(level.get("worldX", 0)), float(level.get("worldY", 0)))
+		var level_rect := Rect2(world_offset, Vector2(float(level.get("pxWid", 0)), float(level.get("pxHei", 0))))
+		if _has_world_bounds:
+			_world_bounds = _world_bounds.merge(level_rect)
+		else:
+			_world_bounds = level_rect
+			_has_world_bounds = true
+		for raw_layer: Variant in level.get("layerInstances", []):
+			var layer := raw_layer as Dictionary
+			if layer.get("__identifier", "") != "Entities":
+				continue
+			for raw_entity: Variant in layer.get("entityInstances", []):
+				var entity := raw_entity as Dictionary
+				var entity_id := String(entity.get("iid", ""))
+				var identifier := String(entity.get("__identifier", ""))
+				_entity_source_rects[entity_id] = _entity_rect(entity, world_offset)
+				_entity_identifiers[entity_id] = identifier
+				_entity_links[entity_id] = _linked_entity_ids(entity)
+				if identifier == "Camera":
+					_camera_rect = _entity_rect(entity, world_offset)
+	for source_id: String in _entity_links:
+		if _entity_identifiers.get(source_id) != "MoveableCube":
+			continue
+		for destination_id: String in _entity_links[source_id]:
+			_destination_cube_ids[destination_id] = true
 
 
 func _collect_cube_rectangles(data: Dictionary) -> Array[Rect2]:
@@ -91,9 +127,8 @@ func _collect_cube_rectangles(data: Dictionary) -> Array[Rect2]:
 				continue
 			for raw_entity: Variant in layer.get("entityInstances", []):
 				var entity := raw_entity as Dictionary
-				if entity.get("__identifier", "") != "MoveableCube":
-					continue
-				rectangles.append(_entity_rect(entity, world_offset))
+				if entity.get("__identifier", "") == "MoveableCube":
+					rectangles.append(_entity_rect(entity, world_offset))
 	return rectangles
 
 
@@ -140,6 +175,8 @@ func _spawn_entity(entity: Dictionary, world_offset: Vector2) -> void:
 		"Start":
 			_spawn_position = rect.get_center()
 			_entity_labels.append({"text": "Start", "position": rect.position})
+		"Camera":
+			pass
 		"GrowDrug":
 			var nutrition := NUTRITION_SCENE.instantiate() as NutritionTank
 			_configure_area(nutrition, rect)
@@ -165,12 +202,12 @@ func _spawn_entity(entity: Dictionary, world_offset: Vector2) -> void:
 			add_child(door)
 			_register_entity(entity_id, door)
 		"Button":
-			var button := BUTTON_SCENE.instantiate() as Area2D
-			button.set(&"button_size", rect.size)
+			var button := BUTTON_SCENE.instantiate() as WhiteboxButton
+			button.button_size = rect.size
 			button.global_position = rect.position
 			add_child(button)
 			_register_entity(entity_id, button)
-			_entity_labels.append({"text": _button_label(entity_id), "position": rect.position + Vector2(0.0, -4.0)})
+			_entity_labels.append({"text": "Button", "position": rect.position + Vector2(0.0, -4.0)})
 		"DamageMachine":
 			var machine := DAMAGE_MACHINE_SCENE.instantiate() as Area2D
 			machine.global_position = rect.get_center()
@@ -191,79 +228,100 @@ func _spawn_entity(entity: Dictionary, world_offset: Vector2) -> void:
 			add_child(ring)
 			_register_entity(entity_id, ring)
 		"MoveableCube":
+			if _destination_cube_ids.has(entity_id):
+				_visual_rectangles.append({"rect": rect, "color": Color("#49634c", 0.35), "label": "Cube target"})
+				return
 			var cube := _make_cube(rect)
-			if entity_id == C3_ID or entity_id == C4_ID:
-				cube.global_position += C3_C4_HIDDEN_OFFSET
-			elif entity_id == C5_ID:
-				cube.global_position += C5_INITIAL_OFFSET
 			add_child(cube)
 			_register_entity(entity_id, cube)
-			_cube_source_positions[entity_id] = rect.position
-			_entity_labels.append({"text": _cube_label(entity_id), "position": rect.position + Vector2(0.0, -4.0)})
+			_entity_labels.append({"text": "Cube", "position": rect.position + Vector2(0.0, -4.0)})
 		"Checkpoint":
 			var checkpoint := CHECKPOINT_SCENE.instantiate() as Area2D
 			_configure_area(checkpoint, rect)
 			checkpoint.actor_checkpoint_reached.connect(_on_checkpoint_reached)
 			add_child(checkpoint)
 			_register_entity(entity_id, checkpoint)
+		_:
+			_add_data_issue("Unhandled source entity type: %s" % identifier)
 
 
-func _wire_known_mechanisms() -> void:
-	var b1 := get_entity(B1_ID) as Area2D
-	var b2 := get_entity(B2_ID) as Area2D
-	var b3 := get_entity(B3_ID) as Area2D
-	var b4 := get_entity(B4_ID) as Area2D
-	var c1 := get_entity(C1_ID) as Node2D
-	var c2 := get_entity(C2_ID) as Node2D
-	var c3 := get_entity(C3_ID) as Node2D
-	var c4 := get_entity(C4_ID) as Node2D
-	var c5 := get_entity(C5_ID) as Node2D
-	var c6 := get_entity(C6_ID) as Node2D
-	if b1 != null and c1 != null:
-		b1.pressed.connect(func(_button: Area2D, _actor: Node2D) -> void: c1.call(&"rotate_clockwise_about", Vector2(512.0, 304.0)))
-	if b2 != null and c2 != null and c6 != null:
-		b2.pressed.connect(func(_button: Area2D, _actor: Node2D) -> void:
-			var pivot := Vector2(592.0, 176.0)
-			var shared_duration := maxf(
-				float(c2.call(&"get_rotation_duration", pivot)),
-				float(c6.call(&"get_rotation_duration", pivot))
-			)
-			c2.call(&"rotate_clockwise_about", pivot, 90.0, shared_duration)
-			c6.call(&"rotate_clockwise_about", pivot, 90.0, shared_duration)
-		)
-	if b3 != null and c5 != null:
-		b3.pressed.connect(func(_button: Area2D, _actor: Node2D) -> void: _move_c5_to_configured_floor(c5))
-	if b4 != null and c3 != null and c4 != null:
-		_attach_rings_to_hidden_cube(c3, C3_ID, ["e638aaf0-96d0-11f1-9ec0-47d36b46fa53", "e6afd6c0-96d0-11f1-9ec0-230200d3b3cc"])
-		_attach_rings_to_hidden_cube(c4, C4_ID, ["e33e56b0-96d0-11f1-9ec0-eb30919fa281", "e4d80980-96d0-11f1-9ec0-bf3ef0df67ce"])
-		b4.pressed.connect(func(_button: Area2D, _actor: Node2D) -> void:
-			c3.call(&"move_top_left_to", _cube_source_positions[C3_ID])
-			c4.call(&"move_top_left_to", _cube_source_positions[C4_ID])
-		)
-
-
-func _move_c5_to_configured_floor(cube: Node2D) -> void:
-	# The JSON position puts C5's lower edge on the confirmed y=304 floor line.
-	cube.call(&"move_top_left_to", _cube_source_positions[C5_ID])
-
-
-func _attach_rings_to_hidden_cube(cube: Node2D, cube_id: String, ring_ids: Array[String]) -> void:
-	var source_position := _cube_source_positions[cube_id] as Vector2
-	for ring_id: String in ring_ids:
-		var ring := get_entity(ring_id) as Node2D
-		if ring == null:
+func _wire_data_mechanisms() -> void:
+	for entity_id: String in _entity_links:
+		if _entity_identifiers.get(entity_id) != "Button":
 			continue
-		var source_ring_position := ring.global_position
-		ring.reparent(cube, false)
-		ring.position = source_ring_position - source_position
+		var button := get_entity(entity_id) as WhiteboxButton
+		if button == null:
+			_add_data_issue("Button %s has no runtime instance." % entity_id)
+			continue
+		button.pressed.connect(_on_button_pressed.bind(entity_id))
+
+
+func _on_button_pressed(_button: WhiteboxButton, _actor: Node2D, button_id: String) -> void:
+	for cube_id: String in _entity_links.get(button_id, []):
+		var cube := get_entity(cube_id) as MoveableCube
+		if cube == null:
+			_add_data_issue("Button %s references non-runtime MoveableCube %s." % [button_id, cube_id])
+			continue
+		var destinations: Array[String] = _entity_links.get(cube_id, [])
+		if destinations.size() != 1:
+			_add_data_issue("MoveableCube %s must reference exactly one destination; found %d." % [cube_id, destinations.size()])
+			continue
+		var target_rect := get_source_rect(destinations[0])
+		if target_rect.size.is_zero_approx():
+			_add_data_issue("MoveableCube %s destination %s has no source rectangle." % [cube_id, destinations[0]])
+			continue
+		cube.move_to_rect(target_rect)
+
+
+func _bind_entities_to_supporting_geometry() -> void:
+	for cube_id: String in _entity_nodes:
+		var cube := _entity_nodes[cube_id] as MoveableCube
+		if cube == null:
+			continue
+		var cube_rect := get_source_rect(cube_id)
+		for entity_id: String in _entity_nodes:
+			var entity := _entity_nodes[entity_id] as Node2D
+			if entity == null or entity == cube or entity.get_parent() != self:
+				continue
+			if _entity_identifiers.get(entity_id) in ["MoveableCube", "Door"]:
+				continue
+			if _is_directly_below(get_source_rect(entity_id), cube_rect):
+				entity.reparent(cube, true)
+	for entity_id: String in _entity_nodes:
+		var entity := _entity_nodes[entity_id] as Node2D
+		if entity == null or entity.get_parent() != self:
+			continue
+		if _entity_identifiers.get(entity_id) in ["MoveableCube", "Door"]:
+			continue
+		for tile_entry: Dictionary in _surface_tiles:
+			if _rests_on(get_source_rect(entity_id), tile_entry["rect"] as Rect2):
+				entity.reparent(tile_entry["node"] as Node, true)
+				break
+
+
+func _rests_on(entity_rect: Rect2, support_rect: Rect2) -> bool:
+	return (
+		is_equal_approx(entity_rect.end.y, support_rect.position.y)
+		and entity_rect.position.x < support_rect.end.x - SUPPORT_EPSILON
+		and entity_rect.end.x > support_rect.position.x + SUPPORT_EPSILON
+	)
+
+
+func _is_directly_below(entity_rect: Rect2, support_rect: Rect2) -> bool:
+	return (
+		is_equal_approx(entity_rect.position.y, support_rect.end.y)
+		and entity_rect.position.x < support_rect.end.x - SUPPORT_EPSILON
+		and entity_rect.end.x > support_rect.position.x + SUPPORT_EPSILON
+	)
 
 
 func _create_surface(rect: Rect2, allows_rooting: bool, color: Color, label: String) -> void:
 	var surface := ROOTABLE_SURFACE_SCENE.instantiate() as StaticBody2D
-	surface.set(&"allows_rooting", allows_rooting)
+	surface.allows_rooting = allows_rooting
 	surface.global_position = rect.position
 	_configure_body_shape(surface, rect.size)
 	add_child(surface)
+	_surface_tiles.append({"node": surface, "rect": rect})
 	_visual_rectangles.append({"rect": rect, "color": color, "label": label})
 
 
@@ -276,9 +334,9 @@ func _create_hazard(rect: Rect2, color: Color, label: String) -> void:
 	_visual_rectangles.append({"rect": rect, "color": color, "label": label})
 
 
-func _make_cube(rect: Rect2) -> Node2D:
-	var cube := CUBE_SCENE.instantiate() as Node2D
-	cube.set(&"cube_size", rect.size)
+func _make_cube(rect: Rect2) -> MoveableCube:
+	var cube := CUBE_SCENE.instantiate() as MoveableCube
+	cube.cube_size = rect.size
 	cube.global_position = rect.position
 	return cube
 
@@ -315,8 +373,6 @@ func _make_collision_shape_unique(collision: CollisionShape2D) -> void:
 		collision.shape = collision.shape.duplicate(true)
 
 
-
-
 func _overlaps_cube(cell_rect: Rect2, cube_rectangles: Array[Rect2]) -> bool:
 	for cube_rect: Rect2 in cube_rectangles:
 		if cell_rect.intersects(cube_rect):
@@ -332,28 +388,35 @@ func _entity_rect(entity: Dictionary, world_offset: Vector2) -> Rect2:
 	)
 
 
+func _linked_entity_ids(entity: Dictionary) -> Array[String]:
+	var ids: Array[String] = []
+	for raw_field: Variant in entity.get("fieldInstances", []):
+		var field := raw_field as Dictionary
+		if field.get("__identifier", "") != "Entity_ref":
+			continue
+		var value: Variant = field.get("__value")
+		if value is Dictionary:
+			var id := String((value as Dictionary).get("entityIid", ""))
+			if not id.is_empty():
+				ids.append(id)
+		elif value is Array:
+			for raw_reference: Variant in value:
+				var reference := raw_reference as Dictionary
+				var id := String(reference.get("entityIid", ""))
+				if not id.is_empty():
+					ids.append(id)
+	return ids
+
+
 func _register_entity(entity_id: String, node: Node) -> void:
 	_entity_nodes[entity_id] = node
 
 
-func _button_label(entity_id: String) -> String:
-	match entity_id:
-		B1_ID: return "B1"
-		B2_ID: return "B2"
-		B3_ID: return "B3"
-		B4_ID: return "B4"
-	return "B?"
-
-
-func _cube_label(entity_id: String) -> String:
-	match entity_id:
-		C1_ID: return "C1"
-		C2_ID: return "C2"
-		C3_ID: return "C3"
-		C4_ID: return "C4"
-		C5_ID: return "C5"
-		C6_ID: return "C6"
-	return "C?"
+func _add_data_issue(message: String) -> void:
+	if message in _data_issues:
+		return
+	_data_issues.append(message)
+	push_warning(message)
 
 
 func _on_frog_actor_entered(frog: ToxinZone, actor: Node2D) -> void:
@@ -390,8 +453,9 @@ func _respawn_player() -> void:
 func _create_camera() -> void:
 	var camera := Camera2D.new()
 	camera.name = "Camera"
-	# At the 1344 x 640 reference viewport this frames 336 x 160 world pixels.
+	# The source Camera instance is 336 x 160 world pixels at the 1344 x 640 reference viewport.
 	camera.zoom = Vector2(4.0, 4.0)
+	camera.position = _camera_rect.get_center() - _player.global_position
 	camera.drag_horizontal_enabled = true
 	camera.drag_vertical_enabled = true
 	camera.drag_left_margin = CAMERA_DRAG_MARGIN_HORIZONTAL
@@ -399,10 +463,11 @@ func _create_camera() -> void:
 	camera.drag_top_margin = CAMERA_DRAG_MARGIN_VERTICAL
 	camera.drag_bottom_margin = CAMERA_DRAG_MARGIN_VERTICAL
 	camera.position_smoothing_enabled = false
-	camera.limit_left = -256
-	camera.limit_top = -160
-	camera.limit_right = 720
-	camera.limit_bottom = 912
+	if _has_world_bounds:
+		camera.limit_left = int(_world_bounds.position.x)
+		camera.limit_top = int(_world_bounds.position.y)
+		camera.limit_right = int(_world_bounds.end.x)
+		camera.limit_bottom = int(_world_bounds.end.y)
 	_player.add_child(camera)
 
 

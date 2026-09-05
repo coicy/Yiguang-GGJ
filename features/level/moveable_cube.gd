@@ -1,6 +1,6 @@
 class_name MoveableCube
 extends AnimatableBody2D
-## A solid whitebox block whose visual and collision share one physics-synchronised transform.
+## A physics-synchronised whitebox block that moves to a data-defined footprint.
 
 signal motion_started(cube: MoveableCube)
 signal motion_completed(cube: MoveableCube)
@@ -11,15 +11,20 @@ signal motion_completed(cube: MoveableCube)
 		_update_shape()
 
 @export_range(1.0, 720.0, 1.0) var motion_speed: float = 160.0
+@export_range(0.0, 0.5, 0.01) var startup_shake_duration: float = 0.14
+@export_range(0.0, 8.0, 0.25) var startup_shake_distance: float = 2.0
+
+enum MotionPhase { IDLE, STARTUP_SHAKE, MOVING }
 
 var _start_transform := Transform2D.IDENTITY
 var _target_transform := Transform2D.IDENTITY
-var _motion_duration: float = 0.0
-var _motion_elapsed: float = 0.0
-var _is_moving: bool = false
-var _is_rotation_motion: bool = false
-var _rotation_pivot := Vector2.ZERO
-var _rotation_angle: float = 0.0
+var _start_size := Vector2.ONE
+var _target_size := Vector2.ONE
+var _motion_duration := 0.0
+var _motion_elapsed := 0.0
+var _startup_elapsed := 0.0
+var _motion_phase := MotionPhase.IDLE
+var _visual_offset := Vector2.ZERO
 
 @onready var _collision_shape: CollisionShape2D = %CollisionShape2D
 
@@ -32,71 +37,118 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if not _is_moving:
-		return
-	_motion_elapsed = minf(_motion_elapsed + delta, _motion_duration)
-	var progress := _motion_elapsed / _motion_duration if _motion_duration > 0.0 else 1.0
-	if _is_rotation_motion:
-		var current_angle := _rotation_angle * progress
-		global_transform = _start_transform.rotated_local(current_angle)
-		global_transform.origin = _rotation_pivot + (_start_transform.origin - _rotation_pivot).rotated(current_angle)
-	else:
-		global_transform = _start_transform.interpolate_with(_target_transform, progress)
-	if progress >= 1.0:
-		global_transform = _target_transform
-		_is_moving = false
-		_is_rotation_motion = false
-		motion_completed.emit(self)
+	match _motion_phase:
+		MotionPhase.IDLE:
+			return
+		MotionPhase.STARTUP_SHAKE:
+			_update_startup_shake(delta)
+		MotionPhase.MOVING:
+			_update_motion(delta)
+
+
+func move_to_rect(target_rect: Rect2) -> bool:
+	var target_size := target_rect.size
+	var rotation := 0.0
+	var target_origin := target_rect.position
+	if cube_size.is_equal_approx(Vector2(target_size.y, target_size.x)) and not cube_size.is_equal_approx(target_size):
+		rotation = PI * 0.5
+		target_size = cube_size
+		# A +90 degree local rotation places the local origin on the target's top-right.
+		target_origin += Vector2(target_rect.size.x, 0.0)
+	var target := Transform2D(rotation, target_origin)
+	return _begin_motion(target, target_size)
 
 
 func move_top_left_to(target_position: Vector2) -> bool:
 	var target := global_transform
 	target.origin = target_position
-	return _begin_motion(target)
+	return _begin_motion(target, cube_size)
 
 
 func get_rotation_duration(pivot: Vector2, degrees: float = 90.0) -> float:
 	return _estimate_motion_duration(_rotation_target(pivot, degrees))
 
 
-func rotate_clockwise_about(
-	pivot: Vector2,
-	degrees: float = 90.0,
-	duration_override: float = -1.0
-) -> bool:
-	var started := _begin_motion(_rotation_target(pivot, degrees), duration_override)
-	if started:
-		_is_rotation_motion = true
-		_rotation_pivot = pivot
-		_rotation_angle = deg_to_rad(degrees)
+func rotate_clockwise_about(pivot: Vector2, degrees: float = 90.0, duration_override: float = -1.0) -> bool:
+	var target := _rotation_target(pivot, degrees)
+	var started := _begin_motion(target, cube_size)
+	if started and duration_override > 0.0:
+		_motion_duration = duration_override
 	return started
 
 
 func stop_at_target() -> void:
-	if not _is_moving:
+	if not is_moving():
 		return
 	global_transform = _target_transform
-	_is_moving = false
-	_is_rotation_motion = false
+	cube_size = _target_size
+	_visual_offset = Vector2.ZERO
+	_motion_phase = MotionPhase.IDLE
 	motion_completed.emit(self)
 
 
+func get_world_rect() -> Rect2:
+	var corners := PackedVector2Array([
+		to_global(Vector2.ZERO),
+		to_global(Vector2(cube_size.x, 0.0)),
+		to_global(cube_size),
+		to_global(Vector2(0.0, cube_size.y)),
+	])
+	var bounds := Rect2(corners[0], Vector2.ZERO)
+	for index: int in range(1, corners.size()):
+		bounds = bounds.expand(corners[index])
+	return bounds
+
+
 func is_moving() -> bool:
-	return _is_moving
+	return _motion_phase != MotionPhase.IDLE
 
 
-func _begin_motion(target: Transform2D, duration_override: float = -1.0) -> bool:
-	if _is_moving or global_transform.is_equal_approx(target):
+func _begin_motion(target: Transform2D, target_size: Vector2) -> bool:
+	if is_moving() or (global_transform.is_equal_approx(target) and cube_size.is_equal_approx(target_size)):
 		return false
 	_start_transform = global_transform
 	_target_transform = target
+	_start_size = cube_size
+	_target_size = target_size
 	_motion_elapsed = 0.0
-	_is_rotation_motion = false
-	_motion_duration = duration_override if duration_override > 0.0 else _estimate_motion_duration(target)
-	_motion_duration = maxf(_motion_duration, 0.01)
-	_is_moving = true
+	_startup_elapsed = 0.0
+	_motion_duration = maxf(_estimate_motion_duration(target), 0.01)
+	_motion_phase = MotionPhase.STARTUP_SHAKE if startup_shake_duration > 0.0 else MotionPhase.MOVING
 	motion_started.emit(self)
+	queue_redraw()
 	return true
+
+
+func _update_startup_shake(delta: float) -> void:
+	_startup_elapsed = minf(_startup_elapsed + delta, startup_shake_duration)
+	var progress := _startup_elapsed / startup_shake_duration
+	var envelope := 1.0 - progress
+	_visual_offset = Vector2(sin(progress * TAU * 3.0) * startup_shake_distance * envelope, 0.0)
+	queue_redraw()
+	if progress >= 1.0:
+		_visual_offset = Vector2.ZERO
+		_motion_phase = MotionPhase.MOVING
+
+
+func _update_motion(delta: float) -> void:
+	_motion_elapsed = minf(_motion_elapsed + delta, _motion_duration)
+	var progress := _motion_elapsed / _motion_duration
+	var eased_progress := _smooth_step(progress)
+	global_transform = _start_transform.interpolate_with(_target_transform, eased_progress)
+	cube_size = _start_size.lerp(_target_size, eased_progress)
+	if progress >= 1.0:
+		global_transform = _target_transform
+		cube_size = _target_size
+		_motion_phase = MotionPhase.IDLE
+		motion_completed.emit(self)
+
+
+func _estimate_motion_duration(target: Transform2D) -> float:
+	return maxf(
+		global_position.distance_to(target.origin) / motion_speed,
+		absf(global_rotation - target.get_rotation()) / deg_to_rad(motion_speed)
+	)
 
 
 func _rotation_target(pivot: Vector2, degrees: float) -> Transform2D:
@@ -106,11 +158,9 @@ func _rotation_target(pivot: Vector2, degrees: float) -> Transform2D:
 	return target
 
 
-func _estimate_motion_duration(target: Transform2D) -> float:
-	return maxf(
-		global_position.distance_to(target.origin) / motion_speed,
-		absf(global_rotation - target.get_rotation()) / deg_to_rad(motion_speed)
-	)
+func _smooth_step(value: float) -> float:
+	var t := clampf(value, 0.0, 1.0)
+	return t * t * t * (t * (t * 6.0 - 15.0) + 10.0)
 
 
 func _update_shape() -> void:
@@ -130,5 +180,7 @@ func _make_collision_shape_unique() -> void:
 
 
 func _draw() -> void:
+	draw_set_transform(_visual_offset)
 	draw_rect(Rect2(Vector2.ZERO, cube_size), Color("#567f64"))
 	draw_rect(Rect2(Vector2.ZERO, cube_size), Color("#d5f0cf"), false, 2.0)
+	draw_set_transform(Vector2.ZERO)
