@@ -104,7 +104,7 @@ Input action
 - 落地时清理向下速度；处理 `is_on_ceiling()`，避免顶头后继续保留跳跃速度。
 - 单向平台使用 TileSet/碰撞形状的 one-way 配置和明确的 layer/mask，不通过改坐标穿透。
 - 移动平台使用 `AnimatableBody2D`，打开 `sync_to_physics`。
-- 关卡几何使用 `TileMapLayer`，不要用大量独立 Sprite2D 拼碰撞。
+- 网格化白盒或标准瓦片关卡使用 `TileMapLayer`；非 Tile 美术关卡可以由手工组合的可复用地形场景构成。手工地形的碰撞与美术必须分离，整块地形优先使用一个简化碰撞体，而不是按装饰 Sprite 拼碰撞。
 
 ## 6. 碰撞层约定
 
@@ -144,7 +144,7 @@ Input action
 Main
   -> App bootstrap / 当前关卡
       -> Level
-          -> Geometry (TileMapLayer)
+          -> Geometry (TileMapLayer / hand-built terrain scenes)
           -> Actors
           -> Effects
           -> CameraRig

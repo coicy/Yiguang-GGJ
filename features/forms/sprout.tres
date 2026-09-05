@@ -1,16 +1,20 @@
-[gd_resource type="Resource" script_class="FormDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="FormDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://features/forms/form_definition.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/player/visuals/part1_spine_visual.tscn" id="2_visual"]
 
 [resource]
 script = ExtResource("1")
 id = &"sprout"
 display_name = "幼芽期"
 move_speed = 220.0
+can_jump = false
 jump_force = -320.0
 gravity_scale = 1.0
 max_fall_speed = 700.0
-collision_size = Vector2(16, 16)
+collision_size = Vector2(24, 24)
+collision_shape_kind = 1
+collision_offset = Vector2(2, 0)
 body_color = Color(0.31, 0.8, 0.42, 1)
 growth_threshold = 100.0
 can_root = false
@@ -19,3 +23,6 @@ can_use_vine = false
 can_glide = false
 glide_enabled = false
 glide_fall_speed = 140.0
+visual_scene = ExtResource("2_visual")
+visual_scale = 0.12
+visual_offset = Vector2(2, -2)

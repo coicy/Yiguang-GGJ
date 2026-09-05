@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://features/level/handbuilt/variant_sprite_2d.gd" id="1_script"]
+
+[node name="VariantSprite2D" type="Sprite2D"]
+centered = false
+script = ExtResource("1_script")

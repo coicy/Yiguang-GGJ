@@ -31,6 +31,8 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	resources.tick(delta)
+	if Input.is_action_just_pressed(&"absorb_resource"):
+		abilities.request_vine_climb()
 	var leg_direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	abilities.set_leg_extension_direction(leg_direction)
 	abilities.tick(delta)
@@ -44,13 +46,20 @@ func _physics_process(delta: float) -> void:
 
 	state_machine.tick(delta, move_dir, jump_held)
 	abilities.post_movement_update()
+	visuals.set_motion(velocity)
 	visuals.set_leg_direction(abilities.get_leg_extension_direction())
 	visuals.set_leg_path(abilities.get_leg_path())
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	var mouse_event := event as InputEventMouse
+	if mouse_event != null:
+		var canvas_transform := get_viewport().get_canvas_transform()
+		abilities.set_vine_aim_global_position(canvas_transform.affine_inverse() * mouse_event.position)
 	if event.is_action_pressed("ability_primary"):
 		abilities.toggle_primary()
+	if event.is_action_pressed("absorb_resource") and not event.is_echo():
+		abilities.request_vine_climb()
 
 
 func _on_form_changed(form_id: StringName) -> void:
@@ -144,36 +153,45 @@ func cancel_actions() -> void:
 	abilities.cancel_all()
 
 
+func play_death_animation() -> bool:
+	return visuals.play_death()
+
+
+func revive_animation() -> void:
+	visuals.revive()
+
+
 func _apply_form_shape(form: FormDefinition) -> void:
 	if form == null:
 		return
-	_apply_collision_shape(form.collision_size)
+	collision_shape.shape = _create_form_collision_shape(form)
+	collision_shape.position = Vector2(0.0, -form.collision_size.y * 0.5) + form.collision_offset
 
 
-func _apply_collision_shape(size: Vector2) -> void:
-	var shape := collision_shape.shape as RectangleShape2D
-	if shape == null:
-		shape = RectangleShape2D.new()
-		collision_shape.shape = shape
-	shape.size = size
-	collision_shape.position = Vector2(0.0, -size.y * 0.5)
+func _create_form_collision_shape(form: FormDefinition, inset: Vector2 = Vector2.ZERO) -> Shape2D:
+	var size := Vector2(
+		maxf(4.0, form.collision_size.x - inset.x),
+		maxf(4.0, form.collision_size.y - inset.y)
+	)
+	match form.collision_shape_kind:
+		FormDefinition.CollisionShapeKind.CIRCLE:
+			var circle := CircleShape2D.new()
+			circle.radius = minf(size.x, size.y) * 0.5
+			return circle
+		_:
+			var capsule := CapsuleShape2D.new()
+			capsule.radius = size.x * 0.5
+			capsule.height = maxf(size.y, size.x)
+			return capsule
 
 
 func _can_fit_form(target: FormDefinition) -> bool:
 	if target == null or not is_inside_tree():
 		return false
-	return _can_fit_shape(target.collision_size)
-
-
-func _can_fit_shape(size: Vector2) -> bool:
-	if not is_inside_tree():
-		return false
-	var probe := RectangleShape2D.new()
-	probe.size = Vector2(
-		maxf(4.0, size.x - 2.0),
-		maxf(4.0, size.y - 4.0)
+	growth_cast.shape = _create_form_collision_shape(target, Vector2(2.0, 4.0))
+	growth_cast.position = (
+		Vector2(0.0, -target.collision_size.y * 0.5 - 2.0)
+		+ target.collision_offset
 	)
-	growth_cast.shape = probe
-	growth_cast.position = Vector2(0.0, -size.y * 0.5 - 2.0)
 	growth_cast.force_shapecast_update()
 	return not growth_cast.is_colliding()

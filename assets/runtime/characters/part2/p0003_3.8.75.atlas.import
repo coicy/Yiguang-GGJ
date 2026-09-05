@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://nmrsu1ocwgan"
+path="res://.godot/imported/p0003_3.8.75.atlas-46645a7021ed7c55f14172684b971a16.spatlas"
+
+[deps]
+
+source_file="res://assets/runtime/characters/part2/p0003_3.8.75.atlas"
+dest_files=["res://.godot/imported/p0003_3.8.75.atlas-46645a7021ed7c55f14172684b971a16.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

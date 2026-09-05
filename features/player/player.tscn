@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://features/player/movement_controller.gd" id="2_movement"]
@@ -10,10 +10,11 @@
 [ext_resource type="Script" path="res://features/player/player_visuals.gd" id="10_visuals"]
 [ext_resource type="Script" path="res://features/resources/resource_controller.gd" id="11_resources"]
 [ext_resource type="Script" path="res://features/abilities/ability_controller.gd" id="12_abilities"]
+[ext_resource type="Script" path="res://features/player/player_animation_machine.gd" id="13_animation"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 resource_local_to_scene = true
-size = Vector2(20, 24)
+radius = 12.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_legs"]
 size = Vector2(24, 24)
@@ -26,7 +27,7 @@ script = ExtResource("1_player")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(0, -12)
-shape = SubResource("RectangleShape2D_player")
+shape = SubResource("CircleShape2D_player")
 
 [node name="GrowthCast" type="ShapeCast2D" parent="."]
 unique_name_in_owner = true
@@ -53,6 +54,13 @@ script = ExtResource("10_visuals")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Visuals"]
 unique_name_in_owner = true
+
+[node name="VisualHost" type="Node2D" parent="Visuals"]
+unique_name_in_owner = true
+
+[node name="AnimationMachine" type="Node" parent="Visuals"]
+unique_name_in_owner = true
+script = ExtResource("13_animation")
 
 [node name="StateMachine" type="Node" parent="."]
 unique_name_in_owner = true

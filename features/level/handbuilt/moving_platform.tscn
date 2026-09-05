@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/level/handbuilt/moving_platform.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(128, 24)
+
+[node name="MovingPlatform" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Body" type="AnimatableBody2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 1
+collision_mask = 2
+sync_to_physics = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body"]
+unique_name_in_owner = true
+position = Vector2(64, 12)
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Artwork" type="Sprite2D" parent="Body"]
+unique_name_in_owner = true
+centered = false
+
+[node name="Attachments" type="Node2D" parent="Body"]
+
+[node name="Destination" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(192, 0)

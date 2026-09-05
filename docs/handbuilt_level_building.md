@@ -1,0 +1,73 @@
+# 手工非 Tile 关卡搭建
+
+`scenes/levels/handbuilt_level_template.tscn` 是手工关卡的起点。复制它后，直接在 Godot 的 2D 视图中摆放组件；JSON 白盒仅保留为玩法行为参考，不再参与新关卡布局。
+
+## 搭建顺序
+
+1. 在 `Terrain` 下拖入 `terrain_piece.tscn`、`hard_floor_piece.tscn` 或单独的美术场景。调整 `piece_size`，再选择共享的 `sprite_variants` 资源和 `variant_index`；单张专用贴图仍可填入 `art_texture`。
+2. 在 `Mechanisms` 下拖入 `moving_platform.tscn`、`door.tscn` 和 `trigger_button.tscn`。平台以根节点为起点，使用 `destination_offset` 配置终点；随平台移动的挂环和装饰放到 `Body/Attachments`。
+3. 选择按钮，在 `targets` 中通过节点选择器加入平台或门。目标必须提供 `activate()` 方法。
+4. 在 `Areas` 下摆放 `hazard_area.tscn`、现有营养液、毒素、毒雾、风区和伤害机关。每个范围组件的碰撞层与掩码已经按项目约定预设。
+5. 移动 `SpawnPoint` 与 `CameraBounds`，按 F6 运行关卡。`HandbuiltLevel` 会自动连接危险区和检查点，并用最近激活的检查点复活玩家。
+
+## 组件映射
+
+| 原 JSON 类型 | 手工组件 |
+| --- | --- |
+| Ground | `terrain_piece.tscn` |
+| HardFloor | `hard_floor_piece.tscn` |
+| Damage | `hazard_area.tscn` |
+| Start | `spawn_point.tscn` |
+| Camera | `camera_bounds.tscn` |
+| Door | `door.tscn` |
+| Button | `trigger_button.tscn` |
+| MoveableCube | `moving_platform.tscn` |
+| Checkpoint | `checkpoint.tscn` |
+| GrowDrug / UnGrowDrug | `nutrition_tank.tscn` / `toxin_resource.tscn` |
+| Frog | `toxin_zone.tscn` |
+| Wind / Ring / DamageMachine | `wind_zone.tscn` / `vine_anchor.tscn` / `damage_machine.tscn` |
+
+## 美术约定
+
+- 组件根节点的原点是布局锚点；不要缩放物理根节点。
+- `VisualRoot` / `Artwork` 可以偏移、缩放或替换为美术子场景；碰撞尺寸由组件的尺寸字段或 `CollisionPolygon2D` 管理。
+- 矩形地形使用 `piece_size`。简单不规则地面使用 `TerrainPiece` 的多边形模式；只有需要多段碰撞、特殊机关或独立行为时，才创建专用 `StaticBody2D` 场景。
+- TerrainPiece 的贴图只在根节点配置：单张素材填入 `art_texture`，需要复用多张精灵图时填入 `sprite_variants` 并选择 `variant_index`。`SpriteVariantSet` 优先于 `art_texture`；不要在 `Artwork` 或 `PolygonArtwork` 子节点手工填贴图。`SpriteVariantSet` 的每项保存贴图、偏移、缩放和是否适配组件尺寸。地形、危险区、按钮和平台共享该资源后，只需选择 `variant_index`。`variant_sprite_2d.tscn` 可作为现有资源区、风区等组件的直接子节点，复用同一套变体资源；其 `component_size` 用于需要拉伸适配的变体。
+- `art_texture` 与精灵变体都为空时，组件显示白模占位图；多边形模式的白模按 `PolygonArtwork` 轮廓绘制，配置素材后占位图自动隐藏。
+
+### 多边形地板
+
+`terrain_piece.tscn` 与 `hard_floor_piece.tscn` 都提供两套独立模式：`display_mode` 控制整图 `Sprite2D` 或纹理 `Polygon2D`，`collision_mode` 控制矩形或 `CollisionPolygon2D`。`TerrainPiece` 默认使用 `POLYGON + RECTANGLE`，因此改变 `piece_size` 会直接扩大平铺视觉；`HardFloorPiece` 显式保持 `SPRITE + RECTANGLE`。
+
+- 选择 `POLYGON` 后，在 2D 视图编辑 `PolygonArtwork` 的顶点；`collision_follows_visual` 默认开启，加载实例和编辑有效视觉轮廓时都会同步到碰撞轮廓。
+- 若视觉边缘不适合承重，关闭 `collision_follows_visual`，再单独编辑 `CollisionPolygon2D`。
+- 地板根节点和碰撞节点均保持单位缩放。多边形必须有至少三个不自交顶点；无效轮廓会保留上一份有效碰撞并显示一次警告。
+- `one_way_collision` 仅用于多边形碰撞的平台版本。矩形碰撞时该开关不会生效，Inspector 会给出配置警告。普通地板默认允许扎根，硬质地板默认禁止。
+- 自然和硬质地板的默认素材组位于 `assets/runtime/scenery/variants/`。设置 `sprite_variants` 后通过 `variant_index` 换肤；它只影响显示，不修改碰撞或扎根规则。
+
+### 长地面与平铺贴图
+
+长地面应分别处理轮廓、贴图和碰撞：延长 `piece_size` 或视觉多边形来定义地形范围，使用可无缝平铺的中段贴图填充范围，碰撞则只覆盖实际可站立表面。不要通过缩放 `Sprite2D` 或物理根节点来拉长地面；`stretch_art` 仅用于允许变形的一次性美术，不用于常规地形。
+
+- `RECT_FROM_PIECE_SIZE` 是默认布局，用于直线、矩形地面。视觉多边形由 `piece_size` 自动生成；修改宽度或高度后，中段贴图随轮廓重复而不被拉伸。连续平坦的可站立表面应尽量使用一个矩形碰撞体，避免装饰或相邻小碰撞体产生接缝。
+- 斜坡、洞穴和简单不规则地面必须显式选择 `CUSTOM_POLYGON`，再在 2D 视图中编辑 `PolygonArtwork` 轮廓；使用可重复的土壤或岩石贴图填充内部，并用独立的草皮、岩层或悬崖边缘素材修饰轮廓。碰撞按本节的 `collision_follows_visual` 规则同步，或保留独立的碰撞多边形。
+- 一个可延长的地面素材至少分为中段、左端帽和右端帽。中段必须在延长方向上无缝衔接；端帽保持原始尺寸，摆在地形两端。草、石头、藤蔓等装饰是独立节点，不参与地面碰撞。
+- 中段纹理通过 `PolygonArtwork` 的 `texture_repeat` 重复。`art_offset`、`art_scale_multiplier` 和 `art_rotation_degrees` 同时作用于 Sprite 与多边形贴图：调整 `piece_size` 时，图案保持该视觉尺寸并重复填满新轮廓。变体中可用 `polygon_texture_scale` 进一步控制图案密度；像素风素材使用整数位置、整数顶点和 Nearest 过滤，以避免边缘出现采样缝。
+- 多个 `TerrainPiece` 首尾拼接时，在每个实例上设置 `polygon_repeat_offset`，使右侧实例的纹理相位承接左侧实例。例如左侧宽度为 `480` 时，右侧实例从 `Vector2(-480, 0)` 开始。该偏移属于 TerrainPiece 实例，不能写回共享的 `SpriteVariantSet` 或 `LevelSpriteVariant` 资源。
+- 当关卡需要大量规则网格地形、自动转角或自动边缘连接时，改用 `TileMapLayer` 和 TileSet Terrain Set。`TerrainPiece` 继续用于手工不规则地形、端帽和特殊地表。
+
+## 接线与复用
+
+按钮使用本地 NodePath 接线，不经过 Autoload。复制已经接线的机关组合时，检查 `targets` 是否仍指向当前关卡内的目标。移动平台、门都实现 `activate()` 和 `reset_platform()`；按钮首次触发后保持锁存。
+
+每个组件场景应可单独 F6 启动。完整关卡至少验证：出生与复活、普通/不可扎根地面、危险区、按钮控制的平台、平台随动挂环、摄像机边界，以及 R 重开。
+
+## 正式关卡 Level 01
+
+`scenes/levels/level_01.tscn` 是根据 `data/Yiguang.json` 的总体边界和谜题关系搭建的正式实体关卡。地图边界为 `Rect2(-256, -128, 1008, 1040)`，运行时不读取 JSON。
+
+- 场景素材来自 `assets/runtime/scenery`，只使用等比缩放；`stretch_art` 保持关闭。
+- 长地面遵循“中段平铺、端帽定尺、碰撞覆盖连续表面”的规则；多个 `TerrainPiece` 拼接时，用各实例的 `polygon_repeat_offset` 保持纹理连续，透明装饰不参与碰撞。
+- B1 控制 C1 绕铰点旋转；B2 同步控制 C2/C6；B3、B4 分别控制 C5 与 C3/C4 下降。
+- `MechanismMotion` 是按钮与一个或多个 `MoveableCube` 之间的场景内动作节点。按钮仍通过本地 NodePath 调用 `activate()`。
+- C1–C6 和 B1–B4 在节点 metadata 中保留 `source_iid` 与 `source_label`，便于对照白盒数据。

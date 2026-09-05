@@ -3,8 +3,8 @@ extends Area2D
 ## Applies continuous leftward wind inside the JSON-defined rectangle, clipped by world blockers.
 
 const VISUAL_INK := Color(0.94, 0.96, 0.93, 1.0)
-const VISUAL_SHADE := Color(0.05, 0.06, 0.055, 0.24)
-const WIND_STREAK_COUNT: int = 9
+const WIND_STREAK_COUNT: int = 14
+const STREAK_SEGMENTS: int = 18
 const WIND_DIRECTION: float = -1.0
 const WORLD_COLLISION_MASK: int = 1
 
@@ -30,7 +30,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_visual_elapsed = fmod(_visual_elapsed + delta, 120.0)
+	_visual_elapsed += delta
 	queue_redraw()
 
 
@@ -86,7 +86,6 @@ func _find_wall_limit(lane_y: float) -> float:
 
 func _draw() -> void:
 	var zone_rect := _zone_rect()
-	draw_rect(zone_rect, VISUAL_SHADE)
 	_draw_blowing_wind(zone_rect)
 	_draw_phase_label(zone_rect)
 
@@ -98,32 +97,40 @@ func _draw_phase_label(zone_rect: Rect2) -> void:
 
 
 func _draw_blowing_wind(zone_rect: Rect2) -> void:
-	var border_pulse := (sin(_visual_elapsed * TAU * 4.0) + 1.0) * 0.5
-	draw_rect(zone_rect, Color(VISUAL_INK, 0.58 + border_pulse * 0.22), false, 3.0)
 	for streak_index: int in range(WIND_STREAK_COUNT):
-		var travel := fmod(_visual_elapsed * (250.0 + float(streak_index % 3) * 35.0) + float(streak_index) * 67.0, zone_rect.size.x + 150.0)
-		var head_x := zone_rect.end.x + 55.0 - travel
-		var lane_y := zone_rect.position.y + (float(streak_index) + 1.0) * zone_rect.size.y / float(WIND_STREAK_COUNT + 1) + sin(_visual_elapsed * 7.0 + float(streak_index)) * 3.0
-		var streak_length := 54.0 + float(streak_index % 4) * 13.0
+		# Permute lanes so adjacent wisps do not form a marching diagonal grid.
+		var lane_y := zone_rect.position.y + (float(streak_index) + 1.0) * zone_rect.size.y / float(WIND_STREAK_COUNT + 1)
+		var streak_length := 48.0 + float((streak_index * 7) % 6) * 12.0
+		var speed := 170.0 + float((streak_index * 3) % 7) * 19.0
+		var travel := fposmod(_visual_elapsed * speed + float(streak_index * 137), zone_rect.size.x + streak_length * 2.0)
+		var head_x := zone_rect.end.x + streak_length - travel
 		_draw_wind_streak(Vector2(head_x, lane_y), streak_length, _visual_left_bounds[streak_index], streak_index, zone_rect)
 
 
 func _draw_wind_streak(head: Vector2, length: float, left_bound: float, index: int, zone_rect: Rect2) -> void:
-	var right_bound := zone_rect.end.x - 7.0
-	var tail_x := head.x + length
-	var clipped_head_x := clampf(head.x, left_bound, right_bound)
-	var clipped_tail_x := clampf(tail_x, left_bound, right_bound)
-	if absf(clipped_head_x - clipped_tail_x) < 4.0:
+	var right_bound := zone_rect.end.x
+	if right_bound <= left_bound:
 		return
-	var strength := 0.48 + float(index % 3) * 0.16
-	var streak_color := Color(VISUAL_INK, strength)
-	var stroke_width := 2.0 + float(index % 2)
-	draw_line(Vector2(clipped_tail_x, head.y), Vector2(clipped_head_x, head.y), streak_color, stroke_width)
-	if head.x < left_bound or head.x > right_bound:
-		return
-	var arrow_back := head.x + 12.0
-	draw_line(head, Vector2(arrow_back, head.y - 5.0), streak_color, stroke_width)
-	draw_line(head, Vector2(arrow_back, head.y + 5.0), streak_color, stroke_width)
+	var strength := 0.24 + float(index % 4) * 0.09
+	var amplitude := minf(3.5, zone_rect.size.y / float(WIND_STREAK_COUNT + 1) * 0.3)
+	var phase := float(index) * 2.4
+	for segment: int in range(STREAK_SEGMENTS):
+		var t0 := float(segment) / float(STREAK_SEGMENTS)
+		var t1 := float(segment + 1) / float(STREAK_SEGMENTS)
+		var x0 := maxf(head.x + length * t0, left_bound)
+		var x1 := minf(head.x + length * t1, right_bound)
+		if x1 <= x0:
+			continue
+		var u0 := (x0 - head.x) / length
+		var u1 := (x1 - head.x) / length
+		var midpoint := (u0 + u1) * 0.5
+		# A soft tapered wisp: rounded leading end and a long, fading tail.
+		var taper := sin(PI * midpoint)
+		var edge_fade := clampf(minf(x0 - left_bound, right_bound - x1) / 18.0, 0.0, 1.0)
+		var alpha := strength * taper * edge_fade
+		var p0 := Vector2(x0, head.y + sin(u0 * PI * 1.3 + phase) * amplitude)
+		var p1 := Vector2(x1, head.y + sin(u1 * PI * 1.3 + phase) * amplitude)
+		draw_line(p0, p1, Color(VISUAL_INK, alpha), 0.7 + taper * 0.9, true)
 
 
 func _zone_rect() -> Rect2:

@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="FormDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="FormDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://features/forms/form_definition.gd" id="1"]
+[ext_resource type="PackedScene" path="res://features/player/visuals/part3_spine_visual.tscn" id="2_visual"]
 
 [resource]
 script = ExtResource("1")
@@ -10,7 +11,8 @@ move_speed = 260.0
 jump_force = -360.0
 gravity_scale = 0.85
 max_fall_speed = 700.0
-collision_size = Vector2(28, 40)
+collision_size = Vector2(18, 46)
+collision_shape_kind = 0
 body_color = Color(0.56, 0.35, 0.92, 1)
 growth_threshold = 0.0
 can_root = false
@@ -19,3 +21,6 @@ can_use_vine = true
 can_glide = true
 glide_enabled = true
 glide_fall_speed = 140.0
+visual_scene = ExtResource("2_visual")
+visual_scale = 0.12
+visual_offset = Vector2(-2, -2)
