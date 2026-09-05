@@ -13,7 +13,12 @@ const STABILITY_RECOVERY_PER_SECOND := 20.0
 const NUTRITION_STABILITY_MULTIPLIER := 1.25
 const TOXIN_SPEED_MULTIPLIER := 0.55
 
+@export_range(0.1, 5.0, 0.1) var toxin_slowdown_seconds: float = 1.0
+@export_range(0.1, 5.0, 0.1) var speed_recovery_seconds: float = 1.0
+
+var _speed_multiplier: float = 1.0
 var growth_progress: float = 0.0
+var toxin_progress: float = 0.0
 var stability: float = MAX_STABILITY
 
 var _forms: FormController
@@ -27,7 +32,11 @@ func setup(form_controller: FormController) -> void:
 
 func tick(delta: float) -> void:
 	_prune_invalid_toxin_sources()
-	if not _toxin_sources.is_empty():
+	var exposed := not _toxin_sources.is_empty()
+	var target_speed := TOXIN_SPEED_MULTIPLIER if exposed else 1.0
+	var transition_seconds := toxin_slowdown_seconds if exposed else speed_recovery_seconds
+	_speed_multiplier = move_toward(_speed_multiplier, target_speed, (1.0 - TOXIN_SPEED_MULTIPLIER) * delta / transition_seconds)
+	if exposed:
 		stability = maxf(0.0, stability - TOXIN_DRAIN_PER_SECOND * delta)
 		if stability <= 0.0:
 			if _forms != null and _forms.wither():
@@ -42,6 +51,9 @@ func tick(delta: float) -> void:
 
 func absorb_nutrition(amount: float) -> bool:
 	if amount <= 0.0 or _forms == null:
+		return false
+	var current_form := _forms.get_current()
+	if current_form != null and current_form.growth_threshold <= 0.0 and stability >= MAX_STABILITY:
 		return false
 	var nutrition_left := amount
 	var feedback_kind: StringName = &"nutrition"
@@ -65,6 +77,31 @@ func absorb_nutrition(amount: float) -> bool:
 	return true
 
 
+func absorb_toxin(amount: float) -> bool:
+	if amount <= 0.0 or _forms == null:
+		return false
+	var form := _forms.get_current()
+	if form == null or form.id == &"sprout":
+		return false
+	var toxin_threshold := _toxin_threshold(form)
+	if toxin_threshold <= 0.0:
+		return false
+	toxin_progress = minf(toxin_progress + amount, toxin_threshold)
+	if toxin_progress >= toxin_threshold and _forms.wither():
+		toxin_progress = 0.0
+		growth_progress = 0.0
+		form_transitioned.emit(_forms.get_current().id)
+	_emit_values()
+	return true
+
+
+func _toxin_threshold(form: FormDefinition) -> float:
+	if form.growth_threshold > 0.0:
+		return form.growth_threshold
+	var withered_form := _forms.peek_withered_form()
+	return withered_form.growth_threshold if withered_form != null else 0.0
+
+
 func enter_toxin(source: Object) -> void:
 	if source == null:
 		return
@@ -83,7 +120,7 @@ func exit_toxin(source: Object) -> void:
 
 
 func speed_multiplier() -> float:
-	return TOXIN_SPEED_MULTIPLIER if not _toxin_sources.is_empty() else 1.0
+	return _speed_multiplier
 
 
 func has_toxin() -> bool:
@@ -93,20 +130,26 @@ func has_toxin() -> bool:
 func snapshot() -> Dictionary:
 	return {
 		"growth": growth_progress,
+		"toxin": toxin_progress,
 		"stability": stability,
+		"speed_multiplier": _speed_multiplier,
 	}
 
 
 func restore(saved: Dictionary) -> void:
 	growth_progress = maxf(0.0, float(saved.get("growth", 0.0)))
+	toxin_progress = maxf(0.0, float(saved.get("toxin", 0.0)))
 	stability = clampf(float(saved.get("stability", MAX_STABILITY)), 0.0, MAX_STABILITY)
+	_speed_multiplier = clampf(float(saved.get("speed_multiplier", 1.0)), TOXIN_SPEED_MULTIPLIER, 1.0)
 	_toxin_sources.clear()
 	toxin_changed.emit(false)
 	_emit_values()
 
 
 func reset() -> void:
+	_speed_multiplier = 1.0
 	growth_progress = 0.0
+	toxin_progress = 0.0
 	stability = MAX_STABILITY
 	_toxin_sources.clear()
 	toxin_changed.emit(false)

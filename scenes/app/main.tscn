@@ -1,20 +1,11 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scenes/app/main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://scenes/levels/yiguang_whitebox.tscn" id="1_sandbox"]
-[ext_resource type="PackedScene" path="res://features/ui/start_screen.tscn" id="2_start"]
+[ext_resource type="PackedScene" path="res://scenes/levels/json_whitebox_level.tscn" id="1_whitebox"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource("1_main")
 
 [node name="LevelHost" type="Node2D" parent="."]
 
-[node name="YiguangWhitebox" parent="LevelHost" instance=ExtResource("1_sandbox")]
-
-[node name="Interface" type="CanvasLayer" parent="."]
-layer = 20
-
-[node name="StartScreen" parent="Interface" instance=ExtResource("2_start")]
-unique_name_in_owner = true
+[node name="JsonWhiteboxLevel" parent="LevelHost" instance=ExtResource("1_whitebox")]
 
 [node name="Debug" type="Node" parent="."]

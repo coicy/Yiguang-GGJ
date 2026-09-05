@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://features/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://features/player/movement_controller.gd" id="2_movement"]
@@ -12,12 +12,15 @@
 [ext_resource type="Script" path="res://features/abilities/ability_controller.gd" id="12_abilities"]
 [ext_resource type="PackedScene" path="res://features/ui/glow_feedback.tscn" id="13_glow"]
 
+[ext_resource type="Script" path="res://features/player/player_audio.gd" id="13_audio"]
+[ext_resource type="PackedScene" path="res://features/audio/sound_emitter.tscn" id="14_sounds"]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 resource_local_to_scene = true
 size = Vector2(20, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_legs"]
-size = Vector2(24, 72)
+size = Vector2(24, 24)
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
@@ -44,7 +47,8 @@ collision_mask = 64
 monitoring = false
 monitorable = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="LegExtension"]
+[node name="LegCollisionShape" type="CollisionShape2D" parent="LegExtension"]
+unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_legs")
 
 [node name="Visuals" type="Node2D" parent="."]
@@ -81,3 +85,10 @@ unique_name_in_owner = true
 script = ExtResource("4_form")
 forms = [ExtResource("6_sprout"), ExtResource("7_humanoid"), ExtResource("8_mature")]
 default_form_id = &"sprout"
+
+[node name="PlayerAudio" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("13_audio")
+
+[node name="PlayerSounds" parent="." instance=ExtResource("14_sounds")]
+unique_name_in_owner = true

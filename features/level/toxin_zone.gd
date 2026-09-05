@@ -1,41 +1,45 @@
 class_name ToxinZone
 extends Area2D
 
-const GlowFeedback = preload("res://features/ui/glow_feedback.gd")
-
-@export var zone_size: Vector2 = Vector2(128.0, 64.0)
-@export var show_whitebox_visual: bool = false
-
-@onready var collision_shape: CollisionShape2D = get_node_or_null("CollisionShape2D") as CollisionShape2D
-@onready var glow: GlowFeedback = get_node_or_null("GlowFeedback") as GlowFeedback
 
 signal actor_entered(actor: Node2D)
 signal actor_exited(actor: Node2D)
+signal actor_absorption_started(actor: Node2D)
+signal actor_absorption_stopped(actor: Node2D)
 
 
 var _actors_inside: Array[Node2D] = []
+var _absorbing_actors: Array[Node2D] = []
 
 
 func _ready() -> void:
-	if collision_shape == null:
-		body_entered.connect(_on_body_entered)
-		body_exited.connect(_on_body_exited)
-		return
-	var rectangle := collision_shape.shape as RectangleShape2D
+	var collision := %CollisionShape2D as CollisionShape2D
+	var rectangle := collision.shape as RectangleShape2D
 	if rectangle != null:
-		rectangle = rectangle.duplicate() as RectangleShape2D
-		collision_shape.shape = rectangle
-		rectangle.size = zone_size
-	if glow != null:
-		glow.field_size = zone_size
-		glow.set_glow_color(Color("#d653b7"))
+		var fog := %PoisonFog.get_node("Fog") as ColorRect
+		fog.position = collision.position - rectangle.size * 0.5
+		fog.size = rectangle.size
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
-	queue_redraw()
 
 
 func is_actor_inside(actor: Node2D) -> bool:
 	return _actors_inside.has(actor)
+
+
+func _physics_process(_delta: float) -> void:
+	for actor: Node2D in _actors_inside.duplicate():
+		if not is_instance_valid(actor):
+			_actors_inside.erase(actor)
+			_absorbing_actors.erase(actor)
+			continue
+		var absorbing := _is_absorbing(actor)
+		if absorbing and not _absorbing_actors.has(actor):
+			_absorbing_actors.append(actor)
+			actor_absorption_started.emit(actor)
+		elif not absorbing and _absorbing_actors.has(actor):
+			_absorbing_actors.erase(actor)
+			actor_absorption_stopped.emit(actor)
 
 
 func _on_body_entered(actor: Node2D) -> void:
@@ -51,19 +55,11 @@ func _on_body_exited(actor: Node2D) -> void:
 		return
 
 	_actors_inside.erase(actor)
+	if _absorbing_actors.has(actor):
+		_absorbing_actors.erase(actor)
+		actor_absorption_stopped.emit(actor)
 	actor_exited.emit(actor)
 
 
-func _draw() -> void:
-	if not show_whitebox_visual:
-		return
-	draw_rect(Rect2(-zone_size * 0.5, zone_size), Color(1.0, 0.2, 0.9, 0.62))
-	draw_string(
-		ThemeDB.fallback_font,
-		Vector2(-zone_size.x * 0.5 + 3.0, 5.0),
-		"TOXIN",
-		HORIZONTAL_ALIGNMENT_LEFT,
-		-1.0,
-		12,
-		Color.WHITE
-	)
+func _is_absorbing(actor: Node2D) -> bool:
+	return actor.has_method(&"is_absorbing_resource") and actor.call(&"is_absorbing_resource") == true

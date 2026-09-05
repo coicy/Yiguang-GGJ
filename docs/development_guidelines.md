@@ -45,7 +45,7 @@
 
 玩法代码只读取动作名，不读取具体键位：
 
-`move_left`、`move_right`、`move_up`、`move_down`、`jump`、`switch_form`、`ability_primary`、`attack`、`pause`、`restart`
+`move_left`、`move_right`、`move_up`、`move_down`、`jump`、`absorb_resource`、`ability_primary`、`attack`、`pause`、`restart`
 
 跳跃的 just-pressed/released 采样必须服务于物理 tick。UI 输入先由 Control 消费，玩法输入在 `_unhandled_input()` 或物理帧查询中处理。以后做重绑定时只改 InputMap，不改玩家脚本。
 

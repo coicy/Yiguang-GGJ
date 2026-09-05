@@ -20,22 +20,103 @@ func _run() -> void:
 	nutrition_tank.accepted_form_id = &"sprout"
 	nutrition_tank.body_entered.emit(player)
 	nutrition_tank._physics_process(1.0)
+	assert(is_zero_approx(player.resources.growth_progress))
+	Input.action_press(&"absorb_resource")
+	nutrition_tank._physics_process(1.0)
 	assert(is_equal_approx(player.resources.growth_progress, 40.0))
 	nutrition_tank._physics_process(2.0)
 	assert(player.current_form_id() == &"humanoid")
 	nutrition_tank._physics_process(5.0)
 	assert(player.current_form_id() == &"humanoid")
+	Input.action_release(&"absorb_resource")
+
+	var toxin_resource := preload("res://features/level/toxin_resource.tscn").instantiate() as ToxinResource
+	root.add_child(toxin_resource)
+	assert(player.form_controller.restore_form(&"mature"))
+	toxin_resource.body_entered.emit(player)
+	Input.action_press(&"absorb_resource")
+	toxin_resource._physics_process(3.0)
+	assert(player.current_form_id() == &"humanoid", "The mature form must be able to absorb a toxin tank and wither.")
+	Input.action_release(&"absorb_resource")
+	toxin_resource.body_exited.emit(player)
+
+	var toxin_zone := preload("res://features/level/toxin_zone.tscn").instantiate() as ToxinZone
+	root.add_child(toxin_zone)
+	toxin_zone.actor_entered.connect(func(actor: Node2D) -> void: actor.enter_toxin(toxin_zone))
+	toxin_zone.actor_exited.connect(func(actor: Node2D) -> void: actor.exit_toxin(toxin_zone))
+	toxin_zone.body_entered.emit(player)
+	toxin_zone._physics_process(1.0)
+	player.resources.tick(1.0)
+	assert(is_equal_approx(player.resources.stability, 65.0))
+	Input.action_press(&"absorb_resource")
+	toxin_zone._physics_process(1.0)
+	player.resources.tick(1.0)
+	assert(is_equal_approx(player.resources.stability, 30.0))
+	Input.action_release(&"absorb_resource")
+	toxin_zone.body_exited.emit(player)
+	player.resources.tick(0.1)
+	assert(player.resources.stability > 30.0)
 
 	var wind_zone := preload("res://features/level/wind_zone.tscn").instantiate() as WindZone
+	wind_zone.position = Vector2(-180.0, -70.0)
 	root.add_child(wind_zone)
-	wind_zone.set_blowing_for_test(true)
 	player.velocity.x = 0.0
 	wind_zone.apply_to_actor(player, 0.5)
-	assert(player.velocity.x > 0.0)
+	assert(player.velocity.x < 0.0)
 	for _step in 20:
-		player.movement.tick(1.0 / 60.0, -1.0, false)
+		player.movement.tick(1.0 / 60.0, 1.0, false)
 		wind_zone.apply_to_actor(player, 1.0 / 60.0)
-	assert(player.velocity.x > 0.0)
+	assert(player.velocity.x < 0.0)
+	var wind_wall := StaticBody2D.new()
+	wind_wall.collision_layer = 1
+	var wind_wall_shape := CollisionShape2D.new()
+	var wind_wall_rect := RectangleShape2D.new()
+	wind_wall_rect.size = Vector2(16.0, 160.0)
+	wind_wall_shape.shape = wind_wall_rect
+	wind_wall.add_child(wind_wall_shape)
+	wind_wall.position = Vector2(96.0, -1.0)
+	root.add_child(wind_wall)
+	player.velocity.x = 0.0
+	wind_zone.apply_to_actor(player, 0.5)
+	assert(is_zero_approx(player.velocity.x))
+	wind_wall.free()
+	await physics_frame
+	var partial_wind_wall := StaticBody2D.new()
+	partial_wind_wall.collision_layer = 1
+	var partial_wall_shape := CollisionShape2D.new()
+	var partial_wall_rect := RectangleShape2D.new()
+	partial_wall_rect.size = Vector2(16.0, 32.0)
+	partial_wall_shape.shape = partial_wall_rect
+	partial_wind_wall.add_child(partial_wall_shape)
+	partial_wind_wall.position = Vector2(96.0, 0.0)
+	root.add_child(partial_wind_wall)
+	player.global_position = Vector2(0.0, 0.0)
+	player.velocity = Vector2.ZERO
+	wind_zone.apply_to_actor(player, 0.5)
+	assert(is_zero_approx(player.velocity.x), "A wall must block wind only at its occupied height.")
+	player.global_position = Vector2(0.0, 48.0)
+	player.velocity = Vector2.ZERO
+	wind_zone.apply_to_actor(player, 0.5)
+	assert(player.velocity.x < 0.0, "Wind must flow through an unblocked height beside a partial wall.")
+	partial_wind_wall.free()
+	await physics_frame
+	var source_edge_wall := StaticBody2D.new()
+	source_edge_wall.collision_layer = 1
+	var source_edge_shape := CollisionShape2D.new()
+	var source_edge_rect := RectangleShape2D.new()
+	source_edge_rect.size = Vector2(16.0, 160.0)
+	source_edge_shape.shape = source_edge_rect
+	source_edge_wall.add_child(source_edge_shape)
+	source_edge_wall.position = Vector2(182.0, 0.0)
+	root.add_child(source_edge_wall)
+	player.global_position = Vector2(0.0, 0.0)
+	player.velocity = Vector2.ZERO
+	wind_zone.apply_to_actor(player, 0.5)
+	assert(is_zero_approx(player.velocity.x), "A wall overlapping the wind source boundary must not leak wind.")
+	source_edge_wall.free()
+	await physics_frame
+	player.global_position = Vector2(0.0, -1.0)
+	player.velocity = Vector2.ZERO
 	assert(player.form_controller.restore_form(&"humanoid"))
 	await physics_frame
 	player.velocity.x = 300.0
@@ -46,6 +127,28 @@ func _run() -> void:
 	assert(player.velocity == Vector2.ZERO)
 	assert(player.abilities.toggle_primary())
 	assert(not player.abilities.is_rooted())
+	assert(player.form_controller.restore_form(&"mature"))
+	player.global_position = Vector2(0.0, -1.0)
+	player.velocity = Vector2(0.0, 100.0)
+	Input.action_press(&"jump")
+	wind_zone.apply_to_actor(player, 0.1)
+	Input.action_release(&"jump")
+	assert(player.velocity.x > -180.0 and player.velocity.x < 0.0, "Mature leaves must reduce wind while gliding.")
+	assert(player.form_controller.restore_form(&"humanoid"))
+	var hard_floor := preload("res://features/level/rootable_surface.tscn").instantiate() as StaticBody2D
+	hard_floor.set(&"allows_rooting", false)
+	hard_floor.global_position = Vector2(600.0, 10.0)
+	var hard_floor_collision := hard_floor.get_node("CollisionShape2D") as CollisionShape2D
+	var hard_floor_shape := hard_floor_collision.shape as RectangleShape2D
+	hard_floor_shape.size = Vector2(200.0, 20.0)
+	root.add_child(hard_floor)
+	player.global_position = Vector2(600.0, -1.0)
+	player.velocity = Vector2.ZERO
+	await _physics_steps(6)
+	assert(not player.abilities.try_root())
+	player.global_position = Vector2(0.0, -1.0)
+	player.velocity = Vector2.ZERO
+	await _physics_steps(6)
 
 	var high_switch := preload("res://features/level/ability_switch.tscn").instantiate() as AbilitySwitch
 	high_switch.position = Vector2(0.0, -200.0)
@@ -85,10 +188,13 @@ func _run() -> void:
 	assert(completed_count[0] == 1)
 
 	for node: Node in [
-		player, ground, nutrition_tank, wind_zone, high_switch, gate,
+		player, ground, nutrition_tank, toxin_resource, toxin_zone, wind_zone, hard_floor, high_switch, gate,
 		low_switch, incomplete_switch, exit_goal,
 	]:
 		node.free()
+	# Let queued nodes and the audio mixer release stopped playback before shutdown.
+	await process_frame
+	await create_timer(0.1).timeout
 	quit()
 
 

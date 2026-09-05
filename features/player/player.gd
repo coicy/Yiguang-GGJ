@@ -2,7 +2,10 @@ class_name Player
 extends CharacterBody2D
 ## Composition root: reads input and wires child components together.
 
-const LEG_EXTENSION_HEIGHT := 72.0
+signal resource_absorbed(kind: StringName, amount: float)
+
+var _absorption_locked: bool = false
+@onready var audio: PlayerAudio = %PlayerAudio
 
 @onready var state_machine: StateMachine = %StateMachine
 @onready var movement: MovementController = %Movement
@@ -13,13 +16,14 @@ const LEG_EXTENSION_HEIGHT := 72.0
 @onready var collision_shape: CollisionShape2D = %CollisionShape2D
 @onready var growth_cast: ShapeCast2D = %GrowthCast
 @onready var leg_area: Area2D = %LegExtension
+@onready var leg_collision_shape: CollisionShape2D = %LegCollisionShape
 
 
 func _ready() -> void:
 	resources.setup(form_controller)
 	movement.setup(self, form_controller.get_current(), resources)
 	state_machine.setup(self, movement, form_controller)
-	abilities.setup(self, movement, form_controller, leg_area)
+	abilities.setup(self, movement, form_controller, leg_area, leg_collision_shape)
 	form_controller.set_switch_validator(_can_fit_form)
 	_apply_form_shape(form_controller.get_current())
 	visuals.set_form(form_controller.get_current())
@@ -27,20 +31,17 @@ func _ready() -> void:
 	form_controller.form_changed.connect(_on_form_changed)
 	state_machine.state_changed.connect(_on_state_changed)
 	abilities.ability_state_changed.connect(_on_ability_state_changed)
-	resources.values_changed.connect(_on_resource_values_changed)
-	resources.toxin_changed.connect(_on_toxin_changed)
-	resources.feedback_requested.connect(_on_resource_feedback)
 	add_to_group("player")
+	audio.setup(self)
 
 
 func _physics_process(delta: float) -> void:
+	if not Input.is_action_pressed("absorb_resource"):
+		_absorption_locked = false
 	resources.tick(delta)
-	abilities.tick()
-	if Input.is_action_just_pressed("ability_primary"):
-		abilities.toggle_primary()
 	var leg_direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	abilities.set_leg_extension_direction(leg_direction)
-	visuals.set_leg_direction(leg_direction)
+	abilities.tick(delta)
 	var move_dir := Input.get_axis("move_left", "move_right")
 	var jump_held := Input.is_action_pressed("jump")
 
@@ -50,8 +51,20 @@ func _physics_process(delta: float) -> void:
 		movement.release_jump()
 
 	state_machine.tick(delta, move_dir, jump_held)
+	abilities.post_movement_update()
+	visuals.set_leg_direction(abilities.get_leg_extension_direction())
+	visuals.set_leg_path(abilities.get_leg_path())
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_released("absorb_resource"):
+		_absorption_locked = false
+	if event.is_action_pressed("ability_primary"):
+		abilities.toggle_primary()
+
 
 func _on_form_changed(form_id: StringName) -> void:
+	_absorption_locked = Input.is_action_pressed("absorb_resource")
 	cancel_actions()
 	_apply_form_shape(form_controller.get_current())
 	movement.set_form(form_controller.get_current())
@@ -72,26 +85,6 @@ func _on_ability_state_changed(_label: StringName) -> void:
 	visuals.set_leg_direction(abilities.get_leg_extension_direction())
 
 
-func _on_resource_values_changed(_growth: float, _threshold: float, stability: float) -> void:
-	visuals.set_resource_state(stability, resources.has_toxin())
-
-
-func _on_toxin_changed(active: bool) -> void:
-	visuals.set_resource_state(resources.stability, active)
-	if active:
-		visuals.play_stability_hit_feedback()
-
-
-func _on_resource_feedback(kind: StringName) -> void:
-	match kind:
-		&"nutrition", &"stability_restored":
-			visuals.play_nutrition_feedback()
-		&"grew":
-			visuals.play_growth_feedback()
-		&"wither":
-			visuals.play_wither_feedback()
-
-
 func current_state() -> StringName:
 	return state_machine.current_state
 
@@ -104,8 +97,42 @@ func is_grounded() -> bool:
 	return is_on_floor()
 
 
+func can_root_here() -> bool:
+	if not is_on_floor():
+		return false
+	for collision_index: int in get_slide_collision_count():
+		var collision := get_slide_collision(collision_index)
+		if collision == null or collision.get_normal().dot(Vector2.UP) < 0.7:
+			continue
+		var collider := collision.get_collider()
+		if collider != null and collider.has_method(&"can_root"):
+			return bool(collider.call(&"can_root"))
+	return true
+
+
+func is_absorbing_resource() -> bool:
+	if not Input.is_action_pressed("absorb_resource"):
+		_absorption_locked = false
+		return false
+	return not _absorption_locked
+
+
+func requires_absorption_release() -> bool:
+	return _absorption_locked and Input.is_action_pressed("absorb_resource")
+
+
 func absorb_nutrition(amount: float) -> bool:
-	return resources.absorb_nutrition(amount)
+	var absorbed := resources.absorb_nutrition(amount)
+	if absorbed:
+		resource_absorbed.emit(&"nutrition", amount)
+	return absorbed
+
+
+func absorb_toxin(amount: float) -> bool:
+	var absorbed := resources.absorb_toxin(amount)
+	if absorbed:
+		resource_absorbed.emit(&"toxin", amount)
+	return absorbed
 
 
 func enter_toxin(source: Object) -> void:
@@ -139,19 +166,6 @@ func restore_state(saved: Dictionary) -> void:
 
 func cancel_actions() -> void:
 	abilities.cancel_all()
-
-
-func set_leg_extension_active(active: bool) -> bool:
-	var form := form_controller.get_current()
-	if form == null:
-		return false
-	var target_size := form.collision_size
-	if active:
-		target_size.y += LEG_EXTENSION_HEIGHT
-		if not _can_fit_shape(target_size):
-			return false
-	_apply_collision_shape(target_size)
-	return true
 
 
 func _apply_form_shape(form: FormDefinition) -> void:

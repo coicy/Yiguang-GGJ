@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Shader" path="res://features/level/effects/poison_fog.gdshader" id="1_fog"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fog"]
+resource_local_to_scene = true
+shader = ExtResource("1_fog")
+shader_parameter/fog_color = Color(0.39, 0.72, 0.12, 0.72)
+shader_parameter/density = 1.0
+shader_parameter/flow_speed = 1.0
+
+[node name="PoisonFog" type="Node2D"]
+
+[node name="Fog" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_fog")
+offset_left = -160.0
+offset_top = -80.0
+offset_right = 160.0
+offset_bottom = 80.0
+mouse_filter = 2

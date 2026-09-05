@@ -3,6 +3,9 @@ extends Node
 ## Owns physics movement and jump feel. Universal feel values are @export here;
 ## per-form stats (speed, jump, gravity, glide) come from the current FormDefinition.
 
+signal jumped
+signal landed(impact_speed: float)
+
 @export_group("Movement")
 @export var acceleration: float = 1200.0
 @export var friction: float = 800.0
@@ -12,6 +15,7 @@ extends Node
 
 @export_group("Leg Extension")
 @export var leg_step_height: float = 72.0
+@export var leg_push_acceleration: float = 1800.0
 
 @export_group("Jump & Gravity")
 @export var gravity: float = 1200.0
@@ -33,6 +37,8 @@ var _jump_buffer_timer: float = 0.0
 var _rooted: bool = false
 var _movement_locked: bool = false
 var _leg_extended: bool = false
+var _leg_push_direction := Vector2.ZERO
+var _leg_push_target_speed: float = 0.0
 var _vine_anchor: Node2D
 var _vine_length: float = 0.0
 
@@ -91,6 +97,7 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 	var speed_scale := resources.speed_multiplier() if resources != null else 1.0
 	if _rooted:
 		body.velocity.x = 0.0
+		_apply_leg_push(delta)
 	elif vine_attached:
 		_apply_vine_motion(move_dir, delta)
 	elif not _movement_locked and move_dir != 0.0:
@@ -99,6 +106,8 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, friction * delta)
 	_try_leg_step(delta)
 
+	var was_grounded := body.is_on_floor()
+	var falling_speed := body.velocity.y
 	body.move_and_slide()
 	_enforce_vine_length()
 
@@ -107,12 +116,15 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 
 	if body.is_on_floor():
 		body.velocity.y = 0.0
+		if not was_grounded and falling_speed > 80.0:
+			landed.emit(falling_speed)
 
 
 func _perform_jump() -> void:
 	body.velocity.y = form.jump_force
 	_coyote_timer = 0.0
 	_jump_buffer_timer = 0.0
+	jumped.emit()
 
 
 func set_rooted(rooted: bool) -> void:
@@ -134,11 +146,27 @@ func set_leg_extended(extended: bool) -> void:
 	_leg_extended = extended
 
 
+func set_leg_push(direction: Vector2, speed: float) -> void:
+	_leg_push_direction = direction.normalized() if not direction.is_zero_approx() else Vector2.ZERO
+	_leg_push_target_speed = maxf(speed, 0.0)
+
+
+func _apply_leg_push(delta: float) -> void:
+	if _leg_push_direction.is_zero_approx() or _leg_push_target_speed <= 0.0:
+		return
+	var target_velocity := _leg_push_direction * _leg_push_target_speed
+	body.velocity = body.velocity.move_toward(target_velocity, leg_push_acceleration * delta)
+
+
 func apply_wind(force: float, delta: float) -> void:
 	if body == null or _rooted:
 		return
-	var wind_target_speed := signf(force) * max_wind_speed
-	body.velocity.x = move_toward(body.velocity.x, wind_target_speed, absf(force) * delta)
+	var resistance := 1.0
+	if form != null and form.can_glide and Input.is_action_pressed(&"jump") and body.velocity.y > 0.0:
+		# Mature leaves resist part of the wind only while the player is gliding.
+		resistance = 0.4
+	var wind_target_speed := signf(force) * max_wind_speed * resistance
+	body.velocity.x = move_toward(body.velocity.x, wind_target_speed, absf(force) * resistance * delta)
 
 
 func attach_vine(anchor: Node2D, length: float) -> void:

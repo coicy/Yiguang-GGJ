@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/level/whitebox_button.gd" id="1_button"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_button"]
+size = Vector2(16, 16)
+
+[node name="WhiteboxButton" type="Area2D"]
+collision_layer = 64
+collision_mask = 2
+monitoring = true
+script = ExtResource("1_button")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(8, 8)
+shape = SubResource("RectangleShape2D_button")
