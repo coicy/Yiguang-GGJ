@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/terrain_piece.tscn" id="1_terrain"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/hard_floor_piece.tscn" id="2_hard"]
+[ext_resource type="Resource" path="res://assets/runtime/scenery/variants/natural_floor_variants.tres" id="3_natural"]
+[ext_resource type="Resource" path="res://assets/runtime/scenery/variants/hard_floor_variants.tres" id="4_hard_variants"]
+
+[node name="HandbuiltFloorGallery" type="Node2D"]
+
+[node name="NaturalSprite" parent="." instance=ExtResource("1_terrain")]
+position = Vector2(48, 280)
+piece_size = Vector2(320, 64)
+sprite_variants = ExtResource("3_natural")
+
+[node name="NaturalSlope" parent="." instance=ExtResource("1_terrain")]
+position = Vector2(440, 280)
+piece_size = Vector2(192, 96)
+display_mode = 1
+collision_mode = 1
+sprite_variants = ExtResource("3_natural")
+
+[node name="PolygonArtwork" parent="NaturalSlope" index="3"]
+polygon = PackedVector2Array(0, 96, 192, 0, 192, 96)
+
+[node name="CollisionPolygon2D" parent="NaturalSlope" index="1"]
+polygon = PackedVector2Array(0, 96, 192, 0, 192, 96)
+
+[node name="HardSprite" parent="." instance=ExtResource("2_hard")]
+position = Vector2(48, 464)
+piece_size = Vector2(320, 48)
+sprite_variants = ExtResource("4_hard_variants")
+variant_index = 1
+
+[node name="HardOneWayPolygon" parent="." instance=ExtResource("2_hard")]
+position = Vector2(440, 464)
+piece_size = Vector2(192, 40)
+display_mode = 1
+collision_mode = 1
+one_way_collision = true
+sprite_variants = ExtResource("4_hard_variants")
+variant_index = 2

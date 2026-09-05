@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://features/level/handbuilt/terrain_piece.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_terrain"]
+size = Vector2(192, 48)
+
+[node name="TerrainPiece" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(96, 24)
+shape = SubResource("RectangleShape2D_terrain")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+unique_name_in_owner = true
+disabled = true
+polygon = PackedVector2Array(0, 0, 192, 0, 192, 48, 0, 48)
+
+[node name="Artwork" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+centered = false
+
+[node name="PolygonArtwork" type="Polygon2D" parent="."]
+unique_name_in_owner = true
+visible = false
+polygon = PackedVector2Array(0, 0, 192, 0, 192, 48, 0, 48)
+
+[node name="Decorations" type="Node2D" parent="."]
