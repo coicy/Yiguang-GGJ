@@ -32,7 +32,8 @@ const C3_C4_HIDDEN_OFFSET := Vector2(0.0, -160.0)
 const C5_INITIAL_OFFSET := Vector2(0.0, -128.0)
 const DAMAGE_MACHINE_TRAVEL_DISTANCE := 32.0
 const DAMAGE_MACHINE_TRAVEL_SPEED := 64.0
-const FIRST_ROOM_CAMERA_RECT := Rect2(0.0, 320.0, 336.0, 160.0)
+const CAMERA_DRAG_MARGIN_HORIZONTAL := 0.2
+const CAMERA_DRAG_MARGIN_VERTICAL := 0.25
 
 var _player: Player
 var _spawn_position := Vector2.ZERO
@@ -389,11 +390,15 @@ func _respawn_player() -> void:
 func _create_camera() -> void:
 	var camera := Camera2D.new()
 	camera.name = "Camera"
-	# The initial LDtk camera marks the first room: 336 x 160 world pixels.
+	# At the 1344 x 640 reference viewport this frames 336 x 160 world pixels.
 	camera.zoom = Vector2(4.0, 4.0)
-	camera.position = FIRST_ROOM_CAMERA_RECT.get_center() - _player.global_position
-	camera.position_smoothing_enabled = true
-	camera.position_smoothing_speed = 8.0
+	camera.drag_horizontal_enabled = true
+	camera.drag_vertical_enabled = true
+	camera.drag_left_margin = CAMERA_DRAG_MARGIN_HORIZONTAL
+	camera.drag_right_margin = CAMERA_DRAG_MARGIN_HORIZONTAL
+	camera.drag_top_margin = CAMERA_DRAG_MARGIN_VERTICAL
+	camera.drag_bottom_margin = CAMERA_DRAG_MARGIN_VERTICAL
+	camera.position_smoothing_enabled = false
 	camera.limit_left = -256
 	camera.limit_top = -160
 	camera.limit_right = 720

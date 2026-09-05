@@ -13,6 +13,7 @@ const C5_ID := "de356dc0-96d0-11f1-9ec0-15760920bd18"
 const C6_ID := "322a3230-96d0-11f1-9ec0-65ba33f44fa8"
 const BIG_WIND_ID := "ccedf6a0-96d0-11f1-9ec0-ed0fd8838cf2"
 const CHECKPOINT_ID := "a8139720-96d0-11f1-9ec0-076994b461f9"
+const STATIC_RING_ID := "d495ff00-96d0-11f1-9ec0-bfac7247ca78"
 const SOURCE_PATH := "res://data/Yiguang.json"
 
 
@@ -31,7 +32,11 @@ func _run() -> void:
 	var camera := player.get_node("Camera") as Camera2D
 	assert(camera != null)
 	assert(camera.zoom.is_equal_approx(Vector2(4.0, 4.0)))
-	assert(camera.global_position.is_equal_approx(Vector2(168.0, 400.0)), "The initial camera must frame the 336 x 160 first room.")
+	assert(camera.position.is_zero_approx())
+	assert(camera.drag_horizontal_enabled and camera.drag_vertical_enabled)
+	assert(is_equal_approx(camera.drag_left_margin, 0.2) and is_equal_approx(camera.drag_right_margin, 0.2))
+	assert(is_equal_approx(camera.drag_top_margin, 0.25) and is_equal_approx(camera.drag_bottom_margin, 0.25))
+	assert(not camera.position_smoothing_enabled, "The player must not leave the central camera region because of follow lag.")
 	# The wall at x=320 has a two-cell opening above the floor. A 16 x 16
 	# sprout must have clearance to cross it instead of relying on edge contact.
 	player.global_position = Vector2(304.0, 456.0)
@@ -105,6 +110,14 @@ func _run() -> void:
 	assert(player.form_controller.restore_form(&"mature"))
 	assert(player.abilities.toggle_primary(), "A mature player must be able to hook C3's descended Ring.")
 	assert(player.abilities.is_vine_attached())
+	assert(player.abilities.toggle_primary())
+	var static_ring := level.call(&"get_entity", STATIC_RING_ID) as Node2D
+	assert(static_ring != null)
+	player.global_position = static_ring.global_position + Vector2(0.0, 80.0)
+	player.velocity = Vector2.ZERO
+	await physics_frame
+	assert(player.abilities.toggle_primary(), "A Ring mounted directly on solid level geometry must remain hookable.")
+	assert(player.abilities.get_vine_anchor() == static_ring)
 	var checkpoint := level.call(&"get_entity", CHECKPOINT_ID) as Area2D
 	assert(checkpoint != null)
 	checkpoint.call(&"activate", player)

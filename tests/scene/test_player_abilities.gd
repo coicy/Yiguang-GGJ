@@ -25,6 +25,7 @@ func _run() -> void:
 	player.abilities.leg_extension_speed = 240.0
 	player.abilities.leg_retraction_speed = 480.0
 	var start_position := player.global_position
+	var leg_anchor := player.abilities.get_leg_anchor_global_position()
 	Input.action_press(&"move_right")
 	await _physics_steps(2)
 	assert(player.abilities.is_leg_extended())
@@ -34,7 +35,8 @@ func _run() -> void:
 	assert(player.abilities.leg_area().monitoring)
 	var first_tip: Vector2 = player.abilities.get_leg_path()[1]
 	assert(is_zero_approx(first_tip.y))
-	assert(first_tip.x > 0.0)
+	assert(first_tip.x < 0.0)
+	assert(player.abilities.get_leg_anchor_global_position().is_equal_approx(leg_anchor))
 	await _physics_steps(4)
 	var second_length: float = player.abilities.get_leg_length()
 	assert(second_length > first_length)
@@ -47,9 +49,11 @@ func _run() -> void:
 	assert(turned_path.size() >= 3)
 	var corner: Vector2 = turned_path[1]
 	var tip: Vector2 = turned_path[turned_path.size() - 1]
-	assert(absf(corner.x) > 0.0)
-	assert(is_zero_approx(tip.x - corner.x))
-	assert(tip.y < corner.y)
+	assert(is_zero_approx(corner.x))
+	assert(corner.y > 0.0)
+	assert(tip.x < corner.x)
+	assert(is_equal_approx(tip.y, corner.y))
+	assert((player.global_position + tip).is_equal_approx(leg_anchor))
 	assert(player.abilities.get_leg_length() <= max_length + 0.01)
 	player.abilities.set_leg_extension_direction(Vector2(1.0, -1.0))
 	assert(player.abilities.get_leg_extension_direction() == Vector2.UP)
@@ -61,6 +65,13 @@ func _run() -> void:
 	assert(released_length < max_length)
 	await _physics_steps(4)
 	assert(player.abilities.get_leg_length() < released_length)
+	assert(player.abilities.is_rooted())
+	for _step: int in range(60):
+		if not player.abilities.is_leg_extended():
+			break
+		await physics_frame
+	assert(not player.abilities.is_leg_extended(), "Releasing movement must retract the body all the way to its fixed leg anchor.")
+	assert(player.global_position.distance_to(leg_anchor) <= 2.1)
 	assert(player.abilities.is_rooted())
 	var step_platform := _make_step_platform()
 	root.add_child(step_platform)

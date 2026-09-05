@@ -5,6 +5,8 @@ extends Node
 const MAX_LEG_BODY_LENGTHS := 4.0
 const LEG_TIP_COLLISION_SIZE := Vector2(24.0, 24.0)
 const DIRECTION_EPSILON := 0.1
+const VINE_ENDPOINT_TOLERANCE := 20.0
+const LEG_WAYPOINT_TOLERANCE := 2.0
 
 signal ability_state_changed(label: StringName)
 signal feedback_requested(message: String)
@@ -26,7 +28,11 @@ var _vine_anchor: Node2D
 var _leg_direction := Vector2.UP
 var _last_leg_direction := Vector2.UP
 var _leg_length: float = 0.0
-var _leg_corners: Array[Vector2] = []
+var _leg_anchor_global_position := Vector2.ZERO
+var _leg_corners_world: Array[Vector2] = []
+var _retracting: bool = false
+var _retraction_target := Vector2.ZERO
+var _retraction_vector_before_move := Vector2.ZERO
 var _standalone_form: FormDefinition
 
 
@@ -59,6 +65,17 @@ func tick(delta: float = 0.0) -> void:
 		_retract_leg(delta)
 	else:
 		_extend_leg(delta)
+
+
+func post_movement_update() -> void:
+	if _player == null or not _rooted or not _leg_extended:
+		return
+	if _retracting:
+		_finish_retraction_waypoint_if_reached()
+	else:
+		_enforce_max_leg_length()
+	_update_leg_length()
+	_update_leg_area()
 
 
 func start_primary() -> bool:
@@ -132,6 +149,7 @@ func try_root() -> bool:
 		feedback_requested.emit("人形体在地面上才能扎根")
 		return false
 	_rooted = true
+	_leg_anchor_global_position = _player.global_position
 	_movement.set_rooted(true)
 	ability_state_changed.emit(&"rooted")
 	return true
@@ -193,14 +211,16 @@ func stop_secondary() -> void:
 		_leg_direction = Vector2.ZERO
 		return
 	_leg_length = 0.0
-	_leg_corners.clear()
+	_leg_corners_world.clear()
 	_leg_extended = false
+	_retracting = false
 	if _leg_area != null:
 		_leg_area.set_deferred("monitoring", false)
 		_leg_area.position = Vector2.ZERO
 		_leg_area.rotation = 0.0
 	if _movement != null:
 		_movement.set_leg_push(Vector2.ZERO, 0.0)
+		_movement.set_leg_extended(false)
 	_leg_direction = Vector2.ZERO
 	ability_state_changed.emit(&"none")
 
@@ -238,23 +258,16 @@ func get_max_leg_length() -> float:
 
 func get_leg_path() -> PackedVector2Array:
 	var points := PackedVector2Array([Vector2.ZERO])
-	if _leg_length <= 0.0:
+	if _leg_length <= 0.0 or _player == null:
 		return points
-	var remaining := _leg_length
-	var previous := Vector2.ZERO
-	for corner in _leg_corners:
-		var segment_length := previous.distance_to(corner)
-		if remaining <= segment_length:
-			if segment_length > 0.0:
-				points.append(previous.lerp(corner, remaining / segment_length))
-			return points
-		points.append(corner)
-		remaining -= segment_length
-		previous = corner
-	var direction := _leg_direction if not _leg_direction.is_zero_approx() else _last_leg_direction
-	if not direction.is_zero_approx():
-		points.append(previous + direction * remaining)
+	for index in range(_leg_corners_world.size() - 1, -1, -1):
+		points.append(_player.to_local(_leg_corners_world[index]))
+	points.append(_player.to_local(_leg_anchor_global_position))
 	return points
+
+
+func get_leg_anchor_global_position() -> Vector2:
+	return _leg_anchor_global_position
 
 
 func get_vine_anchor() -> Node2D:
@@ -266,11 +279,12 @@ func leg_area() -> Area2D:
 
 
 func _extend_leg(delta: float) -> void:
-	var max_length := get_max_leg_length()
-	if _leg_length < max_length:
-		_leg_length = minf(max_length, _leg_length + maxf(delta, 0.0) * leg_extension_speed)
+	_retracting = false
+	_update_leg_length()
+	if _leg_length < get_max_leg_length():
 		_start_leg_if_needed()
-		_movement.set_leg_push(_leg_direction, leg_push_speed)
+		var extension_speed := minf(leg_push_speed, leg_extension_speed)
+		_movement.set_leg_push(_leg_direction, extension_speed)
 	else:
 		_movement.set_leg_push(Vector2.ZERO, 0.0)
 	_update_leg_area()
@@ -281,19 +295,24 @@ func _retract_leg(delta: float) -> void:
 		if _leg_extended:
 			stop_secondary()
 		return
-	_leg_length = maxf(0.0, _leg_length - maxf(delta, 0.0) * leg_retraction_speed)
-	_trim_corners()
-	_update_leg_area()
-	if _movement != null:
-		_movement.set_leg_push(Vector2.ZERO, 0.0)
-	if _leg_length <= 0.0:
-		stop_secondary()
+	_retracting = true
+	_retraction_target = (
+		_leg_corners_world[_leg_corners_world.size() - 1]
+		if not _leg_corners_world.is_empty()
+		else _leg_anchor_global_position
+	)
+	_retraction_vector_before_move = _retraction_target - _player.global_position
+	if _retraction_vector_before_move.length() <= LEG_WAYPOINT_TOLERANCE:
+		_finish_retraction_waypoint_if_reached()
+		return
+	_movement.set_leg_push(_retraction_vector_before_move.normalized(), leg_retraction_speed)
 
 
 func _start_leg_if_needed() -> void:
 	if _leg_extended:
 		return
 	_leg_extended = true
+	_movement.set_leg_extended(true)
 	if _leg_area != null:
 		_leg_area.set_deferred("monitoring", true)
 	ability_state_changed.emit(&"legs")
@@ -302,9 +321,7 @@ func _start_leg_if_needed() -> void:
 func _update_leg_area() -> void:
 	if _leg_area == null:
 		return
-	var path := get_leg_path()
-	var tip := path[path.size() - 1]
-	_leg_area.position = tip
+	_leg_area.global_position = _leg_anchor_global_position
 	_leg_area.rotation = _last_leg_direction.angle()
 	if _leg_collision_shape != null:
 		var shape := _leg_collision_shape.shape as RectangleShape2D
@@ -315,24 +332,56 @@ func _update_leg_area() -> void:
 
 
 func _add_corner_at_tip() -> void:
-	var path := get_leg_path()
-	var tip := path[path.size() - 1]
-	if _leg_corners.is_empty() or not _leg_corners[_leg_corners.size() - 1].is_equal_approx(tip):
-		_leg_corners.append(tip)
+	var corner := _player.global_position
+	var previous := (
+		_leg_corners_world[_leg_corners_world.size() - 1]
+		if not _leg_corners_world.is_empty()
+		else _leg_anchor_global_position
+	)
+	if previous.distance_to(corner) > LEG_WAYPOINT_TOLERANCE:
+		_leg_corners_world.append(corner)
 
 
-func _trim_corners() -> void:
-	while not _leg_corners.is_empty() and _distance_to_last_corner() >= _leg_length - 0.01:
-		_leg_corners.pop_back()
-
-
-func _distance_to_last_corner() -> float:
+func _update_leg_length() -> void:
 	var total := 0.0
-	var previous := Vector2.ZERO
-	for corner in _leg_corners:
+	var previous := _leg_anchor_global_position
+	for corner in _leg_corners_world:
 		total += previous.distance_to(corner)
 		previous = corner
-	return total
+	if _player != null:
+		total += previous.distance_to(_player.global_position)
+	_leg_length = total
+
+
+func _enforce_max_leg_length() -> void:
+	var fixed_length := 0.0
+	var segment_origin := _leg_anchor_global_position
+	for corner in _leg_corners_world:
+		fixed_length += segment_origin.distance_to(corner)
+		segment_origin = corner
+	var allowed_segment := maxf(0.0, get_max_leg_length() - fixed_length)
+	var segment := _player.global_position - segment_origin
+	if segment.length() <= allowed_segment or segment.is_zero_approx():
+		return
+	var target := segment_origin + segment.normalized() * allowed_segment
+	_player.move_and_collide(target - _player.global_position)
+	_movement.set_leg_push(Vector2.ZERO, 0.0)
+
+
+func _finish_retraction_waypoint_if_reached() -> void:
+	var remaining := _retraction_target - _player.global_position
+	var reached := remaining.length() <= LEG_WAYPOINT_TOLERANCE
+	if not reached and not _retraction_vector_before_move.is_zero_approx():
+		reached = _retraction_vector_before_move.dot(remaining) <= 0.0
+	if not reached:
+		return
+	if not remaining.is_zero_approx():
+		_player.move_and_collide(remaining)
+	if not _leg_corners_world.is_empty():
+		_leg_corners_world.pop_back()
+		_update_leg_length()
+		return
+	stop_secondary()
 
 
 func _cardinal_direction(direction: Vector2) -> Vector2:
@@ -367,8 +416,12 @@ func _current_form() -> FormDefinition:
 
 
 func _has_clear_path(candidate: Node2D) -> bool:
+	var origin := _player.global_position
+	var form := _current_form()
+	if form != null:
+		origin += Vector2(0.0, -form.collision_size.y * 0.5)
 	var query := PhysicsRayQueryParameters2D.create(
-		_player.global_position,
+		origin,
 		candidate.global_position,
 		1
 	)
@@ -381,4 +434,7 @@ func _has_clear_path(candidate: Node2D) -> bool:
 		return true
 	# Rings mounted on a moving cube intentionally sit on its solid surface.
 	# The cube is therefore a valid line-of-sight endpoint for its child Ring.
-	return collider == candidate.get_parent()
+	if collider == candidate.get_parent():
+		return true
+	var hit_position: Vector2 = hit.get("position", Vector2.INF)
+	return hit_position.distance_to(candidate.global_position) <= VINE_ENDPOINT_TOLERANCE

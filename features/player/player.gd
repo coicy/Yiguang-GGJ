@@ -34,8 +34,6 @@ func _physics_process(delta: float) -> void:
 	var leg_direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	abilities.set_leg_extension_direction(leg_direction)
 	abilities.tick(delta)
-	visuals.set_leg_direction(abilities.get_leg_extension_direction())
-	visuals.set_leg_path(abilities.get_leg_path())
 	var move_dir := Input.get_axis("move_left", "move_right")
 	var jump_held := Input.is_action_pressed("jump")
 
@@ -45,6 +43,9 @@ func _physics_process(delta: float) -> void:
 		movement.release_jump()
 
 	state_machine.tick(delta, move_dir, jump_held)
+	abilities.post_movement_update()
+	visuals.set_leg_direction(abilities.get_leg_extension_direction())
+	visuals.set_leg_path(abilities.get_leg_path())
 
 
 func _unhandled_input(event: InputEvent) -> void:
