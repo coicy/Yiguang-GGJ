@@ -32,6 +32,10 @@ func _run() -> void:
 	assert(camera != null)
 	assert(camera.zoom.is_equal_approx(Vector2(4.0, 4.0)))
 	assert(camera.global_position.is_equal_approx(Vector2(168.0, 400.0)), "The initial camera must frame the 336 x 160 first room.")
+	# The wall at x=320 has a two-cell opening above the floor. A 16 x 16
+	# sprout must have clearance to cross it instead of relying on edge contact.
+	player.global_position = Vector2(304.0, 456.0)
+	assert(player.move_and_collide(Vector2(48.0, 0.0), true) == null, "The first-room passage must have more than one 16 px cell of vertical clearance.")
 	assert(level.call(&"get_entity", B1_ID) != null)
 	assert(level.call(&"get_entity", B2_ID) != null)
 	assert(level.call(&"get_entity", B3_ID) != null)
