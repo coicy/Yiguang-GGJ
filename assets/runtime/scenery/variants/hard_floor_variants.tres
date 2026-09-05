@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="SpriteVariantSet" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://features/level/handbuilt/sprite_variant_set.gd" id="1_set"]
+[ext_resource type="Script" path="res://features/level/handbuilt/level_sprite_variant.gd" id="2_variant"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0028_石板3.png" id="3_stone"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0031_水泥板.png" id="4_cement"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0030_锈蚀钢板-.png" id="5_rust"]
+
+[sub_resource type="Resource" id="Stone"]
+script = ExtResource("2_variant")
+id = &"stone"
+texture = ExtResource("3_stone")
+
+[sub_resource type="Resource" id="Cement"]
+script = ExtResource("2_variant")
+id = &"cement"
+texture = ExtResource("4_cement")
+
+[sub_resource type="Resource" id="Rust"]
+script = ExtResource("2_variant")
+id = &"rust"
+texture = ExtResource("5_rust")
+
+[resource]
+script = ExtResource("1_set")
+display_name = "Hard floor"
+variants = Array[ExtResource("2_variant")]([SubResource("Stone"), SubResource("Cement"), SubResource("Rust")])
