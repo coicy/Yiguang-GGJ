@@ -45,8 +45,9 @@ func _assert_world_extents_and_camera(level: JsonWhiteboxLevel, source_data: Dic
 				camera_rect = _world_rect(entity, source_level)
 	var player := level.get_node("Player") as Player
 	var camera := player.get_node("Camera") as Camera2D
-	assert(camera.zoom.is_equal_approx(Vector2(4.0, 4.0)))
-	assert(camera.position.is_equal_approx(camera_rect.get_center() - player.global_position))
+	var expected_zoom := minf(1344.0 / camera_rect.size.x, 640.0 / camera_rect.size.y)
+	assert(camera.zoom.is_equal_approx(Vector2.ONE * expected_zoom))
+	assert(camera.position.is_zero_approx(), "Camera follow must be centred on the player; drag margins provide the look-ahead effect.")
 	assert(camera.limit_left == int(expected_bounds.position.x))
 	assert(camera.limit_top == int(expected_bounds.position.y))
 	assert(camera.limit_right == int(expected_bounds.end.x))

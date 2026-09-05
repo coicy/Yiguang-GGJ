@@ -17,6 +17,7 @@ const BUTTON_SCENE: PackedScene = preload("res://features/level/whitebox_button.
 const CHECKPOINT_SCENE: PackedScene = preload("res://features/level/checkpoint.tscn")
 const DAMAGE_MACHINE_SCENE: PackedScene = preload("res://features/level/damage_machine.tscn")
 
+const REFERENCE_VIEWPORT_SIZE := Vector2(1344.0, 640.0)
 const DAMAGE_MACHINE_TRAVEL_DISTANCE := 32.0
 const DAMAGE_MACHINE_TRAVEL_SPEED := 64.0
 const CAMERA_DRAG_MARGIN_HORIZONTAL := 0.2
@@ -25,7 +26,7 @@ const SUPPORT_EPSILON := 0.01
 
 var _player: Player
 var _spawn_position := Vector2.ZERO
-var _camera_rect := Rect2(Vector2.ZERO, Vector2(336.0, 160.0))
+var _camera_frame_size := Vector2(336.0, 160.0)
 var _world_bounds := Rect2()
 var _has_world_bounds := false
 var _entity_nodes: Dictionary = {}
@@ -108,7 +109,7 @@ func _index_source_data(data: Dictionary) -> void:
 				_entity_identifiers[entity_id] = identifier
 				_entity_links[entity_id] = _linked_entity_ids(entity)
 				if identifier == "Camera":
-					_camera_rect = _entity_rect(entity, world_offset)
+					_camera_frame_size = _entity_rect(entity, world_offset).size
 	for source_id: String in _entity_links:
 		if _entity_identifiers.get(source_id) != "MoveableCube":
 			continue
@@ -453,9 +454,12 @@ func _respawn_player() -> void:
 func _create_camera() -> void:
 	var camera := Camera2D.new()
 	camera.name = "Camera"
-	# The source Camera instance is 336 x 160 world pixels at the 1344 x 640 reference viewport.
-	camera.zoom = Vector2(4.0, 4.0)
-	camera.position = _camera_rect.get_center() - _player.global_position
+	# The source Camera frame controls zoom; a zero local position keeps the follow target on the player.
+	var zoom_scale := minf(
+		REFERENCE_VIEWPORT_SIZE.x / maxf(_camera_frame_size.x, 1.0),
+		REFERENCE_VIEWPORT_SIZE.y / maxf(_camera_frame_size.y, 1.0)
+	)
+	camera.zoom = Vector2.ONE * zoom_scale
 	camera.drag_horizontal_enabled = true
 	camera.drag_vertical_enabled = true
 	camera.drag_left_margin = CAMERA_DRAG_MARGIN_HORIZONTAL
