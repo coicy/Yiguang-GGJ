@@ -20,6 +20,7 @@
 [ext_resource type="Texture2D" uid="uid://dkq0p7me8pn8x" path="res://assets/runtime/scenery/_0014_培养罐.png" id="31_broken_tank"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="32_phantom_host"]
 [ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="33_phantom_camera"]
+[ext_resource type="PackedScene" path="res://features/level/backgrounds/four_layer_backdrop.tscn" id="34_backdrop"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e6lid"]
 resource_local_to_scene = true
@@ -77,6 +78,8 @@ scale = Vector2(0.85, 0.85)
 
 [node name="Background" type="Node2D" parent="." unique_id=1684300338]
 z_index = -20
+
+[node name="FourLayerBackdrop" parent="Background" instance=ExtResource("34_backdrop")]
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1633713359]
 color = Color(0.2, 0.24, 0.28, 1)
