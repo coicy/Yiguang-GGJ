@@ -1,0 +1,180 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Theme" path="res://features/ui/game_ui_theme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://features/ui/start_screen.gd" id="2_screen"]
+[ext_resource type="Script" path="res://features/ui/start_screen_visuals.gd" id="3_visuals"]
+
+[node name="StartScreen" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("1_theme")
+script = ExtResource("2_screen")
+
+[node name="Overlay" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.025, 0.045, 0.07, 0.91)
+
+[node name="Visuals" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_visuals")
+
+[node name="Content" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 56
+theme_override_constants/margin_top = 42
+theme_override_constants/margin_right = 56
+theme_override_constants/margin_bottom = 42
+mouse_filter = 2
+
+[node name="Columns" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/separation = 72
+
+[node name="BrandCenter" type="CenterContainer" parent="Content/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Brand" type="VBoxContainer" parent="Content/Columns/BrandCenter"]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+theme_override_constants/separation = 14
+mouse_filter = 2
+
+[node name="Eyebrow" type="Label" parent="Content/Columns/BrandCenter/Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.36, 0.78, 0.68, 1)
+theme_override_font_sizes/font_size = 15
+text = "// BIO-ADAPTATION PROTOCOL"
+
+[node name="Title" type="Label" parent="Content/Columns/BrandCenter/Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 1, 0.92, 1)
+theme_override_font_sizes/font_size = 42
+text = "GGJ ShapeShift Platformer"
+autowrap_mode = 2
+
+[node name="Subtitle" type="Label" parent="Content/Columns/BrandCenter/Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.9, 0.86, 1)
+theme_override_font_sizes/font_size = 20
+text = "在营养与毒素之间，找到通往出口的形态"
+autowrap_mode = 2
+
+[node name="Rule" type="HSeparator" parent="Content/Columns/BrandCenter/Brand"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+
+[node name="FormsHeading" type="Label" parent="Content/Columns/BrandCenter/Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.82, 0.79, 1)
+theme_override_font_sizes/font_size = 15
+text = "FORM ROUTES / 形态路线"
+
+[node name="Sprout" type="Label" parent="Content/Columns/BrandCenter/Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.31, 0.8, 0.42, 1)
+theme_override_font_sizes/font_size = 19
+text = "01  幼芽期     穿过狭窄通道"
+
+[node name="Humanoid" type="Label" parent="Content/Columns/BrandCenter/Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.72, 0.92, 1)
+theme_override_font_sizes/font_size = 19
+text = "02  人形期     扎根 · 伸腿 · 操作机关"
+
+[node name="Mature" type="Label" parent="Content/Columns/BrandCenter/Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.35, 0.92, 1)
+theme_override_font_sizes/font_size = 19
+text = "03  成熟期     藤蔓牵引 · 叶片滑翔"
+
+[node name="Footer" type="Label" parent="Content/Columns/BrandCenter/Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.62, 0.61, 1)
+theme_override_font_sizes/font_size = 13
+text = "WHITEBOX BUILD · 48-HOUR VERTICAL SLICE"
+
+[node name="InfoPanel" type="PanelContainer" parent="Content/Columns"]
+custom_minimum_size = Vector2(430, 0)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 1
+
+[node name="Info" type="VBoxContainer" parent="Content/Columns/InfoPanel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Kicker" type="Label" parent="Content/Columns/InfoPanel/Info"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.36, 0.78, 0.68, 1)
+theme_override_font_sizes/font_size = 14
+text = "FIELD NOTES / HOW TO PLAY"
+
+[node name="Heading" type="Label" parent="Content/Columns/InfoPanel/Info"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 1, 0.92, 1)
+theme_override_font_sizes/font_size = 28
+text = "操作说明"
+
+[node name="Controls" type="VBoxContainer" parent="Content/Columns/InfoPanel/Info"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Move" type="Label" parent="Content/Columns/InfoPanel/Info/Controls"]
+layout_mode = 2
+text = "A / D                 移动"
+
+[node name="Jump" type="Label" parent="Content/Columns/InfoPanel/Info/Controls"]
+layout_mode = 2
+text = "空格                   跳跃"
+
+[node name="Ability" type="Label" parent="Content/Columns/InfoPanel/Info/Controls"]
+layout_mode = 2
+text = "鼠标左键             使用当前形态能力"
+
+[node name="Restart" type="Label" parent="Content/Columns/InfoPanel/Info/Controls"]
+layout_mode = 2
+text = "R                       重新开始"
+
+[node name="Hint" type="Label" parent="Content/Columns/InfoPanel/Info"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.86, 0.79, 1)
+theme_override_font_sizes/font_size = 16
+text = "形态不是升级，而是解法。\n观察环境，选择能通过的身体。"
+autowrap_mode = 2
+
+[node name="StartButton" type="Button" parent="Content/Columns/InfoPanel/Info"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+focus_mode = 2
+mouse_default_cursor_shape = 2
+text = "开始游戏"
