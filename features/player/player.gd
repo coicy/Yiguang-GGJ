@@ -2,6 +2,8 @@ class_name Player
 extends CharacterBody2D
 ## Composition root: reads input and wires child components together.
 
+const LEG_EXTENSION_HEIGHT := 72.0
+
 @onready var state_machine: StateMachine = %StateMachine
 @onready var movement: MovementController = %Movement
 @onready var form_controller: FormController = %FormController
@@ -32,11 +34,14 @@ func _physics_process(delta: float) -> void:
 	resources.tick(delta)
 	abilities.tick()
 	if Input.is_action_just_pressed("ability_primary"):
-		abilities.toggle_primary()
+		abilities.start_primary()
+	if Input.is_action_just_released("ability_primary"):
+		abilities.stop_primary()
+	if Input.is_action_just_pressed("ability_secondary"):
+		abilities.try_extend_legs()
+	if Input.is_action_just_released("ability_secondary"):
+		abilities.stop_secondary()
 	var move_dir := Input.get_axis("move_left", "move_right")
-	var leg_direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	abilities.set_leg_extension_direction(leg_direction)
-	visuals.set_leg_direction(leg_direction)
 	var jump_held := Input.is_action_pressed("jump")
 
 	if Input.is_action_just_pressed("jump"):
@@ -45,6 +50,20 @@ func _physics_process(delta: float) -> void:
 		movement.release_jump()
 
 	state_machine.tick(delta, move_dir, jump_held)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	var key_event := event as InputEventKey
+	if key_event != null and key_event.echo:
+		return
+	if event.is_action_pressed("ability_primary"):
+		abilities.start_primary()
+	elif event.is_action_released("ability_primary"):
+		abilities.stop_primary()
+	elif event.is_action_pressed("ability_secondary"):
+		abilities.try_extend_legs()
+	elif event.is_action_released("ability_secondary"):
+		abilities.stop_secondary()
 
 func _on_form_changed(form_id: StringName) -> void:
 	cancel_actions()
@@ -64,7 +83,7 @@ func _on_state_changed(previous: StringName, current: StringName) -> void:
 func _on_ability_state_changed(_label: StringName) -> void:
 	visuals.set_ability_state(abilities.is_rooted(), abilities.is_leg_extended(), abilities.is_vine_attached())
 	visuals.set_vine_anchor(abilities.get_vine_anchor())
-	visuals.set_leg_direction(Input.get_vector("move_left", "move_right", "move_up", "move_down"))
+	visuals.set_leg_direction(abilities.get_leg_extension_direction())
 
 
 func current_state() -> StringName:
@@ -116,26 +135,49 @@ func cancel_actions() -> void:
 	abilities.cancel_all()
 
 
+func set_leg_extension_active(active: bool) -> bool:
+	var form := form_controller.get_current()
+	if form == null:
+		return false
+	var target_size := form.collision_size
+	if active:
+		target_size.y += LEG_EXTENSION_HEIGHT
+		if not _can_fit_shape(target_size):
+			return false
+	_apply_collision_shape(target_size)
+	return true
+
+
 func _apply_form_shape(form: FormDefinition) -> void:
 	if form == null:
 		return
+	_apply_collision_shape(form.collision_size)
+
+
+func _apply_collision_shape(size: Vector2) -> void:
 	var shape := collision_shape.shape as RectangleShape2D
 	if shape == null:
 		shape = RectangleShape2D.new()
 		collision_shape.shape = shape
-	shape.size = form.collision_size
-	collision_shape.position = Vector2(0.0, -form.collision_size.y * 0.5)
+	shape.size = size
+	collision_shape.position = Vector2(0.0, -size.y * 0.5)
 
 
 func _can_fit_form(target: FormDefinition) -> bool:
 	if target == null or not is_inside_tree():
 		return false
+	return _can_fit_shape(target.collision_size)
+
+
+func _can_fit_shape(size: Vector2) -> bool:
+	if not is_inside_tree():
+		return false
 	var probe := RectangleShape2D.new()
 	probe.size = Vector2(
-		maxf(4.0, target.collision_size.x - 2.0),
-		maxf(4.0, target.collision_size.y - 4.0)
+		maxf(4.0, size.x - 2.0),
+		maxf(4.0, size.y - 4.0)
 	)
 	growth_cast.shape = probe
-	growth_cast.position = Vector2(0.0, -target.collision_size.y * 0.5 - 2.0)
+	growth_cast.position = Vector2(0.0, -size.y * 0.5 - 2.0)
 	growth_cast.force_shapecast_update()
 	return not growth_cast.is_colliding()

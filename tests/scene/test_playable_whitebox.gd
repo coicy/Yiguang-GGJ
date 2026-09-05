@@ -24,10 +24,22 @@ func _run() -> void:
 	assert(player.current_form_id() == &"sprout")
 	assert(level.get_node("Course/LowTunnel") != null)
 	assert(level.get_node("Course/WindSection/WindZone") != null)
+	assert(level.get_node("Course/LegStep") != null)
 	assert(level.get_node("Course/HighSwitch") != null)
 	assert(level.get_node("Course/VineSection/VineAnchor") != null)
 	assert(level.get_node("Course/ToxinSection/ToxinZone") != null)
 	assert(level.get_node("Course/FinalLowSwitch") != null)
+	var wind_zone := level.get_node("Course/WindSection/WindZone") as WindZone
+	var wind_hazard := level.get_node("Course/WindSection/WindHazard") as Hazard
+	var hazard_collision := wind_hazard.get_node("CollisionShape2D") as CollisionShape2D
+	var hazard_shape := hazard_collision.shape as RectangleShape2D
+	var step_collision := level.get_node("Course/LegStep/CollisionShape2D") as CollisionShape2D
+	var step_shape := step_collision.shape as RectangleShape2D
+	var hazard_right := hazard_collision.global_position.x + hazard_shape.size.x * 0.5
+	var step_left := step_collision.global_position.x - step_shape.size.x * 0.5
+	assert(step_left - hazard_right >= 64.0)
+	var high_switch_label := level.get_node("Course/HighSwitchLabel") as Label
+	assert(high_switch_label.global_position.x >= wind_zone.global_position.x + 212.0)
 
 	var initial := player.capture_state()
 	level.activate_checkpoint_for_test(&"mid")

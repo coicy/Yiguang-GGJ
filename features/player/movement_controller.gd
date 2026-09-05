@@ -7,6 +7,12 @@ extends Node
 @export var acceleration: float = 1200.0
 @export var friction: float = 800.0
 
+@export_group("Wind")
+@export var max_wind_speed: float = 480.0
+
+@export_group("Leg Extension")
+@export var leg_step_height: float = 72.0
+
 @export_group("Jump & Gravity")
 @export var gravity: float = 1200.0
 @export var coyote_time: float = 0.10
@@ -15,6 +21,8 @@ extends Node
 
 @export_group("Vine")
 @export var vine_tangent_acceleration: float = 900.0
+@export var vine_max_speed: float = 700.0
+@export_range(30.0, 89.0, 1.0) var vine_max_swing_angle_degrees: float = 80.0
 
 var body: CharacterBody2D
 var form: FormDefinition
@@ -24,6 +32,7 @@ var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
 var _rooted: bool = false
 var _movement_locked: bool = false
+var _leg_extended: bool = false
 var _vine_anchor: Node2D
 var _vine_length: float = 0.0
 
@@ -43,13 +52,16 @@ func set_form(p_form: FormDefinition) -> void:
 
 
 func request_jump() -> void:
-	if _rooted or _movement_locked:
+	if _rooted or _movement_locked or is_vine_attached():
+		_jump_buffer_timer = 0.0
 		return
 	_jump_buffer_timer = jump_buffer
 
 
 func release_jump() -> void:
 	if body == null or form == null:
+		return
+	if is_vine_attached():
 		return
 	if body.velocity.y < 0.0:
 		body.velocity.y *= jump_cut_multiplier
@@ -65,24 +77,27 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 	if body.is_on_floor():
 		_coyote_timer = coyote_time
 
-	if not body.is_on_floor():
+	var vine_attached := is_vine_attached()
+	if vine_attached or not body.is_on_floor():
 		body.velocity.y += gravity * form.gravity_scale * delta
 		body.velocity.y = minf(body.velocity.y, form.max_fall_speed)
 
-	if jump_held and form.can_glide and body.velocity.y > 0.0:
+	if not vine_attached and jump_held and form.can_glide and body.velocity.y > 0.0:
 		body.velocity.y = minf(body.velocity.y, form.glide_fall_speed)
 
-	if not _rooted and not _movement_locked and _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
+	if not vine_attached and not _rooted and not _movement_locked and _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
 		_perform_jump()
 
 	var speed_scale := resources.speed_multiplier() if resources != null else 1.0
 	if _rooted:
 		body.velocity.x = 0.0
+	elif vine_attached:
+		_apply_vine_motion(move_dir, delta)
 	elif not _movement_locked and move_dir != 0.0:
 		body.velocity.x = move_toward(body.velocity.x, move_dir * form.move_speed * speed_scale, acceleration * delta)
 	else:
 		body.velocity.x = move_toward(body.velocity.x, 0.0, friction * delta)
-	_apply_vine_motion(move_dir, delta)
+	_try_leg_step(delta)
 
 	body.move_and_slide()
 	_enforce_vine_length()
@@ -103,25 +118,33 @@ func _perform_jump() -> void:
 func set_rooted(rooted: bool) -> void:
 	_rooted = rooted
 	if rooted:
-		body.velocity.x = 0.0
+		body.velocity = Vector2.ZERO
 		_jump_buffer_timer = 0.0
 
 
 func set_movement_locked(locked: bool) -> void:
 	_movement_locked = locked
 	if locked:
+		if body != null:
+			body.velocity.x = 0.0
 		_jump_buffer_timer = 0.0
+
+
+func set_leg_extended(extended: bool) -> void:
+	_leg_extended = extended
 
 
 func apply_wind(force: float, delta: float) -> void:
 	if body == null or _rooted:
 		return
-	body.velocity.x += force * delta
+	var wind_target_speed := signf(force) * max_wind_speed
+	body.velocity.x = move_toward(body.velocity.x, wind_target_speed, absf(force) * delta)
 
 
 func attach_vine(anchor: Node2D, length: float) -> void:
 	_vine_anchor = anchor
 	_vine_length = maxf(1.0, length)
+	_jump_buffer_timer = 0.0
 
 
 func detach_vine() -> void:
@@ -133,6 +156,38 @@ func is_vine_attached() -> bool:
 	return _vine_anchor != null and is_instance_valid(_vine_anchor)
 
 
+func _try_leg_step(delta: float) -> void:
+	if not _leg_extended or not body.is_on_floor() or is_zero_approx(body.velocity.x):
+		return
+	var horizontal_motion := Vector2(body.velocity.x * delta, 0.0)
+	if not body.test_move(body.global_transform, horizontal_motion):
+		return
+
+	var upward_motion := Vector2(0.0, -leg_step_height)
+	if body.test_move(body.global_transform, upward_motion):
+		return
+	var raised_transform := body.global_transform
+	raised_transform.origin += upward_motion
+	if body.test_move(raised_transform, horizontal_motion):
+		return
+
+	var landing_transform := raised_transform
+	landing_transform.origin += horizontal_motion
+	var landing_collision := KinematicCollision2D.new()
+	if not body.test_move(
+		landing_transform,
+		Vector2(0.0, leg_step_height + body.floor_snap_length),
+		landing_collision
+	):
+		return
+	if landing_collision.get_normal().dot(Vector2.UP) < 0.7:
+		return
+	var vertical_step := -leg_step_height + landing_collision.get_travel().y
+	if vertical_step >= -1.0:
+		return
+	body.move_and_collide(Vector2(0.0, vertical_step))
+
+
 func _apply_vine_motion(move_dir: float, delta: float) -> void:
 	if not is_vine_attached():
 		return
@@ -140,26 +195,52 @@ func _apply_vine_motion(move_dir: float, delta: float) -> void:
 	if radial.is_zero_approx():
 		return
 	var radial_normal := radial.normalized()
-	var outward_speed := body.velocity.dot(radial_normal)
-	if outward_speed > 0.0:
-		body.velocity -= radial_normal * outward_speed
+	# A taut vine only permits velocity along its tangent. Gravity has already
+	# been applied above, so projecting here produces a real pendulum force.
+	body.velocity -= radial_normal * body.velocity.dot(radial_normal)
 	var tangent := Vector2(-radial_normal.y, radial_normal.x)
 	if tangent.x < 0.0:
 		tangent = -tangent
 	body.velocity += tangent * move_dir * vine_tangent_acceleration * delta
+	var tangent_speed := clampf(body.velocity.dot(tangent), -vine_max_speed, vine_max_speed)
+	var swing_angle := atan2(radial.x, radial.y)
+	tangent_speed = _stop_vine_at_angle_limit(tangent_speed, swing_angle)
+	body.velocity = tangent * tangent_speed
 
 
 func _enforce_vine_length() -> void:
 	if not is_vine_attached():
 		return
 	var radial := body.global_position - _vine_anchor.global_position
-	if radial.length() <= _vine_length or radial.is_zero_approx():
+	if radial.is_zero_approx():
 		return
+	var max_angle := deg_to_rad(vine_max_swing_angle_degrees)
+	var swing_angle := atan2(radial.x, radial.y)
+	var limited_angle := clampf(swing_angle, -max_angle, max_angle)
+	var limited_radial := Vector2(sin(limited_angle), cos(limited_angle)) * _vine_length
+	var correction := limited_radial - radial
+	if not correction.is_zero_approx():
+		# Enforce rope length and both high points without teleporting through walls.
+		body.move_and_collide(correction)
+		radial = body.global_position - _vine_anchor.global_position
+		if radial.is_zero_approx():
+			return
 	var radial_normal := radial.normalized()
-	body.global_position = _vine_anchor.global_position + radial_normal * _vine_length
-	var outward_speed := body.velocity.dot(radial_normal)
-	if outward_speed > 0.0:
-		body.velocity -= radial_normal * outward_speed
+	var tangent := Vector2(-radial_normal.y, radial_normal.x)
+	if tangent.x < 0.0:
+		tangent = -tangent
+	swing_angle = atan2(radial.x, radial.y)
+	var tangent_speed := _stop_vine_at_angle_limit(body.velocity.dot(tangent), swing_angle)
+	body.velocity = tangent * tangent_speed
+
+
+func _stop_vine_at_angle_limit(tangent_speed: float, swing_angle: float) -> float:
+	var max_angle := deg_to_rad(vine_max_swing_angle_degrees)
+	if swing_angle >= max_angle and tangent_speed > 0.0:
+		return 0.0
+	if swing_angle <= -max_angle and tangent_speed < 0.0:
+		return 0.0
+	return tangent_speed
 
 
 func is_on_floor() -> bool:
