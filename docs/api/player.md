@@ -20,6 +20,8 @@ func physics_step(delta: float) -> void
 
 跳跃由 `FormDefinition.can_jump` 控制：幼芽期为 `false`，`MovementController` 会丢弃其跳跃输入并清空已有跳跃缓冲；人形期和成熟期保持跳跃、coyote time、jump buffer 与可变跳跃高度的既有行为。形态切换到不可跳跃形态时，也必须清除待执行的跳跃，避免切换后误起跳。
 
+通用移动手感在玩家 `Movement` 节点的 Inspector 中调整：`Ground Movement` 下的 `acceleration`、`friction`、`turn_acceleration` 分别控制地面起步、松手刹车与反向转向，默认值为 `2400`、`3600`、`4800`。`Air Movement` 下的 `air_acceleration` 和 `air_friction` 保持 `1200`、`800`，起跳当帧即使用空中参数；三种形态的最高速度仍由各自 `FormDefinition.move_speed` 决定。
+
 ### `AbilityDefinition : Resource`
 
 ```gdscript

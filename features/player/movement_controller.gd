@@ -6,9 +6,14 @@ extends Node
 signal jumped
 signal landed(impact_speed: float)
 
-@export_group("Movement")
-@export var acceleration: float = 1200.0
-@export var friction: float = 800.0
+@export_group("Ground Movement")
+@export var acceleration: float = 2400.0
+@export var friction: float = 3600.0
+@export var turn_acceleration: float = 4800.0
+
+@export_group("Air Movement")
+@export var air_acceleration: float = 1200.0
+@export var air_friction: float = 800.0
 
 @export_group("Wind")
 @export var max_wind_speed: float = 480.0
@@ -109,15 +114,21 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 		_perform_jump()
 
 	var speed_scale := resources.speed_multiplier() if resources != null else 1.0
+	# A jump has already set upward velocity, even before move_and_slide clears the floor flag.
+	var ground_control := body.is_on_floor() and body.velocity.y >= 0.0
 	if _rooted:
 		body.velocity.x = 0.0
 		_apply_leg_push(delta)
 	elif vine_attached:
 		_apply_vine_motion(move_dir, delta)
 	elif not _movement_locked and move_dir != 0.0:
-		body.velocity.x = move_toward(body.velocity.x, move_dir * form.move_speed * speed_scale, acceleration * delta)
+		var steering_acceleration := acceleration if ground_control else air_acceleration
+		if ground_control and move_dir * body.velocity.x < 0.0:
+			steering_acceleration = turn_acceleration
+		body.velocity.x = move_toward(body.velocity.x, move_dir * form.move_speed * speed_scale, steering_acceleration * delta)
 	else:
-		body.velocity.x = move_toward(body.velocity.x, 0.0, friction * delta)
+		var braking := friction if ground_control else air_friction
+		body.velocity.x = move_toward(body.velocity.x, 0.0, braking * delta)
 	_try_leg_step(delta)
 
 	var was_grounded := body.is_on_floor()
