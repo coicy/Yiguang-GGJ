@@ -32,3 +32,6 @@ skills-lock.json
 
 # Local feature worktrees
 .worktrees/
+
+# GDSkills agent vision scratch (do not commit)
+.gdskills/

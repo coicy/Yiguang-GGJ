@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SoundBank" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://features/audio/sound_bank.gd" id="1_bank"]
+[ext_resource type="Resource" path="res://features/audio/step_grass.tres" id="2_grass"]
+[ext_resource type="Resource" path="res://features/audio/step_hard.tres" id="3_hard"]
+
+[resource]
+script = ExtResource("1_bank")
+sounds = Array[Resource]([ExtResource("2_grass"), ExtResource("3_hard")])
+

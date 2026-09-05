@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SoundDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://features/audio/sound_definition.gd" id="1_definition"]
+[ext_resource type="AudioStream" path="res://assets/runtime/audio/footstep_concrete_000.ogg" id="2_concrete_000"]
+[ext_resource type="AudioStream" path="res://assets/runtime/audio/footstep_concrete_001.ogg" id="3_concrete_001"]
+
+[resource]
+script = ExtResource("1_definition")
+sound_id = &"step_hard"
+streams = Array[AudioStream]([ExtResource("2_concrete_000"), ExtResource("3_concrete_001")])
+volume_db = -7.0
+cooldown_seconds = 0.04
+pitch_randomness = 0.03

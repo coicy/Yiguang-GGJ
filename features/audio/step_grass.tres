@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="SoundDefinition" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://features/audio/sound_definition.gd" id="1_definition"]
+[ext_resource type="AudioStream" path="res://assets/runtime/audio/footstep_grass_000.ogg" id="2_grass_000"]
+[ext_resource type="AudioStream" path="res://assets/runtime/audio/footstep_grass_001.ogg" id="3_grass_001"]
+[ext_resource type="AudioStream" path="res://assets/runtime/audio/footstep_grass_002.ogg" id="4_grass_002"]
+
+[resource]
+script = ExtResource("1_definition")
+sound_id = &"step_grass"
+streams = Array[AudioStream]([ExtResource("2_grass_000"), ExtResource("3_grass_001"), ExtResource("4_grass_002")])
+volume_db = -7.0
+cooldown_seconds = 0.04
+pitch_randomness = 0.03
+

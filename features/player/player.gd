@@ -5,8 +5,6 @@ extends CharacterBody2D
 signal resource_absorbed(kind: StringName, amount: float)
 
 var _absorption_locked: bool = false
-@onready var audio: PlayerAudio = %PlayerAudio
-
 @onready var state_machine: StateMachine = %StateMachine
 @onready var movement: MovementController = %Movement
 @onready var form_controller: FormController = %FormController
@@ -32,7 +30,6 @@ func _ready() -> void:
 	state_machine.state_changed.connect(_on_state_changed)
 	abilities.ability_state_changed.connect(_on_ability_state_changed)
 	add_to_group("player")
-	audio.setup(self)
 
 
 func _physics_process(delta: float) -> void:

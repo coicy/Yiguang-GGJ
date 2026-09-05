@@ -11,4 +11,4 @@
 
 未从素材分支取用其标记为“待确认”的音乐和音效。没有完成来源、作者和许可证登记的外部内容，不进入最终导出包。
 
-事件映射与音量位于 features/audio/sound_emitter.gd；玩家步频与吸收音间隔位于 features/player/player_audio.gd。各实例使用固定数量的声音通道，不修改共享 AudioStream 资源，不每帧重复启动声音。
+音效事件与音量由 features/audio 下的 SoundDefinition / SoundBank 资源维护；播放器位于 features/audio/sound_emitter.gd。各实例使用固定数量的声音通道，不修改共享 AudioStream 资源，不为每个 one-shot 创建新节点。正式玩家暂未接入，当前仅由独立 walk_sound_test 场景验证。

@@ -36,4 +36,4 @@ Forms are earned through gameplay. `E` is reserved for resource absorption; it d
 
 ## Gameplay audio
 
-Existing Kenney sounds from the `lan` asset branch now accompany footsteps, jumping/landing, growth/withering, absorption, rooting/leg extension, vine attachment, gliding, buttons, moving cubes, checkpoints, and death. Sources and event tuning are recorded in [credits](docs/credits.md).
+The reusable SFX player is data-driven and uses a bounded voice pool routed to the `SFX` bus. The formal player is intentionally not wired to it yet. Run [the isolated walk test](features/audio/walk_sound_test.tscn) with F6 and hold `A`/`D` to verify footsteps. The next integration plan is recorded in [audio_system](docs/audio_system.md); existing Kenney sources are recorded in [credits](docs/credits.md).
