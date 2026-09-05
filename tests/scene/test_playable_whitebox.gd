@@ -62,4 +62,7 @@ func _run() -> void:
 	level.free()
 	if created_signal_bus:
 		signal_bus.free()
+	# Let queued nodes and the audio mixer release stopped playback before shutdown.
+	await process_frame
+	await create_timer(0.1).timeout
 	quit()

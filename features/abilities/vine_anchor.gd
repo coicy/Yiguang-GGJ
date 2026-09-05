@@ -3,9 +3,27 @@ extends Node2D
 ## Visible whitebox grapple point discovered through the vine_anchor group.
 
 
+var _available: bool = true
+
+
 func _ready() -> void:
-	add_to_group("vine_anchor")
+	set_available(_available)
 	queue_redraw()
+
+
+func set_available(available: bool) -> void:
+	_available = available
+	visible = available
+	if not is_inside_tree():
+		return
+	if available:
+		add_to_group("vine_anchor")
+	else:
+		remove_from_group("vine_anchor")
+
+
+func is_available() -> bool:
+	return _available
 
 
 func _draw() -> void:

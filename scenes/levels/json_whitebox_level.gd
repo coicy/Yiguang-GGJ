@@ -2,6 +2,8 @@ class_name JsonWhiteboxLevel
 extends Node2D
 ## Runtime whitebox generated from LDtk data. World-space instance rectangles are authoritative.
 
+const SOUND_SCENE: PackedScene = preload("res://features/audio/sound_emitter.tscn")
+
 const SOURCE_PATH := "res://data/Yiguang.json"
 const GRID_SIZE := 16.0
 const PLAYER_SCENE: PackedScene = preload("res://features/player/player.tscn")
@@ -23,6 +25,7 @@ const CAMERA_DRAG_MARGIN_HORIZONTAL := 0.2
 const CAMERA_DRAG_MARGIN_VERTICAL := 0.25
 const SUPPORT_EPSILON := 0.01
 
+var _audio: SoundEmitter
 var _player: Player
 var _spawn_position := Vector2.ZERO
 var _camera_rect := Rect2(Vector2.ZERO, Vector2(336.0, 160.0))
@@ -33,6 +36,7 @@ var _entity_source_rects: Dictionary = {}
 var _entity_identifiers: Dictionary = {}
 var _entity_links: Dictionary = {}
 var _destination_cube_ids: Dictionary = {}
+var _destination_ring_ids: Dictionary = {}
 var _surface_tiles: Array[Dictionary] = []
 var _visual_rectangles: Array[Dictionary] = []
 var _entity_labels: Array[Dictionary] = []
@@ -40,6 +44,9 @@ var _data_issues: PackedStringArray = []
 
 
 func _ready() -> void:
+	_audio = SOUND_SCENE.instantiate() as SoundEmitter
+	_audio.name = "LevelSounds"
+	add_child(_audio)
 	_player = PLAYER_SCENE.instantiate() as Player
 	_player.name = "Player"
 	add_child(_player)
@@ -114,6 +121,12 @@ func _index_source_data(data: Dictionary) -> void:
 			continue
 		for destination_id: String in _entity_links[source_id]:
 			_destination_cube_ids[destination_id] = true
+	for entity_id: String in _entity_identifiers:
+		if _entity_identifiers[entity_id] != "Ring":
+			continue
+		for destination_id: String in _destination_cube_ids:
+			if _is_directly_below(get_source_rect(entity_id), get_source_rect(destination_id)):
+				_destination_ring_ids[entity_id] = true
 
 
 func _collect_cube_rectangles(data: Dictionary) -> Array[Rect2]:
@@ -223,6 +236,9 @@ func _spawn_entity(entity: Dictionary, world_offset: Vector2) -> void:
 			add_child(wind)
 			_register_entity(entity_id, wind)
 		"Ring":
+			# Destination footprints and their Rings are editor markers, not extra actors.
+			if _destination_ring_ids.has(entity_id):
+				return
 			var ring := RING_SCENE.instantiate() as Node2D
 			ring.global_position = rect.get_center()
 			add_child(ring)
@@ -246,6 +262,7 @@ func _spawn_entity(entity: Dictionary, world_offset: Vector2) -> void:
 
 
 func _wire_data_mechanisms() -> void:
+	var controlled_cubes: Dictionary = {}
 	for entity_id: String in _entity_links:
 		if _entity_identifiers.get(entity_id) != "Button":
 			continue
@@ -253,10 +270,19 @@ func _wire_data_mechanisms() -> void:
 		if button == null:
 			_add_data_issue("Button %s has no runtime instance." % entity_id)
 			continue
+		if (_entity_links[entity_id] as Array).is_empty():
+			_add_data_issue("Button %s has no target MoveableCube." % entity_id)
 		button.pressed.connect(_on_button_pressed.bind(entity_id))
+		for cube_id: String in _entity_links[entity_id]:
+			controlled_cubes[cube_id] = true
+	for cube_id: String in _entity_links:
+		if _entity_identifiers.get(cube_id) == "MoveableCube" and not (_entity_links[cube_id] as Array).is_empty() and not controlled_cubes.has(cube_id):
+			_add_data_issue("MoveableCube %s has a destination but no controlling button." % cube_id)
 
 
 func _on_button_pressed(_button: WhiteboxButton, _actor: Node2D, button_id: String) -> void:
+	var motions: Array[Dictionary] = []
+	var shared_duration := 0.0
 	for cube_id: String in _entity_links.get(button_id, []):
 		var cube := get_entity(cube_id) as MoveableCube
 		if cube == null:
@@ -270,7 +296,13 @@ func _on_button_pressed(_button: WhiteboxButton, _actor: Node2D, button_id: Stri
 		if target_rect.size.is_zero_approx():
 			_add_data_issue("MoveableCube %s destination %s has no source rectangle." % [cube_id, destinations[0]])
 			continue
-		cube.move_to_rect(target_rect)
+		shared_duration = maxf(shared_duration, cube.get_rect_motion_duration(target_rect))
+		motions.append({"cube": cube, "rect": target_rect})
+	if not motions.is_empty():
+		_audio.play_cue(&"button")
+		_audio.play_cue(&"mechanism_start")
+	for motion: Dictionary in motions:
+		(motion["cube"] as MoveableCube).move_to_rect(motion["rect"] as Rect2, shared_duration)
 
 
 func _bind_entities_to_supporting_geometry() -> void:
@@ -286,7 +318,10 @@ func _bind_entities_to_supporting_geometry() -> void:
 			if _entity_identifiers.get(entity_id) in ["MoveableCube", "Door"]:
 				continue
 			if _is_directly_below(get_source_rect(entity_id), cube_rect):
-				entity.reparent(cube, true)
+				cube.bind_bottom_attachment(entity)
+				if entity is VineAnchor and not (_entity_links.get(cube_id, []) as Array).is_empty():
+					(entity as VineAnchor).set_available(false)
+					cube.motion_completed.connect(func(_cube: MoveableCube) -> void: (entity as VineAnchor).set_available(true))
 	for entity_id: String in _entity_nodes:
 		var entity := _entity_nodes[entity_id] as Node2D
 		if entity == null or entity.get_parent() != self:
@@ -338,6 +373,7 @@ func _make_cube(rect: Rect2) -> MoveableCube:
 	var cube := CUBE_SCENE.instantiate() as MoveableCube
 	cube.cube_size = rect.size
 	cube.global_position = rect.position
+	cube.motion_completed.connect(func(_cube: MoveableCube) -> void: _audio.play_cue(&"mechanism_stop"))
 	return cube
 
 
@@ -442,9 +478,11 @@ func _on_machine_actor_killed(actor: Node2D) -> void:
 func _on_checkpoint_reached(actor: Node2D, position: Vector2) -> void:
 	if actor == _player:
 		_spawn_position = position
+		_audio.play_cue(&"checkpoint")
 
 
 func _respawn_player() -> void:
+	_audio.play_cue(&"death")
 	_player.cancel_actions()
 	_player.global_position = _spawn_position
 	_player.velocity = Vector2.ZERO

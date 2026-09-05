@@ -139,6 +139,9 @@ func _run() -> void:
 	anchor.free()
 	step_platform.free()
 	ground.free()
+	# Let queued nodes and the audio mixer release stopped playback before shutdown.
+	await process_frame
+	await create_timer(0.1).timeout
 	quit()
 
 

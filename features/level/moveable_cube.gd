@@ -9,6 +9,8 @@ signal motion_completed(cube: MoveableCube)
 	set(value):
 		cube_size = Vector2(maxf(value.x, 1.0), maxf(value.y, 1.0))
 		_update_shape()
+		_update_bottom_attachments()
+		queue_redraw()
 
 @export_range(1.0, 720.0, 1.0) var motion_speed: float = 160.0
 @export_range(0.0, 0.5, 0.01) var startup_shake_duration: float = 0.14
@@ -25,6 +27,7 @@ var _motion_elapsed := 0.0
 var _startup_elapsed := 0.0
 var _motion_phase := MotionPhase.IDLE
 var _visual_offset := Vector2.ZERO
+var _bottom_attachments: Dictionary = {}
 
 @onready var _collision_shape: CollisionShape2D = %CollisionShape2D
 
@@ -46,7 +49,28 @@ func _physics_process(delta: float) -> void:
 			_update_motion(delta)
 
 
-func move_to_rect(target_rect: Rect2) -> bool:
+func bind_bottom_attachment(attachment: Node2D) -> void:
+	attachment.reparent(self, true)
+	_bottom_attachments[attachment] = attachment.position - Vector2(0.0, cube_size.y)
+
+
+func _update_bottom_attachments() -> void:
+	for attachment: Node2D in _bottom_attachments:
+		if is_instance_valid(attachment):
+			attachment.position = (_bottom_attachments[attachment] as Vector2) + Vector2(0.0, cube_size.y)
+
+
+func get_rect_motion_duration(target_rect: Rect2) -> float:
+	return _estimate_motion_duration(_rect_target_transform(target_rect))
+
+
+func _rect_target_transform(target_rect: Rect2) -> Transform2D:
+	if cube_size.is_equal_approx(Vector2(target_rect.size.y, target_rect.size.x)) and not cube_size.is_equal_approx(target_rect.size):
+		return Transform2D(PI * 0.5, target_rect.position + Vector2(target_rect.size.x, 0.0))
+	return Transform2D(0.0, target_rect.position)
+
+
+func move_to_rect(target_rect: Rect2, duration_override: float = -1.0) -> bool:
 	var target_size := target_rect.size
 	var rotation := 0.0
 	var target_origin := target_rect.position
@@ -56,7 +80,10 @@ func move_to_rect(target_rect: Rect2) -> bool:
 		# A +90 degree local rotation places the local origin on the target's top-right.
 		target_origin += Vector2(target_rect.size.x, 0.0)
 	var target := Transform2D(rotation, target_origin)
-	return _begin_motion(target, target_size)
+	var started := _begin_motion(target, target_size)
+	if started and duration_override > 0.0:
+		_motion_duration = maxf(_motion_duration, duration_override)
+	return started
 
 
 func move_top_left_to(target_position: Vector2) -> bool:
@@ -135,7 +162,12 @@ func _update_motion(delta: float) -> void:
 	_motion_elapsed = minf(_motion_elapsed + delta, _motion_duration)
 	var progress := _motion_elapsed / _motion_duration
 	var eased_progress := _smooth_step(progress)
-	global_transform = _start_transform.interpolate_with(_target_transform, eased_progress)
+	var next_transform := _start_transform.interpolate_with(_target_transform, eased_progress)
+	var angle := angle_difference(_start_transform.get_rotation(), _target_transform.get_rotation())
+	if not is_zero_approx(angle):
+		var pivot := _motion_pivot(_start_transform.origin, _target_transform.origin, angle)
+		next_transform.origin = pivot + (_start_transform.origin - pivot).rotated(angle * eased_progress)
+	global_transform = next_transform
 	cube_size = _start_size.lerp(_target_size, eased_progress)
 	if progress >= 1.0:
 		global_transform = _target_transform
@@ -145,10 +177,17 @@ func _update_motion(delta: float) -> void:
 
 
 func _estimate_motion_duration(target: Transform2D) -> float:
-	return maxf(
-		global_position.distance_to(target.origin) / motion_speed,
-		absf(global_rotation - target.get_rotation()) / deg_to_rad(motion_speed)
-	)
+	var angle := angle_difference(global_rotation, target.get_rotation())
+	var distance := global_position.distance_to(target.origin)
+	if not is_zero_approx(angle):
+		var pivot := _motion_pivot(global_position, target.origin, angle)
+		distance = global_position.distance_to(pivot) * absf(angle)
+	return maxf(distance / motion_speed, absf(angle) / deg_to_rad(motion_speed))
+
+
+func _motion_pivot(start: Vector2, finish: Vector2, angle: float) -> Vector2:
+	var chord := finish - start
+	return (start + finish) * 0.5 + Vector2(-chord.y, chord.x) / (2.0 * tan(angle * 0.5))
 
 
 func _rotation_target(pivot: Vector2, degrees: float) -> Transform2D:
