@@ -26,11 +26,11 @@
 
 来源/所有者：[ramokz/phantom-camera](https://github.com/ramokz/phantom-camera)，官方文档：[phantom-camera.dev](https://phantom-camera.dev/)，许可证：MIT。该版本的发布说明包含 Godot 4.7.1 兼容性修复；已在本项目 Godot 4.7.2 headless 启动与场景集成测试中验证。
 
-用途：`PhantomCamera2D` 提供 Framed Follow 跟随、可调水平/垂直死区、水平 look-ahead 与平滑插值；`CameraBounds` 仍是关卡边界真值，关卡脚本会同步设置 Phantom Camera 与备用 `Camera2D` 的四向限制。`PhantomCameraHost` 负责把活动 Phantom 相机接入场景中的 `Camera2D`。
+用途：`PhantomCamera2D` 保留 Framed Follow 与 Host 输出接线；`ForwardCameraFraming` 统一计算构图、指数平滑和最终可见范围。非边界稳定前视为 80%，未受主要地板约束的纵向脚部位置为 45%。方向来自玩家已接受的控制意图，持续反向 0.1 秒后以 0.16 秒时间常数平滑切换；纵向世界中心以 0.05 秒时间常数平滑，再限制下落滞后。插件及 Camera2D 自身阻尼、双轴死区、lookahead 与加载转场关闭，防止二次平滑覆盖安全约束。正式关卡的七个 `CameraRegion2D` 区域按脚底位置确定楼层、显示左右界和通道居中构图；向连接区移动时提前过渡，实际右墙范围执行硬边界。`TerrainPiece.camera_main_floor` 显式标记 StartFloor（用户的 StartFloor1）、Floor2 和实际替代它的 Ground13/14；画面底部不能低于当前区域的主要地板表面，浮空平台继承楼层。跨过地表或从合法连接离开后释放底限，下落连续跟随。`CameraBounds` 使用完整世界变换；重生直接解析目的地区域并清除镜头历史。节点路径、调参、规则优先级与验证口径见 `docs/camera_follow_rules.md`。
 
 运行时集成：插件目录为 `addons/phantom_camera/`，并注册 `PhantomCameraManager` Autoload；当前仅使用 GDScript，不引入 GDExtension 或外部二进制。关卡场景保留普通 `Camera2D` 作为可回退路径。
 
-移除路径：删除 `addons/phantom_camera/`；从 `project.godot` 的 `[autoload]` 移除 `PhantomCameraManager`，从 `[editor_plugins]` 移除插件条目；删除关卡中的 `PhantomCameraHost`/`PhantomCamera2D` 节点及 `handbuilt_level.gd` 对 Phantom Camera 的同步代码。保留的 `Camera2D + CameraBounds` 可继续提供基础跟随和边界。
+移除路径：删除 `addons/phantom_camera/`；从 `project.godot` 的 `[autoload]` 移除 `PhantomCameraManager`，从 `[editor_plugins]` 移除插件条目；删除关卡中的 `PhantomCameraHost`/`PhantomCamera2D`/`ForwardCameraFraming`/`CameraRegions` 节点、`features/level/camera/` 中的分区与构图文件，以及 `handbuilt_level.gd` 对 Phantom Camera 的同步代码。保留的 `Camera2D + CameraBounds` 可继续提供基础跟随和边界。
 
 ### 已筹备运行时：spine-godot GDExtension
 

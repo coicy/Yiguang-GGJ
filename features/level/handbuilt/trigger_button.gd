@@ -1,9 +1,10 @@
 @tool
 class_name TriggerButton
 extends Area2D
-## A one-shot button that activates locally assigned platform or door targets.
+## A one-shot button that requests an event on its owning level's event bus.
 
 signal pressed(button: TriggerButton, actor: Node2D)
+signal level_event_requested(event_id: StringName)
 
 @export_category("Layout")
 @export var button_size: Vector2 = Vector2(48.0, 16.0):
@@ -15,11 +16,9 @@ signal pressed(button: TriggerButton, actor: Node2D)
 		activation_top_margin = maxf(value, 0.0)
 		_request_sync()
 
-@export_category("Connections")
-@export_node_path("Node") var targets: Array[NodePath] = []:
-	set(value):
-		targets = value
-		queue_redraw()
+@export_category("Event Bus")
+## Receivers in this level activate when their activation_event matches this ID.
+@export var event_id: StringName = &""
 
 @export_category("Artwork")
 @export var sprite_variants: SpriteVariantSet:
@@ -64,11 +63,9 @@ func press(actor: Node2D = null) -> bool:
 	if _is_pressed:
 		return false
 	_is_pressed = true
-	for target_path: NodePath in targets:
-		var target := get_node_or_null(target_path)
-		if target != null and target.has_method(&"activate"):
-			target.call(&"activate")
 	_sync_layout()
+	if event_id != &"":
+		level_event_requested.emit(event_id)
 	pressed.emit(self, actor)
 	return true
 
@@ -136,8 +133,3 @@ func _draw() -> void:
 		var fill := Color("86d96d") if _is_pressed else Color("e0bc43")
 		draw_rect(Rect2(Vector2.ZERO, button_size), fill)
 		draw_rect(Rect2(Vector2.ZERO, button_size), Color("1c251d"), false, 2.0)
-	if Engine.is_editor_hint():
-		for target_path: NodePath in targets:
-			var target := get_node_or_null(target_path) as Node2D
-			if target != null:
-				draw_dashed_line(button_size * 0.5, to_local(target.global_position), Color("f3d875"), 8.0, 1.5, true)

@@ -20,6 +20,22 @@ func _ready() -> void:
 	motion_completed.connect(_on_motion_completed)
 
 
+func activate() -> bool:
+	if Engine.is_editor_hint() or not is_node_ready():
+		return false
+	return open()
+
+
+func is_activated() -> bool:
+	return _activated
+
+
+func reset_platform() -> void:
+	_activated = false
+	_opened = false
+	super.reset_platform()
+
+
 func open() -> bool:
 	if _activated:
 		return false

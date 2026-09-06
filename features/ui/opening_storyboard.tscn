@@ -1,0 +1,63 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://features/ui/opening_storyboard.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/runtime/storyboard/intro_01.jpg" id="2"]
+[ext_resource type="Texture2D" path="res://assets/runtime/storyboard/intro_02.jpg" id="3"]
+[ext_resource type="Texture2D" path="res://assets/runtime/storyboard/intro_03.jpg" id="4"]
+[ext_resource type="Texture2D" path="res://assets/runtime/storyboard/intro_04.jpg" id="5"]
+[ext_resource type="Texture2D" path="res://assets/runtime/storyboard/intro_05.jpg" id="6"]
+
+[node name="OpeningStoryboard" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+slides = Array[Texture2D]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6")])
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.035, 0.065, 0.055, 1)
+
+[node name="Artwork" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -48.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Progress" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -44.0
+offset_bottom = -4.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.85, 0.91, 0.81, 1)
+theme_override_font_sizes/font_size = 18
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SkipButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -132.0
+offset_top = -44.0
+offset_right = -12.0
+offset_bottom = -4.0
+text = "跳过  Esc"

@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1")
 display_name = "人形期"
-collision_size = Vector2(16, 34)
+collision_size = Vector2(14, 28)
 collision_offset = Vector2(2, 0)
 body_color = Color(0.2, 0.72, 0.92, 1)
 growth_threshold = 120.0

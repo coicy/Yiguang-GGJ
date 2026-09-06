@@ -55,6 +55,7 @@ func _physics_process(delta: float) -> void:
 	state_machine.tick(delta, move_dir, jump_held)
 	abilities.post_movement_update()
 	visuals.set_motion(velocity)
+	visuals.set_grounded(is_on_floor())
 	visuals.set_leg_direction(abilities.get_leg_extension_direction())
 	visuals.set_leg_path(abilities.get_leg_path())
 
@@ -104,6 +105,19 @@ func current_form_id() -> StringName:
 
 func is_grounded() -> bool:
 	return is_on_floor()
+
+
+## Read after player physics: accepted control, never passive momentum.
+func get_camera_intent() -> Vector2:
+	var ability_intent: Vector2 = abilities.get_camera_intent()
+	return ability_intent if not ability_intent.is_zero_approx() else movement.get_camera_intent()
+
+
+## World bounds of the body only, including the current form and child transform.
+func get_camera_body_rect() -> Rect2:
+	if collision_shape == null or collision_shape.shape == null:
+		return Rect2(global_position, Vector2.ZERO)
+	return collision_shape.global_transform * collision_shape.shape.get_rect()
 
 
 func can_root_here() -> bool:

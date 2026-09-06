@@ -22,10 +22,6 @@ GlobalSignalBus="*res://autoloads/global_signal_bus.gd"
 RunState="*res://autoloads/run_state.gd"
 PhantomCameraManager="*res://addons/phantom_camera/scripts/managers/phantom_camera_manager.gd"
 
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/phantom_camera/plugin.cfg")
-
 [display]
 
 window/size/viewport_width=1344
@@ -33,6 +29,10 @@ window/size/viewport_height=640
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/phantom_camera/plugin.cfg")
 
 [input]
 

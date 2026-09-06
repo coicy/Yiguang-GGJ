@@ -15,6 +15,8 @@ enum PolygonLayout { RECT_FROM_PIECE_SIZE, CUSTOM_POLYGON }
 
 @export_category("Gameplay")
 @export var allows_rooting := true
+## Only marked, enabled ground may limit the bottom of the camera view.
+@export var camera_main_floor: bool = false
 @export var one_way_collision := false:
 	set(value):
 		one_way_collision = value
@@ -123,6 +125,8 @@ var _is_baking_root_scale := false
 var _base_patch_margins := Vector4i()
 
 func _ready() -> void:
+	if camera_main_floor:
+		add_to_group(&"camera_main_floors")
 	_base_patch_margins = Vector4i(
 		_terrain_visual.patch_margin_left,
 		_terrain_visual.patch_margin_top,
@@ -147,6 +151,17 @@ func _process(_delta: float) -> void:
 
 func can_root() -> bool:
 	return allows_rooting
+
+## Empty means this piece cannot currently provide a camera floor constraint.
+func get_camera_floor_rect() -> Rect2:
+	if not camera_main_floor or collision_layer == 0 or not is_instance_valid(_collision_polygon):
+		return Rect2()
+	if _collision_polygon.disabled or _collision_polygon.polygon.size() < 3:
+		return Rect2()
+	var world_rect := Rect2(_collision_polygon.to_global(_collision_polygon.polygon[0]), Vector2.ZERO)
+	for point: Vector2 in _collision_polygon.polygon:
+		world_rect = world_rect.expand(_collision_polygon.to_global(point))
+	return world_rect
 
 func sync_polygons() -> bool:
 	if not is_instance_valid(_polygon_artwork) or not _is_valid_polygon(_polygon_artwork.polygon):

@@ -14,7 +14,15 @@ enum MotionMode {
 @export var pivot_global := Vector2.ZERO
 @export_range(-360.0, 360.0, 1.0) var rotation_degrees: float = 90.0
 
+@export_category("Event Bus")
+@export var activation_event: StringName = &""
+
 var _is_activated := false
+
+
+func receive_level_event(event_id: StringName) -> void:
+	if activation_event != &"" and event_id == activation_event:
+		activate()
 
 
 func activate() -> bool:

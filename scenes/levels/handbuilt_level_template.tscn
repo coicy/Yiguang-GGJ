@@ -35,13 +35,14 @@ piece_size = Vector2(192, 32)
 position = Vector2(392, 456)
 platform_size = Vector2(120, 24)
 destination_offset = Vector2(184, 0)
+activation_event = &"platform_01"
 
 [node name="VineAnchor" parent="Mechanisms/MovingPlatform/Body/Attachments" instance=ExtResource("11_anchor")]
 position = Vector2(60, -52)
 
 [node name="PlatformButton" parent="Mechanisms" instance=ExtResource("8_button")]
 position = Vector2(288, 544)
-targets = [NodePath("../MovingPlatform")]
+event_id = &"platform_01"
 
 [node name="Areas" type="Node2D" parent="."]
 

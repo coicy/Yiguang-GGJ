@@ -20,6 +20,9 @@ signal motion_completed(platform: MovingPlatform)
 @export_range(0.05, 30.0, 0.05) var travel_duration := 1.25
 @export var starts_activated := false
 
+@export_category("Event Bus")
+@export var activation_event: StringName = &""
+
 @export_category("Artwork")
 @export var sprite_variants: SpriteVariantSet:
 	set(value):
@@ -60,6 +63,11 @@ func _ready() -> void:
 	_make_collision_shape_unique()
 	_sync_layout()
 	if not Engine.is_editor_hint() and starts_activated:
+		activate()
+
+
+func receive_level_event(event_id: StringName) -> void:
+	if activation_event != &"" and event_id == activation_event:
 		activate()
 
 

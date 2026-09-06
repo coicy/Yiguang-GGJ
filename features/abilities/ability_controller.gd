@@ -37,6 +37,7 @@ var _vine_aim_global_position := Vector2.ZERO
 var _has_vine_aim_position: bool = false
 var _vine_climb_requested: bool = false
 var _leg_direction := Vector2.UP
+var _camera_intent: Vector2 = Vector2.ZERO
 var _last_leg_direction := Vector2.UP
 var _leg_length: float = 0.0
 var _leg_anchor_global_position := Vector2.ZERO
@@ -67,6 +68,7 @@ func setup(
 
 
 func tick(delta: float = 0.0) -> void:
+	_camera_intent = Vector2.ZERO
 	if _player == null or _movement == null:
 		return
 	if _vine_climb_requested:
@@ -390,6 +392,11 @@ func get_leg_extension_direction() -> Vector2:
 	return _leg_direction
 
 
+## Only active extension steers the camera; automatic retraction does not.
+func get_camera_intent() -> Vector2:
+	return _camera_intent
+
+
 func get_leg_length() -> float:
 	return _leg_length
 
@@ -427,6 +434,8 @@ func _extend_leg(delta: float) -> void:
 	if _leg_length < get_max_leg_length():
 		_start_leg_if_needed()
 		var extension_speed := minf(leg_push_speed, leg_extension_speed)
+		if extension_speed > 0.0:
+			_camera_intent = _leg_direction
 		_movement.set_leg_push(_leg_direction, extension_speed)
 	else:
 		_movement.set_leg_push(Vector2.ZERO, 0.0)

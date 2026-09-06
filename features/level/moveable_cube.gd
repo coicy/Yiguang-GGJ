@@ -1,7 +1,7 @@
 @tool
 class_name MoveableCube
 extends AnimatableBody2D
-## A physics-synchronised whitebox block that moves to a data-defined footprint.
+## A physics-synchronised block with a configurable one-shot activation movement.
 
 signal motion_started(cube: MoveableCube)
 signal motion_completed(cube: MoveableCube)
@@ -16,6 +16,22 @@ signal motion_completed(cube: MoveableCube)
 @export_range(1.0, 720.0, 1.0) var motion_speed: float = 160.0
 @export_range(0.0, 0.5, 0.01) var startup_shake_duration: float = 0.14
 @export_range(0.0, 8.0, 0.25) var startup_shake_distance: float = 2.0
+
+@export_category("Activation")
+## Local movement direction: (1, 0) right, (0, -1) up. Length is ignored.
+@export var movement_direction: Vector2 = Vector2.RIGHT:
+	set(value):
+		movement_direction = value
+		queue_redraw()
+## Travel distance in local pixels. Zero direction or distance disables activation.
+@export_range(0.0, 4096.0, 1.0, "or_greater", "suffix:px") var move_distance: float = 128.0:
+	set(value):
+		move_distance = maxf(value, 0.0)
+		queue_redraw()
+
+@export_category("Event Bus")
+## Leave empty to ignore level events and activate only through direct commands.
+@export var activation_event: StringName = &""
 
 @export_category("Artwork")
 @export var art_texture: Texture2D:
@@ -49,6 +65,7 @@ var _visual_offset := Vector2.ZERO
 var _initial_transform := Transform2D.IDENTITY
 var _initial_size := Vector2.ONE
 var _bottom_attachments: Dictionary = {}
+var _activation_latched: bool = false
 
 @onready var _collision_shape: CollisionShape2D = %CollisionShape2D
 @onready var _artwork: Sprite2D = %Artwork
@@ -72,6 +89,33 @@ func _physics_process(delta: float) -> void:
 			_update_startup_shake(delta)
 		MotionPhase.MOVING:
 			_update_motion(delta)
+
+
+func receive_level_event(event_id: StringName) -> void:
+	if activation_event != &"" and event_id == activation_event:
+		activate()
+
+
+func activate() -> bool:
+	if Engine.is_editor_hint() or not is_node_ready() or _activation_latched or is_moving():
+		return false
+	var offset: Vector2 = _activation_offset()
+	if offset.is_zero_approx():
+		return false
+	# Latch before motion_started so a listener cannot issue a duplicate activation.
+	_activation_latched = true
+	if not move_top_left_to(to_global(offset)):
+		_activation_latched = false
+		return false
+	return true
+
+
+func is_activated() -> bool:
+	return _activation_latched
+
+
+func _activation_offset() -> Vector2:
+	return movement_direction.normalized() * move_distance
 
 
 func bind_bottom_attachment(attachment: Node2D) -> void:
@@ -133,13 +177,14 @@ func stop_at_target() -> void:
 	if not is_moving():
 		return
 	global_transform = _target_transform
-	cube_size = _target_size
 	_visual_offset = Vector2.ZERO
+	cube_size = _target_size
 	_motion_phase = MotionPhase.IDLE
 	motion_completed.emit(self)
 
 
 func reset_platform() -> void:
+	_activation_latched = false
 	_motion_phase = MotionPhase.IDLE
 	_visual_offset = Vector2.ZERO
 	global_transform = _initial_transform
@@ -186,10 +231,11 @@ func _update_startup_shake(delta: float) -> void:
 	var progress := _startup_elapsed / startup_shake_duration
 	var envelope := 1.0 - progress
 	_visual_offset = Vector2(sin(progress * TAU * 3.0) * startup_shake_distance * envelope, 0.0)
-	queue_redraw()
 	if progress >= 1.0:
 		_visual_offset = Vector2.ZERO
 		_motion_phase = MotionPhase.MOVING
+	_sync_artwork()
+	queue_redraw()
 
 
 func _update_motion(delta: float) -> void:
@@ -265,9 +311,20 @@ func _make_collision_shape_unique() -> void:
 
 
 func _draw() -> void:
-	if art_texture != null:
-		return
-	draw_set_transform(_visual_offset)
-	draw_rect(Rect2(Vector2.ZERO, cube_size), Color("#567f64"))
-	draw_rect(Rect2(Vector2.ZERO, cube_size), Color("#d5f0cf"), false, 2.0)
-	draw_set_transform(Vector2.ZERO)
+	if art_texture == null:
+		draw_set_transform(_visual_offset)
+		draw_rect(Rect2(Vector2.ZERO, cube_size), Color("#567f64"))
+		draw_rect(Rect2(Vector2.ZERO, cube_size), Color("#d5f0cf"), false, 2.0)
+		draw_set_transform(Vector2.ZERO)
+	if Engine.is_editor_hint():
+		var offset: Vector2 = _activation_offset()
+		if offset.is_zero_approx():
+			return
+		var start: Vector2 = cube_size * 0.5
+		var finish: Vector2 = start + offset
+		var arrow: Vector2 = offset.normalized() * minf(12.0, offset.length() * 0.25)
+		var preview_color := Color("85d9ff")
+		draw_dashed_line(start, finish, preview_color, 1.5, 8.0, true)
+		draw_line(finish, finish - arrow.rotated(PI / 6.0), preview_color, 1.5, true)
+		draw_line(finish, finish - arrow.rotated(-PI / 6.0), preview_color, 1.5, true)
+		draw_rect(Rect2(offset, cube_size), Color(0.52, 0.85, 1.0, 0.4), false, 1.0)

@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="TerrainSurface" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="TerrainSurface" format=3 uid="uid://cxi78gefjdoqq"]
 
-[ext_resource type="Script" path="res://features/level/terrain/terrain_surface.gd" id="script"]
-[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0036_苔藓地1.png" id="surface"]
 [ext_resource type="Texture2D" path="res://assets/runtime/terrain/parts/root_soil.tres" id="body"]
+[ext_resource type="Script" uid="uid://dco3sjgas2sx" path="res://features/level/terrain/terrain_surface.gd" id="script"]
+[ext_resource type="Texture2D" uid="uid://cieqmw4uun2hu" path="res://assets/runtime/scenery/_0036_苔藓地1.png" id="surface"]
 
 [sub_resource type="AtlasTexture" id="top_band"]
 atlas = ExtResource("surface")
@@ -20,6 +20,5 @@ body_texture = ExtResource("body")
 body_height = 114.0
 body_width = 210.0
 foundation_color = Color(0.14, 0.16, 0.12, 1)
-fill_foundation = true
 top_edge = Color(0.33, 0.44, 0.22, 1)
-joint_color = Color(0.08, 0.12, 0.10, 0.5)
+joint_color = Color(0.08, 0.12, 0.1, 0.5)

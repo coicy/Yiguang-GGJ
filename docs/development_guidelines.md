@@ -37,6 +37,7 @@
 - “命令”向下直接调用：`ability_controller.cast()`、`form_controller.switch_to()`。
 - “事实”向上发 signal：`cast_started`、`form_changed`、`died`。
 - 同一场景的父子关系用本地 signal；跨场景才用 `GlobalSignalBus`。
+- 按钮与机关通过关卡局部 `LevelEventBus` 匹配事件名：发送方提供 `level_event_requested(event_id)`，接收方提供 `receive_level_event(event_id)`。事件名为空时不激活，组件继续拥有自己的运动和锁存状态。不要将机关事件加入 `GlobalSignalBus`。
 - 使用 `signal.connect(callable)`，不用旧式字符串连接。
 - 不用 signal 驱动父节点对孩子的命令，不让两个系统互相发信号形成环。
 - 高频数据（每帧位置、速度）不走全局 signal；直接查询或使用共享状态。

@@ -117,3 +117,13 @@
 作者署名：rubberduck / OpenGameArt.org；The Cynic Project / cynicmusic.com / pixelsphere.org；Kenney.nl。CC0 1.0 许可：https://creativecommons.org/publicdomain/zero/1.0/ 。本次使用的是上述独立资源页明确标注 CC0 的下载，不推定作者网站其他作品同样免费。
 
 分层音效与循环素材位于 assets/runtime/audio/designed/，配方与每层所用原始文件见 assets/source/audio/recipes.json。原始下载与来源页保存在 assets/source/audio/。没有使用《空洞骑士》原始音频或旋律，也没有把这些音频标注为生成式 AI 输出。背景音乐作者署名不会因转码而改变。
+
+## 开场分镜（2026-09-06）
+
+标题页背景：用户于 2026-09-06 提供的 `codex-clipboard-6d9934a3-5f14-4320-a5f2-bd370401d4da.png`，原样复制至 `assets/runtime/ui/start_background.png`，运行时等比例居中裁切铺满。作者与公开发布许可未提供。
+
+用户提供五张 JPG，按附件顺序原样复制至 `assets/runtime/storyboard/intro_01.jpg` 至 `intro_05.jpg`：`微信图片_2026-09-06_113204_558.jpg`、`微信图片_20260906113208.jpg`、`微信图片_20260906120935.jpg`、`微信图片_20260906120939.jpg`、`微信图片_20260906120942.jpg`。用于点击开始后的开场分镜，仅运行时淡入与等比例显示，未修改源图；作者与公开发布许可未提供。
+
+## 手工按钮素材（2026-09-06）
+
+用户提供的 按钮-.png（未按下）与 微信图片_20260905235824_385_25.png（按下），原样复制至 assets/runtime/level/button/button_idle.png 与 button_pressed.png。原作者与公开发布许可未提供。trigger_button.tscn 使用相同 AtlasTexture 区域 (214, 198, 410, 94) 保持底座对齐，button_cutout.gdshader 仅在渲染时去除白底，源图片不改写。

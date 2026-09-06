@@ -7,8 +7,8 @@
 ## 搭建顺序
 
 1. 在 `Terrain` 下拖入 `terrain_piece.tscn`、`hard_floor_piece.tscn` 或单独的美术场景。调整 `piece_size`，再选择共享的 `sprite_variants` 资源和 `variant_index`；单张专用贴图仍可填入 `art_texture`。
-2. 在 `Mechanisms` 下拖入 `moving_platform.tscn`、`door.tscn` 和 `trigger_button.tscn`。平台以根节点为起点，使用 `destination_offset` 配置终点；随平台移动的挂环和装饰放到 `Body/Attachments`。
-3. 选择按钮，在 `targets` 中通过节点选择器加入平台或门。目标必须提供 `activate()` 方法。
+2. 在 `Mechanisms` 下拖入 `features/level/moveable_cube.tscn` 和 `trigger_button.tscn`，在方块的 `Activation` 分类配置方向和距离。也可使用 `moving_platform.tscn`、`door.tscn`：这两类组件以根节点为起点，使用 `destination_offset` 配置终点；随平台移动的挂环和装饰放到 `Body/Attachments`。
+3. 在按钮的 `event_id` 与机关的 `activation_event` 填入相同事件名，例如 `lift_01`。关卡内的 `LevelEventBus` 自动完成接线；`HandbuiltLevel` 会为没有总线节点的手工关卡补建一个。
 4. 在 `Areas` 下摆放 `thorn_damage.tscn`、毒雾 `hazard_area.tscn`、营养液、毒素、风区和其他伤害机关。每个组件的碰撞层与掩码已经按项目约定预设。
 5. 移动 `SpawnPoint` 与 `CameraBounds`，按 F6 运行关卡。`HandbuiltLevel` 会自动连接危险区和检查点，并用最近激活的检查点复活玩家。
 
@@ -23,7 +23,7 @@
 | Camera | `camera_bounds.tscn` |
 | Door | `door.tscn` |
 | Button | `trigger_button.tscn` |
-| MoveableCube | `moving_platform.tscn` |
+| MoveableCube | `features/level/moveable_cube.tscn`；`moving_platform.tscn` 仍支持按终点偏移配置 |
 | Checkpoint | `checkpoint.tscn` |
 | GrowDrug / UnGrowDrug | `nutrition_tank.tscn` / `toxin_resource.tscn` |
 | Frog | `toxin_zone.tscn` |
@@ -63,7 +63,38 @@
 
 ## 接线与复用
 
-按钮使用本地 NodePath 接线，不经过 Autoload。复制已经接线的机关组合时，检查 `targets` 是否仍指向当前关卡内的目标。移动平台、门都实现 `activate()` 和 `reset_platform()`；按钮首次触发后保持锁存。
+按钮与机关通过关卡内的 `LevelEventBus` 交互。总线场景为 `features/level/level_event_bus.tscn`，放在关卡根节点下；作用域为该关卡的所有后代，嵌套关卡的总线拥有独立作用域。`HandbuiltLevel` 会在没有显式总线时补建一个，组件单独 F6 运行也不依赖总线存在。
+
+- `TriggerButton.event_id`：首次触发时发布的事件名，例如 `lift_01`。
+- `MoveableCube`、`MovingPlatform`（含手工门）、`MechanismMotion` 的 `activation_event`：要订阅的事件名；同名事件到来时执行原有 `activate()`。`WhiteboxDoor` 继承这一接收接口，并执行自己的开门配置。
+- 一个按钮可通过同一个事件激活多个机关；多个按钮也可发送同名事件。复制机关组合后，如需独立控制，应为新组合分配新的事件名。空事件名不触发机关。
+- 按钮不再提供 `targets` 直连配置；旧手工模板已迁移。`MechanismMotion.targets` 仍用于组合机关内部指定运动方块，不承担按钮通信。
+- 总线只转发当次事件，不保存已触发历史、不重放、不排队重试。按钮和机关各自维持原有单次锁存；正在忙碌的机关可拒绝激活。同步发布相同事件的反馈循环会被总线截断。
+- 动态加入关卡的组件自动接线，移出或销毁时解除连接；重开关卡重新创建总线和组件，旧关卡事件不会影响新关卡。
+
+脚本可通过关卡拥有的总线调用 `publish(&"lift_01")`。新增发送组件声明 `level_event_requested(event_id: StringName)` 信号，新增接收组件实现 `receive_level_event(event_id: StringName)`；业务状态仍由组件自己管理。
+
+`tests/scene/test_level_event_bus.gd` 验证真实接触、一对多事件、关卡隔离、动态节点清理、重建和正式关卡接线。
+
+### MoveableCube 的激活方向
+
+将 `features/level/moveable_cube.tscn` 拖入关卡，选择根节点，在 Inspector 配置：
+
+| 属性 | 用途 |
+| --- | --- |
+| `cube_size` | 方块的显示占位与实体碰撞尺寸 |
+| `movement_direction` | 局部移动方向；右 `(1, 0)`、左 `(-1, 0)`、上 `(0, -1)`、下 `(0, 1)`，也支持斜向 |
+| `move_distance` | 移动距离，默认 128 个局部像素；方向向量会自动归一化 |
+| `motion_speed` | 沿用方块的运动速度参数，实际过程使用平滑起停曲线 |
+| `startup_shake_duration` / `startup_shake_distance` | 启动前抖动的时长和幅度，设时长为 0 可关闭 |
+
+例如向上移动 96 像素：设置 `movement_direction = Vector2(0, -1)`、`move_distance = 96`。编辑器内的蓝色箭头和终点轮廓随参数更新；旋转方块或它的父节点时，局部移动方向也随之旋转。物理根节点保持单位缩放。
+
+将按钮的 `event_id` 和 Cube 的 `activation_event` 配成同名事件即可，不必额外放置 `MechanismMotion`。脚本也可调用 `cube.activate()`：成功启动返回 `true`，并保持单次激活状态；重复调用、正在执行其他运动、方向为零或距离为零时返回 `false`。方块自身在拒绝启动时不会消耗激活机会。到达终点后停留，`reset_platform()` 恢复初始位置、尺寸及未激活状态；复用原按钮再次触发时还需调用它的 `reset_button()`，R 重开则重新载入场景。
+
+`move_to_rect()`、`move_top_left_to()` 和 `rotate_clockwise_about()` 继续供已有机关调用。继承方块的 `WhiteboxDoor.activate()` 执行门自己的 `open_offset` / 旋转配置。
+
+`tests/scene/test_moveable_cube_activation.gd` 验证方向、斜向距离、旋转父节点、按钮事件接线、单次激活与复位；既有实体测试继续验证玩家站立与平台随动。
 
 每个组件场景应可单独 F6 启动。完整关卡至少验证：出生与复活、普通/不可扎根地面、危险区、按钮控制的平台、平台随动挂环、摄像机边界，以及 R 重开。
 
@@ -78,4 +109,4 @@
 - 长地面遵循“中段平铺、端帽定尺、碰撞覆盖连续表面”的规则；多个 `TerrainPiece` 拼接时，用各实例的 `polygon_repeat_offset` 保持纹理连续，透明装饰不参与碰撞。
 - 摄像机由 `Actors/Player/Camera2D` 承载，使用 `zoom = Vector2(4, 4)`、平滑边界和位置平滑；边界由根节点的 `CameraBounds` 统一配置。
 - 当前 `StartFloor` 使用 `art_scale_multiplier = 0.4` 做首轮像素密度校准：`_0036_苔藓地1.png` 的原始高度约为 136px，缩放后约 54 世界单位，与成熟角色的视觉高度处于同一量级。
-- `MechanismMotion`、按钮、平台和门等玩法组件，待对应层级稳定后再按本文件的本地 NodePath 规则接入。
+- 根节点下的 `LevelEventBus` 负责本关卡按钮与机关通信。出生区域的 `LiftCube` 及其 `LiftButton` 已按用户要求移除；新增机关仍可通过匹配事件名接线。

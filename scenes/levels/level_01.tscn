@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c3ecyvogpqagh"]
+[gd_scene format=3 uid="uid://c0phh1of4qig3"]
 
 [ext_resource type="Script" uid="uid://bmrw83r1jfdo" path="res://features/level/handbuilt/handbuilt_level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://features/level/handbuilt/glowing_flower.tscn" id="2_flower"]
@@ -22,8 +22,14 @@
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="32_phantom_host"]
 [ext_resource type="Script" uid="uid://bhexx6mj1xv3q" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_2d.gd" id="33_phantom_camera"]
 [ext_resource type="PackedScene" path="res://features/level/backgrounds/four_layer_backdrop.tscn" id="34_backdrop"]
+[ext_resource type="Script" uid="uid://321t1y654jng" path="res://features/level/camera/forward_camera_framing.gd" id="35_framing"]
+[ext_resource type="PackedScene" path="res://features/level/level_event_bus.tscn" id="36_events"]
+[ext_resource type="PackedScene" path="res://features/level/moveable_cube.tscn" id="37_lift"]
+[ext_resource type="PackedScene" path="res://features/ui/main_level_hud.tscn" id="39_main_hud"]
+[ext_resource type="PackedScene" path="res://features/level/camera/main_camera_regions.tscn" id="40_camera_regions"]
+[ext_resource type="PackedScene" path="res://features/ui/completion_overlay.tscn" id="41_completion"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1b0o8"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_uujh0"]
 resource_local_to_scene = true
 radius = 12.0
 
@@ -33,6 +39,17 @@ script = ExtResource("19_svp4f")
 [node name="Level01" type="Node2D" unique_id=943232891]
 script = ExtResource("1_level")
 metadata/_edit_vertical_guides_ = [-8.0]
+
+[node name="LevelEventBus" parent="." unique_id=1094047729 instance=ExtResource("36_events")]
+
+[node name="Interface" type="CanvasLayer" parent="." unique_id=2093777114]
+layer = 10
+
+[node name="MainLevelHud" parent="Interface" unique_id=1192303977 instance=ExtResource("39_main_hud")]
+unique_name_in_owner = true
+
+[node name="CompletionOverlay" parent="Interface" instance=ExtResource("41_completion")]
+unique_name_in_owner = true
 
 [node name="Node" type="Node" parent="." unique_id=1887232084]
 
@@ -51,7 +68,7 @@ scale = Vector2(0.2, 0.2)
 sprite_variants = ExtResource("3_kfebt")
 variant_index = 2
 layout_mode = 1
-tile_count = Vector2i(40, 1)
+tile_count = Vector2i(28, 1)
 tile_spacing = Vector2(-60, 0)
 
 [node name="DecorativeScenery3" parent="Node" unique_id=1402646353 instance=ExtResource("2_t0hvh")]
@@ -94,15 +111,16 @@ color = Color(0.2, 0.24, 0.28, 1)
 
 [node name="StartFloor" parent="Geometry/Terrain" unique_id=373654360 instance=ExtResource("5_terrain")]
 position = Vector2(-256, 469)
-piece_size = Vector2(1344, 40)
+piece_size = Vector2(1800, 40)
+camera_main_floor = true
 collision_top_inset = 6.5
 art_scale_multiplier = 0.4
 
 [node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor" index="0" unique_id=1031688781]
-polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
+polygon = PackedVector2Array(0, 6.5, 1800, 6.5, 1800, 40, 0, 40)
 
 [node name="TerrainVisual" parent="Geometry/Terrain/StartFloor" index="1" unique_id=1185384908]
-offset_right = 3360.0
+offset_right = 4500.0
 offset_bottom = 100.0
 scale = Vector2(0.4, 0.4)
 patch_margin_left = 22
@@ -111,7 +129,7 @@ patch_margin_bottom = 8
 
 [node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor" index="2" unique_id=1905841275]
 texture_scale = Vector2(2.5, 2.5)
-polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
+polygon = PackedVector2Array(0, 0, 1800, 0, 1800, 40, 0, 40)
 
 [node name="WholeArtwork" parent="Geometry/Terrain/StartFloor" index="3" unique_id=1905841276]
 scale = Vector2(0.4, 0.4)
@@ -134,16 +152,17 @@ polygon = PackedVector2Array(-27.648926, -141.5304, -15.377289, -147.2066, -3.50
 [node name="LightOccluder2D" parent="Geometry/Terrain/BranchWall" index="2"]
 position = Vector2(2.958107, 4.743433)
 
-[node name="StartFloor2" parent="Geometry/Terrain" unique_id=1291361382 instance=ExtResource("5_terrain")]
+[node name="Floor2" parent="Geometry/Terrain" unique_id=1291361382 instance=ExtResource("5_terrain")]
 position = Vector2(-262, -3)
 piece_size = Vector2(1344, 40)
+camera_main_floor = true
 collision_top_inset = 6.5
 art_scale_multiplier = 0.4
 
-[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor2" index="0" unique_id=1031688781]
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/Floor2" index="0" unique_id=1031688781]
 polygon = PackedVector2Array(0, 6.5, 1344, 6.5, 1344, 40, 0, 40)
 
-[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor2" index="1" unique_id=1185384908]
+[node name="TerrainVisual" parent="Geometry/Terrain/Floor2" index="1" unique_id=1185384908]
 offset_right = 3360.0
 offset_bottom = 100.0
 scale = Vector2(0.4, 0.4)
@@ -151,38 +170,68 @@ patch_margin_left = 22
 patch_margin_right = 38
 patch_margin_bottom = 8
 
-[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor2" index="2" unique_id=1905841275]
+[node name="PolygonArtwork" parent="Geometry/Terrain/Floor2" index="2" unique_id=1905841275]
 texture_scale = Vector2(2.5, 2.5)
 polygon = PackedVector2Array(0, 0, 1344, 0, 1344, 40, 0, 40)
 
-[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor2" index="3" unique_id=1905841276]
+[node name="WholeArtwork" parent="Geometry/Terrain/Floor2" index="3" unique_id=1905841276]
 scale = Vector2(0.4, 0.4)
 
-[node name="LeftCap" parent="Geometry/Terrain/StartFloor2" index="4" unique_id=1739312993]
+[node name="LeftCap" parent="Geometry/Terrain/Floor2" index="4" unique_id=1739312993]
 scale = Vector2(0.4, 0.4)
 
-[node name="RightCap" parent="Geometry/Terrain/StartFloor2" index="5" unique_id=1455343970]
+[node name="RightCap" parent="Geometry/Terrain/Floor2" index="5" unique_id=1455343970]
 scale = Vector2(0.4, 0.4)
 
-[node name="Node2" type="Node" parent="Geometry/Terrain/StartFloor2" unique_id=43964354]
+[node name="Node2" type="Node" parent="Geometry/Terrain/Floor2" unique_id=43964354]
 
-[node name="DecorativeScenery" parent="Geometry/Terrain/StartFloor2/Node2" unique_id=736504682 instance=ExtResource("2_t0hvh")]
+[node name="DecorativeScenery" parent="Geometry/Terrain/Floor2/Node2" unique_id=736504682 instance=ExtResource("2_t0hvh")]
 position = Vector2(-258, -4.9999847)
 scale = Vector2(0.2, 0.2)
 sprite_variants = ExtResource("3_kfebt")
 variant_index = 1
 layout_mode = 1
-tile_count = Vector2i(20, 1)
+tile_count = Vector2i(10, 1)
 tile_spacing = Vector2(-60, 0)
 
-[node name="DecorativeScenery2" parent="Geometry/Terrain/StartFloor2/Node2" unique_id=192915609 instance=ExtResource("2_t0hvh")]
+[node name="DecorativeScenery2" parent="Geometry/Terrain/Floor2/Node2" unique_id=192915609 instance=ExtResource("2_t0hvh")]
 position = Vector2(-204, 4)
 scale = Vector2(0.2, 0.2)
 sprite_variants = ExtResource("3_kfebt")
 variant_index = 2
 layout_mode = 1
-tile_count = Vector2i(40, 1)
+tile_count = Vector2i(15, 1)
 tile_spacing = Vector2(-60, 0)
+
+[node name="StartFloor5" parent="Geometry/Terrain" unique_id=1853461759 instance=ExtResource("5_terrain")]
+position = Vector2(1244, -95)
+piece_size = Vector2(100, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor5" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 100, 6.5, 100, 40, 0, 40)
+
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor5" index="1" unique_id=1185384908]
+offset_right = 250.0
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor5" index="2" unique_id=1905841275]
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 100, 0, 100, 40, 0, 40)
+
+[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor5" index="3" unique_id=1905841276]
+scale = Vector2(0.4, 0.4)
+
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor5" index="4" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
+
+[node name="RightCap" parent="Geometry/Terrain/StartFloor5" index="5" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
 
 [node name="StartFloor3" parent="Geometry/Terrain" unique_id=1062924864 instance=ExtResource("5_terrain")]
 position = Vector2(-262, 210)
@@ -214,32 +263,42 @@ scale = Vector2(0.4, 0.4)
 [node name="RightCap" parent="Geometry/Terrain/StartFloor3" index="5" unique_id=1455343970]
 scale = Vector2(0.4, 0.4)
 
-[node name="Node2" type="Node" parent="Geometry/Terrain/StartFloor3" unique_id=1891376500]
+[node name="StartFloor4" parent="Geometry/Terrain" unique_id=400453730 instance=ExtResource("5_terrain")]
+position = Vector2(958, 229)
+piece_size = Vector2(210, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
 
-[node name="DecorativeScenery" parent="Geometry/Terrain/StartFloor3/Node2" unique_id=709672287 instance=ExtResource("2_t0hvh")]
-position = Vector2(-258, -4.9999847)
-scale = Vector2(0.2, 0.2)
-sprite_variants = ExtResource("3_kfebt")
-variant_index = 1
-layout_mode = 1
-tile_count = Vector2i(20, 1)
-tile_spacing = Vector2(-60, 0)
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor4" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 210, 6.5, 210, 40, 0, 40)
 
-[node name="DecorativeScenery2" parent="Geometry/Terrain/StartFloor3/Node2" unique_id=1508855872 instance=ExtResource("2_t0hvh")]
-position = Vector2(-204, 4)
-scale = Vector2(0.2, 0.2)
-sprite_variants = ExtResource("3_kfebt")
-variant_index = 2
-layout_mode = 1
-tile_count = Vector2i(40, 1)
-tile_spacing = Vector2(-60, 0)
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor4" index="1" unique_id=1185384908]
+offset_right = 525.0
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor4" index="2" unique_id=1905841275]
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 210, 0, 210, 40, 0, 40)
+
+[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor4" index="3" unique_id=1905841276]
+scale = Vector2(0.4, 0.4)
+
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor4" index="4" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
+
+[node name="RightCap" parent="Geometry/Terrain/StartFloor4" index="5" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
 
 [node name="BranchWall2" parent="Geometry/Terrain" unique_id=1358648627 instance=ExtResource("6_jmes4")]
 position = Vector2(250, 135.99997)
 rotation = 0.86986727
 
 [node name="TerrainPiece" parent="Geometry/Terrain" unique_id=1706165700 instance=ExtResource("5_terrain")]
-position = Vector2(345, 316)
+position = Vector2(341, 328)
 scale = Vector2(0.5, 0.5)
 piece_size = Vector2(320, 200)
 display_mode = 2
@@ -300,15 +359,76 @@ polygon = PackedVector2Array(0, 0, 320, 0, 320, 200, 0, 200)
 visible = true
 texture = ExtResource("9_cwffn")
 
-[node name="Mechanisms" type="Node2D" parent="Geometry" unique_id=558713796]
+[node name="BranchWall3" parent="Geometry/Terrain" unique_id=517249030 instance=ExtResource("6_jmes4")]
+position = Vector2(883.00006, 349.99997)
+rotation = 3.9351377
+scale = Vector2(0.9, 0.9)
 
-[node name="VineRing" parent="Geometry/Mechanisms" unique_id=22483420 instance=ExtResource("8_vine_ring")]
-position = Vector2(1626, 721)
-vine_length = 128.0
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/BranchWall3" index="1" unique_id=331758531]
+position = Vector2(2.958107, 4.743433)
+polygon = PackedVector2Array(-27.648926, -141.5304, -15.377289, -147.2066, -3.505066, -109.15253, 0.66567993, -72.88385, 12, -50, 5, -10, 27, 41, 10, 54, 14, 138, -6, 138, -11, 87, -6, 33, -6, 15, -25, -22, -17, -79, -18.494919, -111.00452)
+
+[node name="LightOccluder2D" parent="Geometry/Terrain/BranchWall3" index="2"]
+position = Vector2(2.958107, 4.743433)
+
+[node name="StartFloor6" parent="Geometry/Terrain" unique_id=1248933546 instance=ExtResource("5_terrain")]
+position = Vector2(1330, 435)
+rotation = -1.5707964
+piece_size = Vector2(425, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+
+[node name="CollisionPolygon2D" parent="Geometry/Terrain/StartFloor6" index="0" unique_id=1031688781]
+polygon = PackedVector2Array(0, 6.5, 425, 6.5, 425, 40, 0, 40)
+
+[node name="TerrainVisual" parent="Geometry/Terrain/StartFloor6" index="1" unique_id=1185384908]
+offset_right = 1062.5
+offset_bottom = 100.0
+scale = Vector2(0.4, 0.4)
+patch_margin_left = 22
+patch_margin_right = 38
+patch_margin_bottom = 8
+
+[node name="PolygonArtwork" parent="Geometry/Terrain/StartFloor6" index="2" unique_id=1905841275]
+texture_scale = Vector2(2.5, 2.5)
+polygon = PackedVector2Array(0, 0, 425, 0, 425, 40, 0, 40)
+
+[node name="WholeArtwork" parent="Geometry/Terrain/StartFloor6" index="3" unique_id=1905841276]
+scale = Vector2(0.4, 0.4)
+
+[node name="LeftCap" parent="Geometry/Terrain/StartFloor6" index="4" unique_id=1739312993]
+scale = Vector2(0.4, 0.4)
+
+[node name="RightCap" parent="Geometry/Terrain/StartFloor6" index="5" unique_id=1455343970]
+scale = Vector2(0.4, 0.4)
+
+[node name="Mechanisms" type="Node2D" parent="Geometry" unique_id=558713796]
 
 [node name="ThornDamage" parent="Geometry/Mechanisms" unique_id=507255010 instance=ExtResource("11_e6lid")]
 position = Vector2(473, 391)
 collision_points = PackedVector2Array(0.03, 0.55, 0.15, 0.42, 0.29, 0.45, 0.43, 0.32, 0.58, 0.42, 0.72, 0.31, 0.97, 0.49, 0.97, 0.94, 0.03, 0.94)
+
+[node name="ThornDamage3" parent="Geometry/Mechanisms" unique_id=265772631 instance=ExtResource("11_e6lid")]
+position = Vector2(1039, 9)
+rotation = 1.6208129
+scale = Vector2(1.2, 1.2)
+variant_index = 1
+collision_points = PackedVector2Array(0.03, 0.55, 0.15, 0.42, 0.29, 0.45, 0.43, 0.32, 0.58, 0.42, 0.72, 0.31, 0.97, 0.49, 0.97, 0.94, 0.03, 0.94)
+
+[node name="ThornDamage2" parent="Geometry/Mechanisms" unique_id=720354914 instance=ExtResource("11_e6lid")]
+position = Vector2(986.0001, 294.00003)
+rotation = -3.4037535
+variant_index = 1
+collision_points = PackedVector2Array(0.03, 0.55, 0.15, 0.42, 0.29, 0.45, 0.43, 0.32, 0.58, 0.42, 0.72, 0.31, 0.97, 0.49, 0.97, 0.94, 0.03, 0.94)
+
+[node name="VineRing" parent="Geometry/Mechanisms" unique_id=956306430 instance=ExtResource("8_vine_ring")]
+position = Vector2(1155, 251)
+
+[node name="VineRing2" parent="Geometry/Mechanisms" unique_id=1336907469 instance=ExtResource("8_vine_ring")]
+position = Vector2(1248, -74)
+
+[node name="MoveableCube" parent="Geometry" unique_id=576358142 instance=ExtResource("37_lift")]
+position = Vector2(1327, -117)
 
 [node name="Areas" type="Node2D" parent="." unique_id=1858714879]
 
@@ -328,6 +448,10 @@ scale = Vector2(2.25, 2.25)
 position = Vector2(762, 440)
 scale = Vector2(2.25, 2.25)
 
+[node name="GrowDrug3" parent="Areas" unique_id=1145262795 instance=ExtResource("6_nutrition")]
+position = Vector2(988.00006, 445.00003)
+scale = Vector2(1.5, 1.5)
+
 [node name="Checkpoints" type="Node2D" parent="." unique_id=422565820]
 
 [node name="Checkpoint" parent="Checkpoints" unique_id=758390787 instance=ExtResource("14_3g50r")]
@@ -340,11 +464,12 @@ unique_name_in_owner = true
 position = Vector2(96, 464)
 
 [node name="CollisionShape2D" parent="Actors/Player" index="0"]
-shape = SubResource("CircleShape2D_1b0o8")
+shape = SubResource("CircleShape2D_uujh0")
 
 [node name="Camera2D" type="Camera2D" parent="Actors/Player" unique_id=1453819068]
 unique_name_in_owner = true
-limit_smoothed = true
+top_level = true
+zoom = Vector2(3, 3)
 
 [node name="PhantomCameraHost" type="Node" parent="Actors/Player/Camera2D" unique_id=5398409]
 process_priority = 300
@@ -360,15 +485,12 @@ priority = 1
 follow_mode = 5
 zoom = Vector2(3, 3)
 tween_resource = SubResource("Resource_w4kkx")
-follow_offset = Vector2(0, -80)
-follow_damping = true
-follow_damping_value = Vector2(0.12, 0.18)
-lookahead = true
-lookahead_time = Vector2(0.2, 0)
-lookahead_max = true
-lookahead_max_value = Vector2(300, 0)
-dead_zone_width = 0.6
-dead_zone_height = 0.52
+tween_on_load = false
+
+[node name="ForwardCameraFraming" type="Node" parent="." unique_id=624385400]
+unique_name_in_owner = true
+process_physics_priority = 200
+script = ExtResource("35_framing")
 
 [node name="SpawnPoint" parent="." unique_id=943232892 instance=ExtResource("3_spawn")]
 unique_name_in_owner = true
@@ -383,9 +505,8 @@ texture = ExtResource("31_broken_tank")
 
 [node name="CameraBounds" parent="." unique_id=943232893 instance=ExtResource("4_bounds")]
 unique_name_in_owner = true
-position = Vector2(-414, 190)
-scale = Vector2(1.16, 0.9200003)
-bounds_size = Vector2(1500, 500)
+position = Vector2(-414, -384)
+bounds_size = Vector2(2206, 1034)
 
 [node name="Foreground" type="Node2D" parent="." unique_id=943232894]
 z_index = 10
@@ -393,11 +514,16 @@ z_index = 10
 [node name="Effects" type="Node2D" parent="." unique_id=943232895]
 z_index = 20
 
+[node name="CameraRegions" parent="." instance=ExtResource("40_camera_regions")]
+
 [editable path="Geometry/Terrain/StartFloor"]
 [editable path="Geometry/Terrain/BranchWall"]
-[editable path="Geometry/Terrain/StartFloor2"]
+[editable path="Geometry/Terrain/Floor2"]
+[editable path="Geometry/Terrain/StartFloor5"]
 [editable path="Geometry/Terrain/StartFloor3"]
+[editable path="Geometry/Terrain/StartFloor4"]
 [editable path="Geometry/Terrain/TerrainPiece"]
 [editable path="Geometry/Terrain/TerrainPiece2"]
-[editable path="Geometry/Mechanisms/VineRing"]
+[editable path="Geometry/Terrain/BranchWall3"]
+[editable path="Geometry/Terrain/StartFloor6"]
 [editable path="Actors/Player"]

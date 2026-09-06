@@ -20,6 +20,10 @@ Use the smallest relevant subset of these documents for small fixes, but do not 
 
 Per the user decision on 2026-09-06, develop gameplay only in the authoritative hand-built main level (`scenes/app/main.tscn` -> `scenes/levels/Level_main.tscn` -> `level_01.tscn`). Do not create or extend JSON whitebox, sandbox, or demo/test levels. Existing test levels are historical references. Keep automated verification scripts for production hand-built scenes and reusable components; they do not require separate playable test levels.
 
+Additional user authorization on 2026-09-06: reconstruct the desktop JSON spawn room and all space above its long ceiling floor (world y < 320) in `scenes/levels/level_02.tscn`, using existing hand-built components and matching `level_01` styling. Support standalone F6 launch. Keep the current main entry unchanged and do not extend other lower rooms.
+
+Latest user correction on 2026-09-06 supersedes the standalone layout above: the entire Ground13 + Ground14 span in `level_02` corresponds to `level_01` Floor2. Map the 512 by 16 source span to Floor2's 1344 by 40 rectangle, using scale (2.625, 2.5), and preview in `Level_main`. Embed Level02 under Level01, sharing its player, HUD, background, camera, and lifecycle. In the composition, hide and disable the continuous Floor2, using the two Ground segments with their moving-cube opening preserved. Preserve the user's removal of the old Level02 birth room.
+
 ## Architecture rules
 
 - Organize by feature: `features/player`, `features/forms`, `features/abilities`, `features/combat`, `features/enemies`, `features/level`, and `features/ui`.

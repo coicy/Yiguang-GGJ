@@ -1,6 +1,6 @@
 extends SceneTree
 
-const LEVEL_SCENE: PackedScene = preload("res://scenes/levels/level_01.tscn")
+const LEVEL_SCENE_PATH: String = "res://scenes/levels/level_01.tscn"
 const LAYER_NAMES: Array[String] = [
 	"Background",
 	"Geometry",
@@ -17,7 +17,7 @@ func _init() -> void:
 
 
 func _run() -> void:
-	var level := LEVEL_SCENE.instantiate() as Node2D
+	var level := (load(LEVEL_SCENE_PATH) as PackedScene).instantiate() as Node2D
 	root.add_child(level)
 	await physics_frame
 
@@ -38,18 +38,18 @@ func _run() -> void:
 
 	var floor_piece := level.get_node("Geometry/Terrain/StartFloor") as TerrainPiece
 	assert(floor_piece != null, "The baseline level needs one terrain floor piece.")
-	assert(floor_piece.piece_size.is_equal_approx(Vector2(1344.0, 40.0)))
+	assert(floor_piece.piece_size.is_equal_approx(Vector2(1800.0, 40.0)))
 	assert(is_equal_approx(floor_piece.art_scale_multiplier, 0.4))
 	var terrain_visual := floor_piece.get_node("TerrainVisual") as NinePatchRect
 	assert(terrain_visual.scale.is_equal_approx(Vector2(0.4, 0.4)))
-	assert(terrain_visual.size.is_equal_approx(Vector2(3360.0, 100.0)))
+	assert(terrain_visual.size.is_equal_approx(Vector2(4500.0, 100.0)))
 	assert(floor_piece.get_node_or_null("CollisionShape2D") == null)
 	var collision := floor_piece.get_node("CollisionPolygon2D") as CollisionPolygon2D
-	assert(collision.polygon == PackedVector2Array([Vector2(0.0, 6.5), Vector2(1344.0, 6.5), Vector2(1344.0, 40.0), Vector2(0.0, 40.0)]))
+	assert(collision.polygon == PackedVector2Array([Vector2(0.0, 6.5), Vector2(1800.0, 6.5), Vector2(1800.0, 40.0), Vector2(0.0, 40.0)]))
 	assert(not collision.disabled)
 
 	var bounds := level.get_node("CameraBounds") as CameraBounds
-	assert(bounds.get_world_rect().is_equal_approx(Rect2(-414.0, 190.0, 1500.0, 500.0)))
+	assert(bounds.get_world_rect().is_equal_approx(Rect2(-414.0, -384.0, 2206.0, 1034.0)))
 	var spawn_icon := level.get_node("SpawnPoint/BrokenTankIcon") as Sprite2D
 	assert(spawn_icon != null, "The current spawn point must display the broken tank icon.")
 	assert(spawn_icon.texture != null)
@@ -83,15 +83,15 @@ func _run() -> void:
 	assert(flower_light.energy > 1.0)
 	assert(flower_light.shadow_enabled)
 	var camera := player.get_node("Camera2D") as Camera2D
-	assert(camera.limit_smoothed)
-	assert(camera.limit_left == -414 and camera.limit_top == 190)
-	assert(camera.limit_right == 1086 and camera.limit_bottom == 690)
+	assert(not camera.limit_smoothed)
+	assert(camera.limit_left == -414 and camera.limit_top == -384)
+	assert(camera.limit_right == 1792 and camera.limit_bottom == 650)
 	var phantom := level.get_node("PhantomCamera2D") as PhantomCamera2D
 	assert(phantom != null)
 	assert(phantom.follow_mode == PhantomCamera2D.FollowMode.FRAMED)
 	assert(phantom.zoom.is_equal_approx(Vector2(3.0, 3.0)))
-	assert(is_equal_approx(phantom.dead_zone_width, 0.6))
-	assert(is_equal_approx(phantom.dead_zone_height, 0.52))
+	assert(is_zero_approx(phantom.dead_zone_width))
+	assert(is_zero_approx(phantom.dead_zone_height))
 
 	level.queue_free()
 	quit()

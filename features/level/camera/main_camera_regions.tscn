@@ -1,0 +1,65 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/level/camera/camera_region_2d.gd" id="1_region"]
+
+[node name="CameraRegions" type="Node2D"]
+
+[node name="LowerRoom" type="Node2D" parent="."]
+script = ExtResource("1_region")
+region_id = &"lower_room"
+activation_rect = Rect2(-256, 3.5, 1626, 700.5)
+horizontal_limits = Vector2(-326, 1370)
+floor_paths = Array[NodePath]([NodePath("../../Geometry/Terrain/StartFloor")])
+
+[node name="UpperRoom" type="Node2D" parent="."]
+script = ExtResource("1_region")
+region_id = &"upper_room"
+priority = 10
+activation_rect = Rect2(-262, -1216, 1386, 1219.5)
+horizontal_limits = Vector2(-334, 1370)
+floor_paths = Array[NodePath]([NodePath("../../Level02/Geometry/Terrain/UpperTerrain/Ground13"), NodePath("../../Level02/Geometry/Terrain/UpperTerrain/Ground14"), NodePath("../../Geometry/Terrain/Floor2")])
+
+[node name="RightConnection" type="Node2D" parent="."]
+script = ExtResource("1_region")
+region_id = &"right_connection"
+priority = 30
+activation_rect = Rect2(1124, -140, 246, 575)
+horizontal_limits = Vector2(880, 1370)
+horizontal_guard_rect = Rect2(1124, 10, 246, 425)
+center_horizontal = true
+floor_paths = Array[NodePath]([NodePath("../../Geometry/Terrain/StartFloor")])
+transition_floor_path = NodePath("../../Level02/Geometry/Terrain/UpperTerrain/Ground14")
+transition_height = 160.0
+
+[node name="RightFloorExit" type="Node2D" parent="."]
+script = ExtResource("1_region")
+region_id = &"right_floor_exit"
+priority = 40
+activation_rect = Rect2(1370, 3.5, 244, 700.5)
+horizontal_limits = Vector2(1000, 1614)
+floor_paths = Array[NodePath]([NodePath("../../Geometry/Terrain/StartFloor")])
+
+[node name="WestBranch" type="Node2D" parent="."]
+script = ExtResource("1_region")
+region_id = &"west_branch"
+priority = 5
+activation_rect = Rect2(-1024, -1216, 762, 1920)
+horizontal_limits = Vector2(-998, 0)
+
+[node name="EastMechanism" type="Node2D" parent="."]
+script = ExtResource("1_region")
+region_id = &"east_mechanism"
+priority = 20
+activation_rect = Rect2(1124, -1216, 668, 1219.5)
+horizontal_limits = Vector2(1056, 1792)
+center_horizontal = true
+
+[node name="FloorOpening" type="Node2D" parent="."]
+script = ExtResource("1_region")
+region_id = &"floor_opening"
+priority = 100
+activation_rect = Rect2(200, -43, 84, 160)
+horizontal_limits = Vector2(-334, 1370)
+floor_paths = Array[NodePath]([NodePath("../../Geometry/Terrain/StartFloor")])
+transition_floor_path = NodePath("../../Level02/Geometry/Terrain/UpperTerrain/Ground13")
+drop_connection = true

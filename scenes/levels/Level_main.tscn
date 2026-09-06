@@ -1,7 +1,183 @@
 [gd_scene format=3 uid="uid://bu47g8135klxu"]
 
 [ext_resource type="PackedScene" path="res://scenes/levels/level_01.tscn" id="1_level"]
+[ext_resource type="PackedScene" uid="uid://cjyj11urlfue0" path="res://features/level/nutrition_tank.tscn" id="2_eoqgd"]
+[ext_resource type="PackedScene" uid="uid://85nkmpjg2ov8" path="res://scenes/levels/level_02.tscn" id="2_upper"]
+[ext_resource type="Resource" uid="uid://bpdw3nfq8olhe" path="res://assets/runtime/scenery/variants/hard_floor_variants.tres" id="3_kvy8q"]
+[ext_resource type="Texture2D" uid="uid://dvomcuuyt3yw6" path="res://assets/runtime/scenery/_0041_垂坠2.png" id="4_5hmf5"]
+[ext_resource type="Texture2D" uid="uid://b3e3gkvy2vau7" path="res://assets/runtime/scenery/_0021_爬墙藤.png" id="5_ij3ti"]
+[ext_resource type="PackedScene" path="res://features/level/moveable_cube.tscn" id="5_oge8w"]
+[ext_resource type="Script" uid="uid://dvvmqpxqh8myq" path="res://features/level/handbuilt/restored_cube_motion.gd" id="6_uxauq"]
+[ext_resource type="Texture2D" uid="uid://bwut2f58u46ke" path="res://assets/runtime/scenery/_0020_爬墙藤.png" id="7_uxauq"]
+[ext_resource type="Texture2D" uid="uid://cmllihj6cdf3g" path="res://assets/runtime/scenery/_0029_石板.png" id="8_k40pw"]
+[ext_resource type="PackedScene" path="res://features/abilities/vine_ring.tscn" id="9_eoqgd"]
+[ext_resource type="Texture2D" uid="uid://ep6xij8k7k3m" path="res://assets/runtime/scenery/_0028_石板3.png" id="9_k40pw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g8q2b"]
+resource_local_to_scene = true
+radius = 12.0
 
 [node name="LevelMain" type="Node2D" unique_id=1995216275]
+metadata/layout_reference = "Ground13 and Ground14 together span Level01 Floor2; preserve the moving-cube opening"
 
-[node name="Level01" parent="." instance=ExtResource("1_level")]
+[node name="Level01" parent="." unique_id=766510504 instance=ExtResource("1_level")]
+level_id = &"level_main"
+completion_button_path = NodePath("Level02/Geometry/UpperEntities/Buttons/Button_59bb7020")
+
+[node name="Floor2" parent="Level01/Geometry/Terrain" parent_id_path=PackedInt32Array(766510504, 1030929769) index="2" unique_id=1291361382]
+visible = false
+collision_layer = 0
+collision_mask = 0
+metadata/shared_floor = "Level01/Level02/Geometry/Terrain/UpperTerrain/Ground13 + Ground14"
+
+[node name="GrowDrug4" parent="Level01/Areas" parent_id_path=PackedInt32Array(766510504, 1858714879) index="0" unique_id=225277071 instance=ExtResource("2_eoqgd")]
+position = Vector2(501, -35)
+scale = Vector2(2.25, 2.25)
+
+[node name="CollisionShape2D" parent="Level01/Actors/Player" parent_id_path=PackedInt32Array(766510504, 1995216275) index="0"]
+shape = SubResource("CircleShape2D_g8q2b")
+
+[node name="CameraBounds" parent="Level01" index="13" unique_id=943232893]
+position = Vector2(-1024, -1216)
+bounds_size = Vector2(2816, 1920)
+
+[node name="Level02" parent="Level01" unique_id=1831655083 instance=ExtResource("2_upper")]
+
+[node name="Ground01" parent="Level01/Level02/Geometry/Terrain/UpperTerrain" parent_id_path=PackedInt32Array(1831655083, 2097993660) index="0" unique_id=2054394274]
+sprite_variants = ExtResource("3_kvy8q")
+variant_index = 2
+
+[node name="HardFloor01" parent="Level01/Level02/Geometry/Terrain/UpperTerrain" parent_id_path=PackedInt32Array(1831655083, 2097993660) index="13" unique_id=1499991401]
+sprite_variants = ExtResource("3_kvy8q")
+
+[node name="Vine01" parent="Level01/Level02/Geometry/VineDecorations" parent_id_path=PackedInt32Array(1831655083, 1196830638) index="0" unique_id=1500233009]
+position = Vector2(-91, -168)
+scale = Vector2(1, 1.2)
+
+[node name="Vine02" parent="Level01/Level02/Geometry/VineDecorations" parent_id_path=PackedInt32Array(1831655083, 1196830638) index="1" unique_id=1774088890]
+position = Vector2(349.00003, 73)
+rotation = 3.1336415
+
+[node name="Vine04" parent="Level01/Level02/Geometry/VineDecorations" parent_id_path=PackedInt32Array(1831655083, 1196830638) index="3" unique_id=352165934]
+position = Vector2(1120, -2066)
+
+[node name="Vine06" parent="Level01/Level02/Geometry/VineDecorations" parent_id_path=PackedInt32Array(1831655083, 1196830638) index="5" unique_id=469385715]
+position = Vector2(-235, -453)
+
+[node name="UpperDamage01" parent="Level01/Level02/Geometry/Hazards" parent_id_path=PackedInt32Array(1831655083, 1013340398) index="0" unique_id=356117995]
+position = Vector2(281, -127)
+rotation = 1.5756912
+variant_index = 2
+
+[node name="UpperEntities" parent="Level01/Level02/Geometry" parent_id_path=PackedInt32Array(1831655083, 1672886868) index="3" unique_id=1308244471]
+attachment_connections = {
+NodePath("Rings/Ring_e33e56b0"): NodePath("Cubes/Cube_dbcf3f60"),
+NodePath("Rings/Ring_e638aaf0"): NodePath("Cubes/Cube_3c92f320"),
+NodePath("Rings/Ring_de4d09e0"): NodePath("Cubes/Cube_322a3230")
+}
+hidden_until_arrival = Array[NodePath]([NodePath("Rings/Ring_e33e56b0"), NodePath("Rings/Ring_e638aaf0")])
+
+[node name="Cube_3c92f320" parent="Level01/Level02/Geometry/UpperEntities/Cubes" index="0"]
+position = Vector2(108, -1065)
+target_reference_path = NodePath("../..")
+art_texture = ExtResource("4_5hmf5")
+
+[node name="Cube_3c92f320" parent="Level01/Level02/Geometry/UpperEntities/Cubes/Cube_3c92f320" index="2" unique_id=1418358112 instance=ExtResource("5_oge8w")]
+position = Vector2(541, 760)
+scale = Vector2(0.8, 0.8)
+script = ExtResource("6_uxauq")
+target_rect = Rect2(158, -723, 84, 240)
+target_reference_path = NodePath("../..")
+target_rotation_degrees = 0.0
+cube_size = Vector2(84, 200)
+move_distance = 0.0
+art_texture = ExtResource("7_uxauq")
+metadata/restored_local_rect = Rect2(158, -1083, 84, 200)
+metadata/source_destination_iid = "e2e75940-96d0-11f1-ba31-094e541f6af6"
+metadata/source_destination_rect = Rect2(160, 16, 32, 96)
+metadata/source_iid = "3c92f320-96d0-11f1-9ec0-adb2f775b414"
+metadata/source_world_rect = Rect2(160, -128, 32, 80)
+metadata/source_identifier = "MoveableCube"
+metadata/source_level = "Level_0"
+
+[node name="Cube_de356dc0" parent="Level01/Level02/Geometry/UpperEntities/Cubes" index="1"]
+target_reference_path = NodePath("../..")
+
+[node name="Cube_3005cb90" parent="Level01/Level02/Geometry/UpperEntities/Cubes" index="2"]
+target_reference_path = NodePath("../..")
+
+[node name="Cube_322a3230" parent="Level01/Level02/Geometry/UpperEntities/Cubes" index="3"]
+target_reference_path = NodePath("../..")
+art_texture = ExtResource("8_k40pw")
+
+[node name="Cube_dbcf3f60" parent="Level01/Level02/Geometry/UpperEntities/Cubes" index="4"]
+target_reference_path = NodePath("../..")
+art_texture = ExtResource("5_ij3ti")
+
+[node name="Cube_14f1b660" parent="Level01/Level02/Geometry/UpperEntities/Cubes" index="5"]
+position = Vector2(973.99994, -1.0000005)
+rotation = -1.5659848
+scale = Vector2(2.4314783, 0.68)
+target_reference_path = NodePath("../..")
+art_texture = ExtResource("9_k40pw")
+
+[node name="Ring_e1b1dc90" parent="Level01/Level02/Geometry/UpperEntities/Rings" index="1"]
+position = Vector2(716, 43)
+
+[node name="Ring_de4d09e0" parent="Level01/Level02/Geometry/UpperEntities/Rings" index="3"]
+position = Vector2(1215, -155)
+
+[node name="Ring_e33e56b0" parent="Level01/Level02/Geometry/UpperEntities/Rings" index="4"]
+position = Vector2(-97, -762)
+
+[node name="Ring_e4d80980" parent="Level01/Level02/Geometry/UpperEntities/Rings" index="5"]
+position = Vector2(664, -2127)
+
+[node name="Ring_e638aaf1" parent="Level01/Level02/Geometry/UpperEntities/Rings" index="7" unique_id=552014741 instance=ExtResource("9_eoqgd")]
+position = Vector2(358, -1726)
+metadata/restored_local_rect = Rect2(158, -883, 42, 40)
+metadata/source_iid = "e638aaf0-96d0-11f1-9ec0-47d36b46fa53"
+metadata/source_world_rect = Rect2(160, -48, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Ring_e6afd6c0" parent="Level01/Level02/Geometry/UpperEntities/Rings" index="8"]
+position = Vector2(738, -2165)
+
+[node name="PoisonFog_724a1020" parent="Level01/Level02/Geometry/UpperEntities/Hazards" index="0"]
+position = Vector2(1234, -196)
+
+[node name="PoisonFog_b9453d50" parent="Level01/Level02/Geometry/UpperEntities/Hazards" index="1"]
+position = Vector2(-52, -23)
+
+[node name="ThornArtwork" parent="Level01/Level02/Geometry/UpperEntities/Hazards/ThornMachine_bdd46590" index="1"]
+position = Vector2(-10, -33)
+
+[node name="ThornMachine_be616350" parent="Level01/Level02/Geometry/UpperEntities/Hazards" index="3"]
+position = Vector2(866, -334)
+
+[node name="Wind_15386020" parent="Level01/Level02/Geometry/UpperEntities/Hazards" index="4"]
+position = Vector2(1301, -538)
+
+[node name="Button_59bb7020" parent="Level01/Level02/Geometry/UpperEntities/Buttons" index="2"]
+position = Vector2(1497, -432)
+
+[node name="Button_17ea7d40" parent="Level01/Level02/Geometry/UpperEntities/Buttons" index="3"]
+position = Vector2(-223, -366.00003)
+rotation = 1.5701745
+
+[editable path="Level01"]
+[editable path="Level01/Geometry/Terrain/StartFloor"]
+[editable path="Level01/Geometry/Terrain/BranchWall"]
+[editable path="Level01/Geometry/Terrain/Floor2"]
+[editable path="Level01/Geometry/Terrain/StartFloor5"]
+[editable path="Level01/Geometry/Terrain/StartFloor3"]
+[editable path="Level01/Geometry/Terrain/StartFloor4"]
+[editable path="Level01/Geometry/Terrain/TerrainPiece"]
+[editable path="Level01/Geometry/Terrain/TerrainPiece2"]
+[editable path="Level01/Geometry/Terrain/BranchWall3"]
+[editable path="Level01/Geometry/Terrain/StartFloor6"]
+[editable path="Level01/Geometry/Mechanisms/VineRing"]
+[editable path="Level01/Actors/Player"]
+[editable path="Level01/Level02"]
+[editable path="Level01/Level02/Geometry/UpperEntities"]

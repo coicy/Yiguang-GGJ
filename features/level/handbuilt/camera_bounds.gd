@@ -10,7 +10,7 @@ extends Node2D
 
 
 func get_world_rect() -> Rect2:
-	return Rect2(global_position, bounds_size)
+	return global_transform * Rect2(Vector2.ZERO, bounds_size)
 
 
 func _draw() -> void:

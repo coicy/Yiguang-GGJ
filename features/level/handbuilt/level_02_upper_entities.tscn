@@ -1,0 +1,383 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://features/level/handbuilt/restored_upper_entities.gd" id="1_controller"]
+[ext_resource type="Script" path="res://features/level/handbuilt/restored_cube_motion.gd" id="2_motion"]
+[ext_resource type="PackedScene" path="res://features/level/moveable_cube.tscn" id="3_cube"]
+[ext_resource type="PackedScene" path="res://features/abilities/vine_ring.tscn" id="4_ring"]
+[ext_resource type="PackedScene" path="res://features/level/toxin_zone.tscn" id="5_toxin"]
+[ext_resource type="PackedScene" path="res://features/level/wind_zone.tscn" id="6_wind"]
+[ext_resource type="PackedScene" path="res://features/level/damage_machine.tscn" id="7_machine"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/trigger_button.tscn" id="8_button"]
+[ext_resource type="PackedScene" path="res://features/level/checkpoint.tscn" id="9_checkpoint"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0039_苔藓水泥块.png" id="10_moss"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/_0028_石板3.png" id="11_stone"]
+[ext_resource type="Texture2D" path="res://assets/runtime/scenery/未命名作品(1)_0000_荆棘1.png" id="12_thorn"]
+
+[sub_resource type="RectangleShape2D" id="CheckpointShape"]
+resource_local_to_scene = true
+size = Vector2(42, 40)
+
+[sub_resource type="ConvexPolygonShape2D" id="MappedThornShape"]
+resource_local_to_scene = true
+points = PackedVector2Array(21, 0, 19.4014702, 7.6536686, 14.8492424, 14.1421356, 8.0363521, 18.4775907, 0, 20, -8.0363521, 18.4775907, -14.8492424, 14.1421356, -19.4014702, 7.6536686, -21, 0, -19.4014702, -7.6536686, -14.8492424, -14.1421356, -8.0363521, -18.4775907, 0, -20, 8.0363521, -18.4775907, 14.8492424, -14.1421356, 19.4014702, -7.6536686)
+
+[node name="UpperEntities" type="Node2D"]
+script = ExtResource("1_controller")
+button_connections = {
+NodePath("Buttons/Button_0f859c40"): [],
+NodePath("Buttons/Button_bbbb4660"): [NodePath("Cubes/Cube_3005cb90")],
+NodePath("Buttons/Button_59bb7020"): [NodePath("Cubes/Cube_de356dc0")],
+NodePath("Buttons/Button_17ea7d40"): [NodePath("Cubes/Cube_3c92f320")]
+}
+attachment_connections = {
+NodePath("Rings/Ring_e33e56b0"): NodePath("Cubes/Cube_dbcf3f60"),
+NodePath("Rings/Ring_e4d80980"): NodePath("Cubes/Cube_dbcf3f60"),
+NodePath("Rings/Ring_e638aaf0"): NodePath("Cubes/Cube_3c92f320"),
+NodePath("Rings/Ring_e6afd6c0"): NodePath("Cubes/Cube_3c92f320"),
+NodePath("Rings/Ring_de4d09e0"): NodePath("Cubes/Cube_322a3230")
+}
+hidden_until_arrival = Array[NodePath]([NodePath("Rings/Ring_e33e56b0"), NodePath("Rings/Ring_e4d80980"), NodePath("Rings/Ring_e638aaf0"), NodePath("Rings/Ring_e6afd6c0")])
+metadata/source_file = "Yiguang.json"
+metadata/source_boundary_y = 320.0
+metadata/mapping_scale = Vector2(2.625, 2.5)
+metadata/mapping_source_anchor = Vector2(0, 304)
+metadata/mapping_destination_anchor = Vector2(-262, -3)
+metadata/destination_cube_iids = PackedStringArray("0adeac00-96d0-11f1-ba31-d1587cb97cf3", "1df23f50-96d0-11f1-ba31-07383e3e50dd", "264fd180-96d0-11f1-ba31-85369d1b7959", "df675a40-96d0-11f1-ba31-19b3069fe1db", "e2e75940-96d0-11f1-ba31-094e541f6af6", "ec8051a0-96d0-11f1-ba31-c34ed22ada3f")
+metadata/destination_ring_iids = PackedStringArray("e6481070-96d0-11f1-ba31-f968a2c6c8eb", "e6979000-96d0-11f1-ba31-7964dc9ae8c8", "e7204800-96d0-11f1-ba31-85359e1dc5d3", "e763e0b0-96d0-11f1-ba31-8b4b49d4e2c5")
+
+[node name="Cubes" type="Node2D" parent="."]
+
+[node name="Cube_3c92f320" parent="Cubes" instance=ExtResource("3_cube")]
+position = Vector2(158, -1083)
+metadata/restored_local_rect = Rect2(158, -1083, 84, 200)
+script = ExtResource("2_motion")
+cube_size = Vector2(84, 200)
+target_rect = Rect2(158, -723, 84, 240)
+target_rotation_degrees = 0.0
+move_distance = 0.0
+art_texture = ExtResource("10_moss")
+metadata/source_destination_iid = "e2e75940-96d0-11f1-ba31-094e541f6af6"
+metadata/source_destination_rect = Rect2(160, 16, 32, 96)
+metadata/source_iid = "3c92f320-96d0-11f1-9ec0-adb2f775b414"
+metadata/source_world_rect = Rect2(160, -128, 32, 80)
+metadata/source_identifier = "MoveableCube"
+metadata/source_level = "Level_0"
+
+[node name="Cube_de356dc0" parent="Cubes" instance=ExtResource("3_cube")]
+position = Vector2(200, -43)
+metadata/restored_local_rect = Rect2(200, -43, 84, 40)
+script = ExtResource("2_motion")
+cube_size = Vector2(84, 40)
+target_rect = Rect2(200, -3, 84, 40)
+target_rotation_degrees = 0.0
+move_distance = 0.0
+art_texture = ExtResource("10_moss")
+metadata/source_destination_iid = "264fd180-96d0-11f1-ba31-85369d1b7959"
+metadata/source_destination_rect = Rect2(176, 304, 32, 16)
+metadata/source_iid = "de356dc0-96d0-11f1-9ec0-15760920bd18"
+metadata/source_world_rect = Rect2(176, 288, 32, 16)
+metadata/source_identifier = "MoveableCube"
+metadata/source_level = "Level_0"
+
+[node name="Cube_3005cb90" parent="Cubes" instance=ExtResource("3_cube")]
+position = Vector2(1292, -323)
+metadata/restored_local_rect = Rect2(1292, -323, 42, 360)
+script = ExtResource("2_motion")
+cube_size = Vector2(42, 360)
+target_rect = Rect2(1334, 37, 378, 40)
+target_rotation_degrees = 90.0
+move_distance = 0.0
+art_texture = ExtResource("10_moss")
+metadata/source_destination_iid = "ec8051a0-96d0-11f1-ba31-c34ed22ada3f"
+metadata/source_destination_rect = Rect2(608, 320, 144, 16)
+metadata/source_iid = "3005cb90-96d0-11f1-9ec0-231d9bef30a8"
+metadata/source_world_rect = Rect2(592, 176, 16, 144)
+metadata/source_identifier = "MoveableCube"
+metadata/source_level = "Level_0"
+
+[node name="Cube_322a3230" parent="Cubes" instance=ExtResource("3_cube")]
+position = Vector2(1208, -163)
+metadata/restored_local_rect = Rect2(1208, -163, 84, 40)
+script = ExtResource("2_motion")
+cube_size = Vector2(84, 40)
+target_rect = Rect2(1502, -43, 42, 80)
+target_rotation_degrees = 90.0
+move_distance = 0.0
+art_texture = ExtResource("10_moss")
+metadata/source_destination_iid = "0adeac00-96d0-11f1-ba31-d1587cb97cf3"
+metadata/source_destination_rect = Rect2(672, 288, 16, 32)
+metadata/source_iid = "322a3230-96d0-11f1-9ec0-65ba33f44fa8"
+metadata/source_world_rect = Rect2(560, 240, 32, 16)
+metadata/source_identifier = "MoveableCube"
+metadata/source_level = "Level_0"
+
+[node name="Cube_dbcf3f60" parent="Cubes" instance=ExtResource("3_cube")]
+position = Vector2(-136, -1083)
+metadata/restored_local_rect = Rect2(-136, -1083, 84, 320)
+script = ExtResource("2_motion")
+cube_size = Vector2(84, 320)
+target_rect = Rect2(-136, -723, 84, 320)
+target_rotation_degrees = 0.0
+move_distance = 0.0
+art_texture = ExtResource("10_moss")
+metadata/source_destination_iid = "df675a40-96d0-11f1-ba31-19b3069fe1db"
+metadata/source_destination_rect = Rect2(48, 16, 32, 128)
+metadata/source_iid = "dbcf3f60-96d0-11f1-ba31-81dc80293df2"
+metadata/source_world_rect = Rect2(48, -128, 32, 128)
+metadata/source_identifier = "MoveableCube"
+metadata/source_level = "Level_0"
+
+[node name="Cube_14f1b660" parent="Cubes" instance=ExtResource("3_cube")]
+position = Vector2(998, -163)
+metadata/restored_local_rect = Rect2(998, -163, 84, 160)
+script = ExtResource("2_motion")
+cube_size = Vector2(84, 160)
+target_rect = Rect2(1124, -3, 168, 80)
+target_rotation_degrees = 90.0
+move_distance = 0.0
+art_texture = ExtResource("10_moss")
+metadata/source_destination_iid = "1df23f50-96d0-11f1-ba31-07383e3e50dd"
+metadata/source_destination_rect = Rect2(528, 304, 64, 32)
+metadata/source_iid = "14f1b660-96d0-11f1-ba31-2fb3210b8ae8"
+metadata/source_world_rect = Rect2(480, 240, 32, 64)
+metadata/source_identifier = "MoveableCube"
+metadata/source_level = "Level_0"
+
+[node name="Rings" type="Node2D" parent="."]
+
+[node name="Ring_d495ff00" parent="Rings" instance=ExtResource("4_ring")]
+position = Vector2(431, -263)
+metadata/restored_local_rect = Rect2(410, -283, 42, 40)
+vine_length = 112.0
+ring_radius = 16.0
+ring_thickness = 5.0
+hook_radius = 10.0
+prompt_radius = 180.0
+metadata/source_iid = "d495ff00-96d0-11f1-9ec0-bfac7247ca78"
+metadata/source_world_rect = Rect2(256, 192, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Ring_e1b1dc90" parent="Rings" instance=ExtResource("4_ring")]
+position = Vector2(641, -183)
+metadata/restored_local_rect = Rect2(620, -203, 42, 40)
+vine_length = 112.0
+ring_radius = 16.0
+ring_thickness = 5.0
+hook_radius = 10.0
+prompt_radius = 180.0
+metadata/source_iid = "e1b1dc90-96d0-11f1-9ec0-9311f3e19ffc"
+metadata/source_world_rect = Rect2(336, 224, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Ring_5f1f8ab0" parent="Rings" instance=ExtResource("4_ring")]
+position = Vector2(1145, 17)
+metadata/restored_local_rect = Rect2(1124, -3, 42, 40)
+vine_length = 112.0
+ring_radius = 16.0
+ring_thickness = 5.0
+hook_radius = 10.0
+prompt_radius = 180.0
+metadata/source_iid = "5f1f8ab0-96d0-11f1-9ec0-e5b775ddcc22"
+metadata/source_world_rect = Rect2(528, 304, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Ring_de4d09e0" parent="Rings" instance=ExtResource("4_ring")]
+position = Vector2(1229, -143)
+metadata/restored_local_rect = Rect2(1208, -163, 42, 40)
+vine_length = 112.0
+ring_radius = 16.0
+ring_thickness = 5.0
+hook_radius = 10.0
+prompt_radius = 180.0
+metadata/source_iid = "de4d09e0-96d0-11f1-9ec0-0b0a2f715bbc"
+metadata/source_world_rect = Rect2(560, 240, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Ring_e33e56b0" parent="Rings" instance=ExtResource("4_ring")]
+position = Vector2(-115, -743)
+metadata/restored_local_rect = Rect2(-136, -763, 42, 40)
+vine_length = 112.0
+ring_radius = 16.0
+ring_thickness = 5.0
+hook_radius = 10.0
+prompt_radius = 180.0
+metadata/source_iid = "e33e56b0-96d0-11f1-9ec0-eb30919fa281"
+metadata/source_world_rect = Rect2(48, 0, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Ring_e4d80980" parent="Rings" instance=ExtResource("4_ring")]
+position = Vector2(-73, -743)
+metadata/restored_local_rect = Rect2(-94, -763, 42, 40)
+vine_length = 112.0
+ring_radius = 16.0
+ring_thickness = 5.0
+hook_radius = 10.0
+prompt_radius = 180.0
+metadata/source_iid = "e4d80980-96d0-11f1-9ec0-bf3ef0df67ce"
+metadata/source_world_rect = Rect2(64, 0, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Ring_e638aaf0" parent="Rings" instance=ExtResource("4_ring")]
+position = Vector2(179, -863)
+metadata/restored_local_rect = Rect2(158, -883, 42, 40)
+vine_length = 112.0
+ring_radius = 16.0
+ring_thickness = 5.0
+hook_radius = 10.0
+prompt_radius = 180.0
+metadata/source_iid = "e638aaf0-96d0-11f1-9ec0-47d36b46fa53"
+metadata/source_world_rect = Rect2(160, -48, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Ring_e6afd6c0" parent="Rings" instance=ExtResource("4_ring")]
+position = Vector2(221, -863)
+metadata/restored_local_rect = Rect2(200, -883, 42, 40)
+vine_length = 112.0
+ring_radius = 16.0
+ring_thickness = 5.0
+hook_radius = 10.0
+prompt_radius = 180.0
+metadata/source_iid = "e6afd6c0-96d0-11f1-9ec0-230200d3b3cc"
+metadata/source_world_rect = Rect2(176, -48, 16, 16)
+metadata/source_identifier = "Ring"
+metadata/source_level = "Level_0"
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="PoisonFog_724a1020" parent="Hazards" instance=ExtResource("5_toxin")]
+position = Vector2(1187, -243)
+metadata/restored_local_rect = Rect2(1082, -323, 210, 160)
+zone_size = Vector2(210, 160)
+metadata/source_iid = "724a1020-96d0-11f1-be70-23949d3e6fd3"
+metadata/source_world_rect = Rect2(512, 176, 80, 64)
+metadata/source_identifier = "Frog"
+metadata/source_level = "Level_0"
+
+[node name="PoisonFog_b9453d50" parent="Hazards" instance=ExtResource("5_toxin")]
+position = Vector2(-94, -43)
+metadata/restored_local_rect = Rect2(-178, -83, 168, 80)
+zone_size = Vector2(168, 80)
+metadata/source_iid = "b9453d50-96d0-11f1-9ec0-67b1294b69fb"
+metadata/source_world_rect = Rect2(32, 272, 64, 32)
+metadata/source_identifier = "Frog"
+metadata/source_level = "Level_0"
+
+[node name="ThornMachine_bdd46590" parent="Hazards" instance=ExtResource("7_machine")]
+position = Vector2(725, -303)
+metadata/restored_local_rect = Rect2(704, -323, 42, 40)
+self_modulate = Color(1, 1, 1, 0)
+travel_distance = 84.0
+travel_speed = 168.0
+metadata/source_iid = "bdd46590-96d0-11f1-9ec0-b76c2805ffe7"
+metadata/source_world_rect = Rect2(368, 176, 16, 16)
+metadata/source_identifier = "DamageMachine"
+metadata/source_level = "Level_0"
+
+[node name="CollisionShape2D" parent="Hazards/ThornMachine_bdd46590" index="0"]
+shape = SubResource("MappedThornShape")
+
+[node name="ThornArtwork" type="Sprite2D" parent="Hazards/ThornMachine_bdd46590"]
+texture = ExtResource("12_thorn")
+scale = Vector2(0.0875, 0.153846153846)
+
+[node name="ThornMachine_be616350" parent="Hazards" instance=ExtResource("7_machine")]
+position = Vector2(851, -303)
+metadata/restored_local_rect = Rect2(830, -323, 42, 40)
+self_modulate = Color(1, 1, 1, 0)
+travel_distance = 84.0
+travel_speed = 168.0
+metadata/source_iid = "be616350-96d0-11f1-9ec0-c7ac8cd11a03"
+metadata/source_world_rect = Rect2(416, 176, 16, 16)
+metadata/source_identifier = "DamageMachine"
+metadata/source_level = "Level_0"
+
+[node name="CollisionShape2D" parent="Hazards/ThornMachine_be616350" index="0"]
+shape = SubResource("MappedThornShape")
+
+[node name="ThornArtwork" type="Sprite2D" parent="Hazards/ThornMachine_be616350"]
+texture = ExtResource("12_thorn")
+scale = Vector2(0.0875, 0.153846153846)
+
+[node name="Wind_15386020" parent="Hazards" instance=ExtResource("6_wind")]
+position = Vector2(1292, -763)
+metadata/restored_local_rect = Rect2(1292, -763, 420, 360)
+zone_size = Vector2(420, 360)
+metadata/source_iid = "15386020-96d0-11f1-9ec0-17f407aa03fa"
+metadata/source_world_rect = Rect2(592, 0, 160, 144)
+metadata/source_identifier = "Wind"
+metadata/source_level = "Level_0"
+
+[node name="Buttons" type="Node2D" parent="."]
+
+[node name="Button_0f859c40" parent="Buttons" instance=ExtResource("8_button")]
+position = Vector2(914, -3)
+metadata/restored_local_rect = Rect2(914, -3, 42, 40)
+button_size = Vector2(42, 40)
+art_texture = ExtResource("11_stone")
+stretch_art = true
+modulate = Color(1.1, 0.93, 0.56, 1)
+metadata/source_target_iids = PackedStringArray()
+metadata/source_data_note = "Source button has no targets; preserved without inventing links."
+metadata/source_iid = "0f859c40-96d0-11f1-9ec0-a7f50fdb1f9d"
+metadata/source_world_rect = Rect2(448, 304, 16, 16)
+metadata/source_identifier = "Button"
+metadata/source_level = "Level_0"
+
+[node name="Button_bbbb4660" parent="Buttons" instance=ExtResource("8_button")]
+position = Vector2(116, -3)
+metadata/restored_local_rect = Rect2(116, -3, 42, 40)
+button_size = Vector2(42, 40)
+art_texture = ExtResource("11_stone")
+stretch_art = true
+modulate = Color(1.1, 0.93, 0.56, 1)
+metadata/source_target_iids = PackedStringArray("3005cb90-96d0-11f1-9ec0-231d9bef30a8")
+metadata/source_iid = "bbbb4660-96d0-11f1-9ec0-d3fb842dd849"
+metadata/source_world_rect = Rect2(144, 304, 16, 16)
+metadata/source_identifier = "Button"
+metadata/source_level = "Level_0"
+
+[node name="Button_59bb7020" parent="Buttons" instance=ExtResource("8_button")]
+position = Vector2(1502, -403)
+metadata/restored_local_rect = Rect2(1502, -403, 42, 40)
+button_size = Vector2(42, 40)
+art_texture = ExtResource("11_stone")
+stretch_art = true
+modulate = Color(1.1, 0.93, 0.56, 1)
+metadata/source_target_iids = PackedStringArray("de356dc0-96d0-11f1-9ec0-15760920bd18")
+metadata/source_iid = "59bb7020-96d0-11f1-9ec0-1f9ad61c57bc"
+metadata/source_world_rect = Rect2(672, 144, 16, 16)
+metadata/source_identifier = "Button"
+metadata/source_level = "Level_0"
+
+[node name="Button_17ea7d40" parent="Buttons" instance=ExtResource("8_button")]
+position = Vector2(-262, -363)
+metadata/restored_local_rect = Rect2(-262, -363, 42, 40)
+button_size = Vector2(42, 40)
+art_texture = ExtResource("11_stone")
+stretch_art = true
+modulate = Color(1.1, 0.93, 0.56, 1)
+metadata/source_target_iids = PackedStringArray("3c92f320-96d0-11f1-9ec0-adb2f775b414")
+metadata/source_iid = "17ea7d40-96d0-11f1-9ec0-5b135eaa7d6d"
+metadata/source_world_rect = Rect2(0, 160, 16, 16)
+metadata/source_identifier = "Button"
+metadata/source_level = "Level_1"
+
+[node name="Checkpoints" type="Node2D" parent="."]
+
+[node name="Checkpoint_a8139720" parent="Checkpoints" instance=ExtResource("9_checkpoint")]
+position = Vector2(851, -23)
+metadata/restored_local_rect = Rect2(830, -43, 42, 40)
+metadata/source_iid = "a8139720-96d0-11f1-9ec0-076994b461f9"
+metadata/source_world_rect = Rect2(416, 288, 16, 16)
+metadata/source_identifier = "Checkpoint"
+metadata/source_level = "Level_0"
+
+[node name="CollisionShape2D" parent="Checkpoints/Checkpoint_a8139720" index="0"]
+shape = SubResource("CheckpointShape")

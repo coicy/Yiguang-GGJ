@@ -1,0 +1,208 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://features/ui/main_level_hud.gd" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="Panel"]
+bg_color = Color(0.045, 0.085, 0.073, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.41, 0.54, 0.4, 0.65)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_left = 6
+corner_radius_bottom_right = 6
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="BarBackground"]
+bg_color = Color(0.17, 0.23, 0.19, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="StyleBoxFlat" id="BarFill"]
+bg_color = Color(0.72, 0.84, 0.55, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_left = 3
+corner_radius_bottom_right = 3
+
+[sub_resource type="Theme" id="Theme"]
+default_font_size = 17
+Label/colors/font_color = Color(0.89, 0.93, 0.83, 1)
+Label/colors/font_shadow_color = Color(0.02, 0.035, 0.025, 0.9)
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+PanelContainer/styles/panel = SubResource("Panel")
+ProgressBar/styles/background = SubResource("BarBackground")
+ProgressBar/styles/fill = SubResource("BarFill")
+
+[node name="MainLevelHud" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme")
+script = ExtResource("1_hud")
+
+[node name="Top" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 20.0
+offset_top = 18.0
+offset_right = -20.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+
+[node name="StatusPanel" type="PanelContainer" parent="Top"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Rows" type="VBoxContainer" parent="Top/StatusPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="HBoxContainer" parent="Top/StatusPanel/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="FormLabel" type="Label" parent="Top/StatusPanel/Rows/Title"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.72, 0.84, 0.55, 1)
+text = "01  幼芽期"
+
+[node name="StateLabel" type="Label" parent="Top/StatusPanel/Rows/Title"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "探索中"
+
+[node name="GrowthRow" type="HBoxContainer" parent="Top/StatusPanel/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="GrowthLabel" type="Label" parent="Top/StatusPanel/Rows/GrowthRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "成长  0 / 100"
+
+[node name="GrowthBar" type="ProgressBar" parent="Top/StatusPanel/Rows/GrowthRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(116, 8)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+show_percentage = false
+
+[node name="StabilityRow" type="HBoxContainer" parent="Top/StatusPanel/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="StabilityLabel" type="Label" parent="Top/StatusPanel/Rows/StabilityRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(136, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "稳定  100 / 100"
+
+[node name="StabilityBar" type="ProgressBar" parent="Top/StatusPanel/Rows/StabilityRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(116, 8)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 100.0
+show_percentage = false
+
+[node name="HintColumn" type="VBoxContainer" parent="Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="ObjectiveLabel" type="Label" parent="Top/HintColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.72, 0.84, 0.55, 1)
+text = "爬到最高处即可通关"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ContextLabel" type="Label" parent="Top/HintColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+text = "营养液促进成长 · 退化液缩小形态 · 触碰旗帜记录重试位置"
+autowrap_mode = 2
+
+[node name="HintPanel" type="PanelContainer" parent="Top/HintColumn"]
+layout_mode = 2
+
+[node name="Rows" type="VBoxContainer" parent="Top/HintColumn/HintPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ControlsLabel" type="Label" parent="Top/HintColumn/HintPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.74, 0.81, 0.74, 1)
+text = "A / D 移动    按住 E 吸收液体    R 重开"
+autowrap_mode = 2
+
+[node name="AbilityHint" type="Label" parent="Top/HintColumn/HintPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "幼芽不可跳跃 · 穿过窄道，靠近营养液按住 E 成长"
+autowrap_mode = 2
+
+[node name="RunPanel" type="PanelContainer" parent="Top"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Rows" type="VBoxContainer" parent="Top/RunPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Heading" type="Label" parent="Top/RunPanel/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.77, 0.68, 1)
+theme_override_font_sizes/font_size = 14
+text = "探索记录"
+
+[node name="Stats" type="HBoxContainer" parent="Top/RunPanel/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="TimeLabel" type="Label" parent="Top/RunPanel/Rows/Stats"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(74, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "00:00"
+
+[node name="DeathsLabel" type="Label" parent="Top/RunPanel/Rows/Stats"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "重试 0"
+
+[node name="MessageTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 4.0
+one_shot = true

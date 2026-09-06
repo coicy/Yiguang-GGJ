@@ -1,0 +1,374 @@
+[gd_scene format=3 uid="uid://85nkmpjg2ov8"]
+
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/camera_bounds.tscn" id="4_bounds"]
+[ext_resource type="PackedScene" uid="uid://c65j2lesd56mx" path="res://features/level/handbuilt/terrain_piece.tscn" id="5_terrain"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/hazard_area.tscn" id="10_recovery"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/decorative_scenery.tscn" id="15_decoration"]
+[ext_resource type="Resource" uid="uid://beekb7ob3irq1" path="res://assets/runtime/scenery/variants/grass_turf_variants.tres" id="16_grass"]
+[ext_resource type="Resource" uid="uid://c7n078btf0rvr" path="res://assets/runtime/scenery/variants/small_vine_variants.tres" id="17_vines"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/glowing_flower.tscn" id="18_flower"]
+[ext_resource type="PackedScene" path="res://features/level/handbuilt/level_02_upper_entities.tscn" id="20_upper"]
+[ext_resource type="Resource" uid="uid://etgbt52jh2bn" path="res://assets/runtime/scenery/variants/thorn_hazard_variants.tres" id="21_thorns"]
+
+[node name="Level02" type="Node2D" unique_id=1970776656]
+metadata/source_file = "Yiguang.json"
+metadata/source_level = "Level_0"
+metadata/source_upper_world_rect = Rect2(-256, -128, 1008, 448)
+metadata/source_sha256 = "33b292e63652fbb700fd7cd8acbec9e63f6ca130712a30a77fcc2a4f96974a30"
+metadata/scope = "Upper level section calibrated to Level01 Floor2; preview through Level_main"
+metadata/source_anchor_rect = Rect2(0, 304, 512, 16)
+metadata/reference_anchor_rect = Rect2(-262, -3, 1344, 40)
+metadata/layout_scale = Vector2(2.625, 2.5)
+metadata/layout_offset = Vector2(-262, -763)
+
+[node name="FlowerDecorations" type="Node2D" parent="." unique_id=2057854413]
+
+[node name="FlowerRoofLeft" parent="FlowerDecorations" unique_id=775137378 instance=ExtResource("18_flower")]
+position = Vector2(-178, 12)
+scale = Vector2(0.85, 0.85)
+
+[node name="FlowerRoofRight" parent="FlowerDecorations" unique_id=1345650026 instance=ExtResource("18_flower")]
+position = Vector2(662, 12)
+scale = Vector2(0.85, 0.85)
+
+[node name="FlowerCentral" parent="FlowerDecorations" unique_id=808383133 instance=ExtResource("18_flower")]
+position = Vector2(410, -308)
+scale = Vector2(0.85, 0.85)
+
+[node name="FlowerWind" parent="FlowerDecorations" unique_id=2079483886 instance=ExtResource("18_flower")]
+position = Vector2(1586, -388)
+scale = Vector2(0.85, 0.85)
+
+[node name="FlowerWest" parent="FlowerDecorations" unique_id=2043694181 instance=ExtResource("18_flower")]
+position = Vector2(-724, -268)
+scale = Vector2(0.85, 0.85)
+
+[node name="Geometry" type="Node2D" parent="." unique_id=1672886868]
+
+[node name="Terrain" type="Node2D" parent="Geometry" unique_id=326727793]
+
+[node name="UpperTerrain" type="Node2D" parent="Geometry/Terrain" unique_id=2097993660]
+
+[node name="Ground01" parent="Geometry/Terrain/UpperTerrain" unique_id=2054394274 instance=ExtResource("5_terrain")]
+position = Vector2(-304, -443)
+piece_size = Vector2(42, 200)
+variant_index = 1
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(-16, 128, 16, 80)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Ground02" parent="Geometry/Terrain/UpperTerrain" unique_id=921757556 instance=ExtResource("5_terrain")]
+position = Vector2(1292, -403)
+piece_size = Vector2(420, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(592, 144, 160, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Grass1" parent="Geometry/Terrain/UpperTerrain/Ground02" unique_id=377117255 instance=ExtResource("15_decoration")]
+position = Vector2(0, -2)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(5, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Grass2" parent="Geometry/Terrain/UpperTerrain/Ground02" unique_id=1805099033 instance=ExtResource("15_decoration")]
+position = Vector2(8, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(6, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Ground03" parent="Geometry/Terrain/UpperTerrain" unique_id=486813921 instance=ExtResource("5_terrain")]
+position = Vector2(1292, -363)
+piece_size = Vector2(42, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(592, 160, 16, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Ground04" parent="Geometry/Terrain/UpperTerrain" unique_id=185140716 instance=ExtResource("5_terrain")]
+position = Vector2(368, -323)
+piece_size = Vector2(126, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(240, 176, 48, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Ground05" parent="Geometry/Terrain/UpperTerrain" unique_id=187903211 instance=ExtResource("5_terrain")]
+position = Vector2(578, -323)
+piece_size = Vector2(420, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(320, 176, 160, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Grass1" parent="Geometry/Terrain/UpperTerrain/Ground05" unique_id=939481177 instance=ExtResource("15_decoration")]
+position = Vector2(0, -2)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(5, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Grass2" parent="Geometry/Terrain/UpperTerrain/Ground05" unique_id=1703304356 instance=ExtResource("15_decoration")]
+position = Vector2(8, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(6, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Ground06" parent="Geometry/Terrain/UpperTerrain" unique_id=850255995 instance=ExtResource("5_terrain")]
+position = Vector2(-934, -283)
+piece_size = Vector2(630, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(-256, 192, 240, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Grass1" parent="Geometry/Terrain/UpperTerrain/Ground06" unique_id=7281710 instance=ExtResource("15_decoration")]
+position = Vector2(0, -2)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(7, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Grass2" parent="Geometry/Terrain/UpperTerrain/Ground06" unique_id=1906075963 instance=ExtResource("15_decoration")]
+position = Vector2(8, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(9, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Ground07" parent="Geometry/Terrain/UpperTerrain" unique_id=2093277878 instance=ExtResource("5_terrain")]
+position = Vector2(410, -283)
+piece_size = Vector2(42, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(256, 192, 16, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Ground09" parent="Geometry/Terrain/UpperTerrain" unique_id=1110473817 instance=ExtResource("5_terrain")]
+position = Vector2(-934, -243)
+piece_size = Vector2(42, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(-256, 208, 16, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Ground10" parent="Geometry/Terrain/UpperTerrain" unique_id=1201826758 instance=ExtResource("5_terrain")]
+position = Vector2(-52, -163)
+piece_size = Vector2(294, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(80, 240, 112, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Grass1" parent="Geometry/Terrain/UpperTerrain/Ground10" unique_id=34389956 instance=ExtResource("15_decoration")]
+position = Vector2(0, -2)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(3, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Grass2" parent="Geometry/Terrain/UpperTerrain/Ground10" unique_id=1775399086 instance=ExtResource("15_decoration")]
+position = Vector2(8, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(4, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Ground11" parent="Geometry/Terrain/UpperTerrain" unique_id=313117733 instance=ExtResource("5_terrain")]
+position = Vector2(-178, -123)
+piece_size = Vector2(252, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(32, 256, 96, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Grass1" parent="Geometry/Terrain/UpperTerrain/Ground11" unique_id=75726909 instance=ExtResource("15_decoration")]
+position = Vector2(0, -2)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(3, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Grass2" parent="Geometry/Terrain/UpperTerrain/Ground11" unique_id=2023009651 instance=ExtResource("15_decoration")]
+position = Vector2(8, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(3, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Ground12" parent="Geometry/Terrain/UpperTerrain" unique_id=448093614 instance=ExtResource("5_terrain")]
+position = Vector2(-10, -83)
+piece_size = Vector2(84, 40)
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(96, 272, 32, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+
+[node name="Ground13" parent="Geometry/Terrain/UpperTerrain" unique_id=683115846 instance=ExtResource("5_terrain")]
+position = Vector2(-262, -3)
+piece_size = Vector2(462, 40)
+camera_main_floor = true
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(0, 304, 176, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+metadata/reference_node = "Level01/Geometry/Terrain/Floor2 (combined Ground13 and Ground14 span)"
+
+[node name="Grass1" parent="Geometry/Terrain/UpperTerrain/Ground13" unique_id=974913218 instance=ExtResource("15_decoration")]
+position = Vector2(0, -2)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(5, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Grass2" parent="Geometry/Terrain/UpperTerrain/Ground13" unique_id=1239527389 instance=ExtResource("15_decoration")]
+position = Vector2(8, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(7, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Ground14" parent="Geometry/Terrain/UpperTerrain" unique_id=264339860 instance=ExtResource("5_terrain")]
+position = Vector2(284, -3)
+piece_size = Vector2(798, 40)
+camera_main_floor = true
+collision_top_inset = 6.5
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(208, 304, 304, 16)
+metadata/source_int_grid = 1
+metadata/source_region = "upper"
+metadata/reference_node = "Level01/Geometry/Terrain/Floor2 (combined Ground13 and Ground14 span)"
+
+[node name="Grass1" parent="Geometry/Terrain/UpperTerrain/Ground14" unique_id=906762419 instance=ExtResource("15_decoration")]
+position = Vector2(0, -2)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 1
+layout_mode = 1
+tile_count = Vector2i(9, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="Grass2" parent="Geometry/Terrain/UpperTerrain/Ground14" unique_id=1650262784 instance=ExtResource("15_decoration")]
+position = Vector2(8, 4)
+scale = Vector2(0.2, 0.2)
+sprite_variants = ExtResource("16_grass")
+variant_index = 2
+layout_mode = 1
+tile_count = Vector2i(12, 1)
+tile_spacing = Vector2(-60, 0)
+
+[node name="HardFloor01" parent="Geometry/Terrain/UpperTerrain" unique_id=1499991401 instance=ExtResource("5_terrain")]
+position = Vector2(1082, -3)
+piece_size = Vector2(42, 40)
+allows_rooting = false
+collision_top_inset = 6.5
+variant_index = 1
+art_scale_multiplier = 0.4
+metadata/source_world_rect = Rect2(512, 304, 16, 16)
+metadata/source_int_grid = 3
+metadata/source_region = "upper"
+
+[node name="VineDecorations" type="Node2D" parent="Geometry" unique_id=1196830638]
+z_index = 1
+
+[node name="Vine01" parent="Geometry/VineDecorations" unique_id=1500233009 instance=ExtResource("15_decoration")]
+position = Vector2(-146.5, -70.5)
+sprite_variants = ExtResource("17_vines")
+
+[node name="Vine02" parent="Geometry/VineDecorations" unique_id=1774088890 instance=ExtResource("15_decoration")]
+position = Vector2(-10, -118)
+sprite_variants = ExtResource("17_vines")
+variant_index = 1
+
+[node name="Vine03" parent="Geometry/VineDecorations" unique_id=2042997398 instance=ExtResource("15_decoration")]
+position = Vector2(373.25, -318)
+sprite_variants = ExtResource("17_vines")
+variant_index = 2
+
+[node name="Vine04" parent="Geometry/VineDecorations" unique_id=352165934 instance=ExtResource("15_decoration")]
+position = Vector2(651.5, -250.5)
+rotation = 1.5707963
+sprite_variants = ExtResource("17_vines")
+variant_index = 1
+
+[node name="Vine05" parent="Geometry/VineDecorations" unique_id=1689879985 instance=ExtResource("15_decoration")]
+position = Vector2(1320.875, -385.5)
+sprite_variants = ExtResource("17_vines")
+
+[node name="Vine06" parent="Geometry/VineDecorations" unique_id=469385715 instance=ExtResource("15_decoration")]
+position = Vector2(-327.625, -405.5)
+rotation = 1.5707963
+sprite_variants = ExtResource("17_vines")
+variant_index = 1
+
+[node name="Hazards" type="Node2D" parent="Geometry" unique_id=1013340398]
+
+[node name="UpperDamage01" parent="Geometry/Hazards" unique_id=356117995 instance=ExtResource("10_recovery")]
+position = Vector2(200, -123)
+area_size = Vector2(84, 80)
+sprite_variants = ExtResource("21_thorns")
+stretch_art = true
+metadata/source_world_rect = Rect2(176, 256, 32, 32)
+metadata/source_int_grid = 2
+
+[node name="UpperEntities" parent="Geometry" unique_id=1308244471 instance=ExtResource("20_upper")]
+
+[node name="Mechanisms" type="Node2D" parent="Geometry" unique_id=1280438117]
+
+[node name="Areas" type="Node2D" parent="." unique_id=1487020760]
+
+[node name="FallRecovery" parent="Areas" unique_id=2106564608 instance=ExtResource("10_recovery")]
+visible = false
+position = Vector2(-1152, 736)
+area_size = Vector2(3072, 192)
+metadata/purpose = "Recover falls below the combined Level01 and Level02 layout."
+
+[node name="Checkpoints" type="Node2D" parent="." unique_id=1765994368]
+
+[node name="CameraBounds" parent="." unique_id=551018017 instance=ExtResource("4_bounds")]
+unique_name_in_owner = true
+position = Vector2(-1024, -1216)
+bounds_size = Vector2(2816, 1312)
+
+[node name="Foreground" type="Node2D" parent="." unique_id=62235947]
+
+[node name="Effects" type="Node2D" parent="." unique_id=1312180173]

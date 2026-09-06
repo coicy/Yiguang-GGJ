@@ -1,6 +1,39 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://features/level/handbuilt/trigger_button.gd" id="1_script"]
+[ext_resource type="Script" path="res://features/level/handbuilt/sprite_variant_set.gd" id="2_set"]
+[ext_resource type="Script" path="res://features/level/handbuilt/level_sprite_variant.gd" id="3_variant"]
+[ext_resource type="Texture2D" path="res://assets/runtime/level/button/button_idle.png" id="4_idle"]
+[ext_resource type="Texture2D" path="res://assets/runtime/level/button/button_pressed.png" id="5_pressed"]
+[ext_resource type="Shader" path="res://features/level/handbuilt/button_cutout.gdshader" id="6_cutout"]
+
+[sub_resource type="AtlasTexture" id="Atlas_idle"]
+atlas = ExtResource("4_idle")
+region = Rect2(214, 198, 410, 94)
+
+[sub_resource type="AtlasTexture" id="Atlas_pressed"]
+atlas = ExtResource("5_pressed")
+region = Rect2(214, 198, 410, 94)
+
+[sub_resource type="Resource" id="Variant_idle"]
+script = ExtResource("3_variant")
+id = &"idle"
+texture = SubResource("Atlas_idle")
+fit_mode = 1
+
+[sub_resource type="Resource" id="Variant_pressed"]
+script = ExtResource("3_variant")
+id = &"pressed"
+texture = SubResource("Atlas_pressed")
+fit_mode = 1
+
+[sub_resource type="Resource" id="Button_variants"]
+script = ExtResource("2_set")
+display_name = "Button"
+variants = Array[ExtResource("3_variant")]([SubResource("Variant_idle"), SubResource("Variant_pressed")])
+
+[sub_resource type="ShaderMaterial" id="Material_cutout"]
+shader = ExtResource("6_cutout")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_button"]
 size = Vector2(48, 22)
@@ -10,6 +43,8 @@ collision_layer = 64
 collision_mask = 2
 monitoring = true
 script = ExtResource("1_script")
+sprite_variants = SubResource("Button_variants")
+pressed_variant_index = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 unique_name_in_owner = true
@@ -19,3 +54,6 @@ shape = SubResource("RectangleShape2D_button")
 [node name="Artwork" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 centered = false
+material = SubResource("Material_cutout")
+texture = SubResource("Atlas_idle")
+scale = Vector2(0.11707317, 0.17021277)

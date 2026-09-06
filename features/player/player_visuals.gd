@@ -26,6 +26,7 @@ var _spine_visual: SpineCharacterVisual
 var _ability_active: bool = false
 var _root_reveal: float = 0.0
 var _root_anchor_world := Vector2.ZERO
+var _grounded: bool = false
 
 
 func _ready() -> void:
@@ -35,6 +36,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_align_grounded_visual()
 	# The anchor is in world space while this canvas item follows the player.
 	# Rebuild the local endpoint every frame so the line stays pinned at both ends.
 	_root_reveal = move_toward(_root_reveal, 1.0 if _rooted else 0.0, delta * 6.0)
@@ -76,6 +78,22 @@ func set_ability_state(rooted: bool, legs_extended: bool, vine_attached: bool) -
 func set_motion(velocity: Vector2) -> void:
 	if not is_zero_approx(velocity.x):
 		animation_machine.set_facing(velocity.x)
+
+
+func set_grounded(grounded: bool) -> void:
+	_grounded = grounded
+
+
+func _align_grounded_visual() -> void:
+	if _spine_visual == null or _current_form == null:
+		return
+	visual_host.position = _current_form.visual_offset
+	# Locomotion frames lift the whole rig. Keep the feet on the physics floor,
+	# but preserve the original pose offset while jumping, falling or dying.
+	if not _grounded or _spine_visual.current_animation() == &"death":
+		return
+	var bounds: Rect2 = _spine_visual.spine_sprite.get_skeleton().get_bounds()
+	visual_host.position.y = -bounds.end.y * _spine_visual.scale.y
 
 
 func play_death() -> bool:

@@ -52,6 +52,7 @@ var _vine_climb_active: bool = false
 var _vine_climb_target := Vector2.ZERO
 var _vine_climb_route: Array[Vector2] = []
 var _vine_climb_exceptions: Array[CollisionObject2D] = []
+var _camera_intent: Vector2 = Vector2.ZERO
 
 
 func setup(
@@ -87,6 +88,7 @@ func release_jump() -> void:
 
 
 func tick(delta: float, move_dir: float, jump_held: bool) -> void:
+	_camera_intent = Vector2.ZERO
 	if body == null or form == null:
 		return
 	if _vine_climb_active:
@@ -120,8 +122,10 @@ func tick(delta: float, move_dir: float, jump_held: bool) -> void:
 		body.velocity.x = 0.0
 		_apply_leg_push(delta)
 	elif vine_attached:
+		_camera_intent = Vector2(move_dir, 0.0)
 		_apply_vine_motion(move_dir, delta)
 	elif not _movement_locked and move_dir != 0.0:
+		_camera_intent = Vector2(move_dir, 0.0)
 		var steering_acceleration := acceleration if ground_control else air_acceleration
 		if ground_control and move_dir * body.velocity.x < 0.0:
 			steering_acceleration = turn_acceleration
@@ -247,6 +251,7 @@ func _tick_vine_climb(delta: float) -> void:
 		_cancel_vine_climb()
 		return
 	var position_before := body.global_position
+	_camera_intent = motion.normalized()
 	body.velocity = motion / delta
 	body.move_and_slide()
 	body.velocity = Vector2.ZERO
@@ -380,6 +385,11 @@ func is_on_floor() -> bool:
 
 func velocity() -> Vector2:
 	return body.velocity if body != null else Vector2.ZERO
+
+
+## Accepted steering for this physics tick, independent of passive drift.
+func get_camera_intent() -> Vector2:
+	return _camera_intent
 
 
 func coyote_remaining() -> float:
