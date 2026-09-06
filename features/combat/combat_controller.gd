@@ -30,7 +30,15 @@ func setup(actor: Player) -> void:
 	player = actor
 	health.reset_health()
 	health.died.connect(_on_died)
+
+func set_facing(direction: float) -> void:
+	if is_zero_approx(direction):
+		return
+	facing = signf(direction)
+
 func request_action(action: StringName, aim: Vector2) -> void:
+	## Attacks use the character's current facing. `aim` remains for directional
+	## actions such as dash and keeps the request API compatible.
 	if player == null or health.current <= 0:
 		return
 	_buffer = action
@@ -206,7 +214,8 @@ func _try_start(action: StringName) -> bool:
 	player.abilities.cancel_all()
 	player.visuals.cancel_vine_effect()
 	player.velocity = previous_velocity
-	facing = -1.0 if _aim.x < player.global_position.x else 1.0
+	if action == &"dash":
+		facing = -1.0 if _aim.x < player.global_position.x else 1.0
 	attack = chosen
 	landing_from_progress = 0.0
 	landing_from_elapsed = 0.0

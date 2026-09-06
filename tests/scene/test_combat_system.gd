@@ -83,6 +83,7 @@ func _test_sprout_bump() -> void:
 	for face: float in [-1.0, 1.0]:
 		await _place(&"sprout")
 		var combat := _player.combat
+		combat.facing = face
 		var initial := _player.position
 		var enemy := _spawn(BEETLE, initial + Vector2(face * 30.0, 0.0))
 		await physics_frame
@@ -218,7 +219,12 @@ func _test_cancel_windows(form: StringName) -> void:
 		await _step()
 	combat.request_action(&"parry", Vector2.LEFT * 300.0)
 	await _step()
-	_expect(combat.state == &"parry" and combat.facing == -1.0, "%s parry cancels light recovery and aims anew" % form)
+	_expect(combat.state == &"parry" and combat.facing == 1.0, "%s parry cancels light recovery without changing facing" % form)
+	await _place(form)
+	combat.set_facing(-1.0)
+	combat.request_action(&"parry", Vector2.RIGHT * 300.0)
+	await _step()
+	_expect(combat.state == &"parry" and combat.facing == -1.0, "%s parry keeps left facing when aim is on the opposite side" % form)
 
 func _test_air_limits(form: StringName) -> void:
 	await _place(form)
@@ -469,6 +475,7 @@ func _test_recovery_reset() -> void:
 func _place(form: StringName) -> void:
 	_player.cancel_actions()
 	_player.combat.reset()
+	_player.combat.facing = 1.0
 	_player.revive_animation()
 	_player.form_controller.restore_form(form)
 	_player.position = Vector2(0.0, 70.0)
@@ -539,6 +546,7 @@ func _test_parry_choreography(form: StringName) -> void:
 				enemy.warden_behavior.combo_planned = true
 			var before: RefCounted = _parry_pose(enemy)
 			_player.velocity.x = face * 220.0
+			combat.set_facing(face)
 			combat.request_action(&"parry", enemy.global_position)
 			await _step(face)
 			await _step(face)
